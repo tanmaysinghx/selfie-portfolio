@@ -1,0 +1,93 @@
+[
+  {
+    "category": "Navigation",
+    "title": "Home",
+    "description": "Return to the top of the portfolio",
+    "href": "#",
+    "keywords": "home start top hero"
+  },
+  {
+    "category": "Work",
+    "title": "Selected Work & Career",
+    "description": "YAMU Media, MediaMen Services, leadership metrics",
+    "href": "#selected-work",
+    "keywords": "work experience companies yamu mediamen jobs"
+  },
+  {
+    "category": "Case Studies",
+    "title": "My Debt Plan",
+    "description": "1,000+ qualified leads routed per day with purpose-built CRM",
+    "href": "#selected-work",
+    "keywords": "debt crm lead routing finance fintech"
+  },
+  {
+    "category": "Case Studies",
+    "title": "Emirates Mars Mission",
+    "description": "200,000 concurrent users on launch night, iOS, Android & web",
+    "href": "#selected-work",
+    "keywords": "space mars emm emirates hope probe satellite"
+  },
+  {
+    "category": "Case Studies",
+    "title": "Skillstrainer",
+    "description": "Supported 300k to 1.5M users through rapid platform growth",
+    "href": "#selected-work",
+    "keywords": "skillstrainer edtech learning scale platform"
+  },
+  {
+    "category": "Rotation",
+    "title": "Coffee Rotation",
+    "description": "Bhumadivi, MKT Blend, Vienna Roast weekly coffees",
+    "href": "#in-rotation",
+    "keywords": "coffee brew pondicherry aeropress cold brew cappuccino"
+  },
+  {
+    "category": "Rotation",
+    "title": "Kombucha Batch #43",
+    "description": "Falsa & Ginger Lemon ferment preview and stages",
+    "href": "#in-rotation",
+    "keywords": "kombucha ferment scoby tea brew batch"
+  },
+  {
+    "category": "Lab & AI",
+    "title": "My First Voice",
+    "description": "2026 Webby People's Voice Winner: AI voices for non-verbal kids",
+    "href": "#experiments",
+    "keywords": "webby award ai voice non-verbal accessibility lab"
+  },
+  {
+    "category": "Lab & AI",
+    "title": "Automating WordPress development",
+    "description": "AI agents, WordPress Studio, WP-CLI pipelines",
+    "href": "#experiments",
+    "keywords": "wordpress automation agents cli tooling"
+  },
+  {
+    "category": "Writing",
+    "title": "A Practical $10 SEO Stack with OpenSEO & Screaming Frog",
+    "description": "What I gained, what I gave up, solo SEO workflow",
+    "href": "#home-writing",
+    "keywords": "seo screaming frog openseo stack tools"
+  },
+  {
+    "category": "Writing",
+    "title": "A Zero-Plugin WordPress Lead Pipeline to Google Sheets",
+    "description": "Connect plain HTML form to Sheets & confirmation email without plugins",
+    "href": "#home-writing",
+    "keywords": "forms sheets google script api pipeline zero plugin"
+  },
+  {
+    "category": "Life",
+    "title": "Five Years to Web Summit (Paris)",
+    "description": "Life beyond the roadmap, travel and reflection",
+    "href": "#outside-work",
+    "keywords": "travel paris web summit europe story"
+  },
+  {
+    "category": "Contact",
+    "title": "Get in Touch",
+    "description": "Reach out for product leadership or technical delivery",
+    "href": "#contact",
+    "keywords": "contact email message hire inquiry job project"
+  }
+]

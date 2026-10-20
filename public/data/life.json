@@ -1,0 +1,20 @@
+{
+  "heading": "There is",
+  "highlight": "life",
+  "subheading": "beyond the roadmap.",
+  "intro": "Coffee, slow ferments, books and the places that make me look at things differently.",
+  "allLifeStories": {
+    "label": "More life stories",
+    "href": "#outside-work"
+  },
+  "featuredStory": {
+    "image": {
+      "src": "/images/Life/Travel/europe/article-cover.png",
+      "alt": "A travel collage of Aanand among European landmarks"
+    },
+    "caption": "Paris · Nov 2025 · Web Summit",
+    "quote": "The struggle made the approval sweeter. The uncertainty made the arrival meaningful. Going solo made me realize I don't need perfect conditions to begin.",
+    "actionLabel": "Read the full story",
+    "href": "https://linkedin.com/in/aanandmadhav"
+  }
+}

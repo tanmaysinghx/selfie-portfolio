@@ -1,12 +1,24 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { HeaderComponent } from './core/components/header/header.component';
+import { FooterComponent } from './core/components/footer/footer.component';
+import { SearchModalComponent } from './core/components/search-modal/search-modal.component';
+import { PortfolioDataService } from './core/services/portfolio-data.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    HeaderComponent,
+    FooterComponent,
+    SearchModalComponent
+  ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('selfie-portfolio');
+  private dataService = inject(PortfolioDataService);
 }

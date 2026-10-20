@@ -1,0 +1,133 @@
+{
+  "heading": "A few things",
+  "highlight": "in rotation.",
+  "intro": "Coffee, a slow ferment and a book I keep coming back to.",
+  "socialLink": {
+    "label": "Follow along",
+    "href": "https://www.instagram.com/aanandmadhav.ai/"
+  },
+  "coffeeWidget": {
+    "context": "Coffee",
+    "title": "Coffee rotation",
+    "body": "Explore a sample week with my current coffees.",
+    "schedule": [
+      {
+        "dayLetter": "M",
+        "dayName": "Monday",
+        "blend": "Bhumadivi",
+        "roaster": "Marks Coffee · Pondicherry",
+        "brews": "Cappuccino · Cold brew"
+      },
+      {
+        "dayLetter": "T",
+        "dayName": "Tuesday",
+        "blend": "Bhumadivi",
+        "roaster": "Marks Coffee · Pondicherry",
+        "brews": "Cappuccino · Cold brew"
+      },
+      {
+        "dayLetter": "W",
+        "dayName": "Wednesday",
+        "blend": "MKT Blend",
+        "roaster": "AMA Cafe · New Delhi",
+        "brews": "Pour over · Flat white"
+      },
+      {
+        "dayLetter": "T",
+        "dayName": "Thursday",
+        "blend": "MKT Blend",
+        "roaster": "AMA Cafe · New Delhi",
+        "brews": "Pour over · Espresso"
+      },
+      {
+        "dayLetter": "F",
+        "dayName": "Friday",
+        "blend": "Vienna Roast",
+        "roaster": "Third Wave Coffee",
+        "brews": "Aeropress · Cold drip"
+      },
+      {
+        "dayLetter": "S",
+        "dayName": "Saturday",
+        "blend": "Vienna Roast",
+        "roaster": "Third Wave Coffee",
+        "brews": "French press · Espresso"
+      },
+      {
+        "dayLetter": "S",
+        "dayName": "Sunday",
+        "blend": "Bhumadivi",
+        "roaster": "Marks Coffee · Pondicherry",
+        "brews": "Cappuccino · Filter coffee"
+      }
+    ],
+    "link": {
+      "label": "My coffee story",
+      "href": "#outside-work"
+    }
+  },
+  "kombuchaWidget": {
+    "context": "Kombucha",
+    "title": "Batch #43",
+    "body": "Falsa & Ginger Lemon",
+    "caption": "Fermentation preview",
+    "stages": [
+      {
+        "day": 1,
+        "title": "Day 1 · Fresh brew",
+        "description": "Black tea, just started",
+        "teaColor": "#8a4825",
+        "scobyOpacity": 0.35,
+        "bubbleCount": 2
+      },
+      {
+        "day": 3,
+        "title": "Day 3 · Fermenting",
+        "description": "SCOBY getting to work",
+        "teaColor": "#7A4020",
+        "scobyOpacity": 0.6,
+        "bubbleCount": 5
+      },
+      {
+        "day": 5,
+        "title": "Day 5 · Active",
+        "description": "Bubbles forming, pH dropping",
+        "teaColor": "#6d381c",
+        "scobyOpacity": 0.75,
+        "bubbleCount": 9
+      },
+      {
+        "day": 7,
+        "title": "Day 7 · Almost ready",
+        "description": "Ginger lemon batch",
+        "teaColor": "#5e3017",
+        "scobyOpacity": 0.85,
+        "bubbleCount": 12
+      },
+      {
+        "day": 9,
+        "title": "Day 9 · Ready",
+        "description": "Second ferment starting",
+        "teaColor": "#502813",
+        "scobyOpacity": 0.95,
+        "bubbleCount": 16
+      }
+    ],
+    "footerNote": "Fermentation stages, from fresh brew to ready",
+    "link": {
+      "label": "More on brewing",
+      "href": "#outside-work"
+    }
+  },
+  "bookWidget": {
+    "context": "Books",
+    "title": "If Truth Be Told: A Monk's Memoir",
+    "author": "Om Swami",
+    "readingNote": "An honest and unexpectedly gripping account of the path to monkhood. Less about religion, more about what it takes to commit to something completely. The kind of book that makes you sit with uncomfortable questions.",
+    "link": {
+      "label": "Browse the shelf",
+      "href": "#outside-work"
+    }
+  },
+  "updated": "Last noted Jul 2026"
+}

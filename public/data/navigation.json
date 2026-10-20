@@ -1,0 +1,21 @@
+{
+  "brand": {
+    "name": "Aanand Madhav",
+    "role": "Senior PM · UX",
+    "avatar": "/images/aanand-avatar.webp",
+    "href": "/"
+  },
+  "navLinks": [
+    { "label": "Home", "href": "/", "exact": true },
+    { "label": "Work", "href": "#selected-work" },
+    { "label": "Lab", "href": "#experiments" },
+    { "label": "Writing", "href": "#home-writing" },
+    { "label": "Life", "href": "#outside-work" },
+    { "label": "Contact", "href": "#contact" }
+  ],
+  "searchShortcut": "⌘K",
+  "primaryCta": {
+    "label": "Let’s build something →",
+    "href": "#contact"
+  }
+}

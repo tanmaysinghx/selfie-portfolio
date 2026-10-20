@@ -1,0 +1,30 @@
+{
+  "heading": "Recent",
+  "highlight": "writing",
+  "allWriting": {
+    "label": "All writing",
+    "href": "#home-writing"
+  },
+  "articles": [
+    {
+      "title": "A Practical $10 SEO Stack with OpenSEO and Screaming Frog",
+      "readTime": "7 min read",
+      "date": "5 Aug 2026",
+      "description": "What I gained, what I gave up, and how OpenSEO and Screaming Frog split the work of a practical solo SEO stack.",
+      "image": "/images/writing/openseo-vs-semrush-screaming-frog-seo-stack/article-cover.png",
+      "imageAlt": "Hand-drawn SEO workbench where a mechanical frog crawler and open data instrument feed a central keyword and backlink analysis lens",
+      "actionLabel": "Read the piece",
+      "href": "https://linkedin.com/in/aanandmadhav"
+    },
+    {
+      "title": "A Zero-Plugin WordPress Lead Pipeline to Google Sheets",
+      "readTime": "12 min read",
+      "date": "23 Jul 2026",
+      "description": "How I connected a plain HTML form embedded in WordPress to Google Sheets and confirmation email without a form or connector plugin.",
+      "image": "/images/writing/wordpress-form-to-google-sheets-no-plugin/article-cover.png",
+      "imageAlt": "Hand-drawn systems illustration of a plain HTML WordPress form passing through Google Apps Script into a protected Google Sheet and confirmation email",
+      "actionLabel": "Read the piece",
+      "href": "https://linkedin.com/in/aanandmadhav"
+    }
+  ]
+}

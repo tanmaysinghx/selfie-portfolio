@@ -1,0 +1,37 @@
+{
+  "identities": [
+    { "id": 0, "label": "Builder.", "figure": "laptop" },
+    { "id": 1, "label": "Brewer.", "figure": "brewer" },
+    { "id": 2, "label": "Wanderer.", "figure": "compass" }
+  ],
+  "introduction": "I’m Aanand. I bring product, UX and engineering together to build things that matter.",
+  "cta": {
+    "label": "Let’s build something →",
+    "href": "#contact"
+  },
+  "availability": "Open to full-time product leadership roles",
+  "portrait": {
+    "src": "/images/hero-aanand.webp",
+    "alt": "The original ink-drawn Aanand Madhav mascot, wearing glasses and a beanie"
+  },
+  "stats": [
+    {
+      "value": "9 yrs",
+      "label": "Product, UX & delivery",
+      "context": "Across my career",
+      "href": "#selected-work"
+    },
+    {
+      "value": "$300k+",
+      "label": "Monthly revenue at some D2C brands",
+      "context": "YAMU Media",
+      "href": "#selected-work"
+    },
+    {
+      "value": "1,000+",
+      "label": "Qualified leads routed per day",
+      "context": "MediaMen Services",
+      "href": "#selected-work"
+    }
+  ]
+}

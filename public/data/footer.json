@@ -1,0 +1,46 @@
+{
+  "heading": "Bring me the",
+  "highlight": "hard problem.",
+  "intro": "I am always open to conversations about product, design, and technology - especially the kind that don't have an obvious answer yet. I read every message.",
+  "cta": {
+    "label": "Get in touch →",
+    "href": "mailto:hello@aanandmadhav.com"
+  },
+  "socials": [
+    { "name": "X", "url": "https://x.com/aanandmadhav" },
+    { "name": "LinkedIn", "url": "https://linkedin.com/in/aanandmadhav" },
+    { "name": "GitHub", "url": "https://github.com/aanandmadhav" }
+  ],
+  "copyright": "© 2026 Aanand Madhav",
+  "tagline": "Built in New Delhi. Product, design, and code.",
+  "columns": [
+    {
+      "title": "Work",
+      "links": [
+        { "label": "My Debt Plan", "href": "#selected-work" },
+        { "label": "Emirates Mars Mission", "href": "#selected-work" },
+        { "label": "Calypsu", "href": "#selected-work" }
+      ]
+    },
+    {
+      "title": "Writing",
+      "links": [
+        { "label": "Design", "href": "#home-writing" },
+        { "label": "Development", "href": "#home-writing" },
+        { "label": "Management", "href": "#home-writing" },
+        { "label": "Philosophy", "href": "#home-writing" }
+      ]
+    },
+    {
+      "title": "More",
+      "links": [
+        { "label": "Hire Me", "href": "mailto:hello@aanandmadhav.com" },
+        { "label": "Newsletter", "href": "#contact" },
+        { "label": "Find Me", "href": "https://linkedin.com/in/aanandmadhav" },
+        { "label": "Books", "href": "#in-rotation" },
+        { "label": "Events", "href": "#outside-work" },
+        { "label": "Links", "href": "#contact" }
+      ]
+    }
+  ]
+}

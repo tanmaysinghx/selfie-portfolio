@@ -1,1 +1,254 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f5f1ea;
+  --bg-2: #efeae0;
+  --fg: #1a1816;
+  --muted: #6b635a;
+  --muted-2: #6f675e;
+  --hair: #e1dacb;
+  --hair-2: #d6cebd;
+  --accent: #a44224;
+  --accent-ink: #7a3318;
+  --surface-page: var(--bg);
+  --surface-alt: var(--bg-2);
+  --surface-card: var(--bg);
+  --text-strong-color: var(--fg);
+  --text-body-color: var(--muted);
+  --text-faint-color: var(--muted-2);
+  --text-accent-color: var(--accent);
+  --text-highlight-color: var(--accent-ink);
+  --border-hair: var(--hair);
+  --border-strong: var(--hair-2);
+  --accent-wash: rgba(164, 66, 36, 0.04);
+
+  /* Typography scale */
+  --text-hero: clamp(56px, 8.6vw, 128px);
+  --text-display: clamp(44px, 6vw, 88px);
+  --text-h2: clamp(28px, 3.5vw, 44px);
+  --text-editorial: clamp(24px, 2.5vw, 38px);
+  --text-lead: clamp(16px, 1.7vw, 19px);
+  --text-body-lg: 17px;
+  --text-body: 15px;
+  --text-small: 14px;
+  --text-cta: 13px;
+  --text-label: 11px;
+  --text-chip: 10px;
+
+  --tracking-display: -0.045em;
+  --tracking-heading: -0.02em;
+  --tracking-label: 0.08em;
+  --leading-display: 0.94;
+  --leading-body: 1.6;
+
+  /* Layout Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --section-padding: 96px;
+  --container-max: 1360px;
+  --container-gutter: 48px;
+
+  --serif: "Instrument Serif", Georgia, serif;
+  --sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --mono: "Geist Mono", monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  color: var(--fg);
+  background-color: var(--bg);
+}
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  padding-left: var(--container-gutter);
+  padding-right: var(--container-gutter);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+/* Primary CTA Button */
+.primary-cta {
+  background: var(--fg);
+  color: var(--bg);
+  transition: background-color 0.18s, color 0.18s, transform 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 18px;
+  border-radius: 0;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+
+  &:hover {
+    background: var(--accent-ink);
+    color: #ffffff;
+  }
+
+  &:active {
+    background: var(--accent);
+  }
+}
+
+/* Inline Link */
+.inline-link {
+  border-bottom: 1px solid var(--fg);
+  color: var(--fg);
+  align-items: baseline;
+  gap: 0.3em;
+  padding-bottom: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  transition: border-color 0.18s, color 0.18s;
+  display: inline-flex;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
+}
+
+/* Heading Accent Highlight */
+.heading-highlight {
+  color: var(--text-highlight-color);
+}
+
+/* Identity Stage / Hero Buttons */
+.identity-stage {
+  --identity-slide: clamp(64px, 6vw, 88px);
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: max-content;
+  align-items: center;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.identity-titles {
+  z-index: 2;
+  grid-area: 1 / 1 / 4;
+  margin: 0;
+  display: grid;
+  grid-template-rows: subgrid;
+  padding-right: var(--identity-slide);
+  font: 500 clamp(54px, 7.6vw, 106px) / 1.06 var(--sans);
+  letter-spacing: -0.045em;
+
+  button {
+    text-align: left;
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    place-self: center stretch;
+    padding: 0 0 4px;
+    display: block;
+
+    span {
+      transition: transform 0.7s cubic-bezier(0.32, 0.72, 0, 1), color 0.2s;
+      display: inline-block;
+    }
+
+    &[data-active="true"] span {
+      color: var(--text-accent-color);
+    }
+  }
+}
+
+.identity-stage[data-ready="true"] .identity-titles button[data-active="true"] span {
+  transform: translateX(var(--identity-slide));
+}
+
+.identity-word-art {
+  z-index: 1;
+  width: calc(var(--identity-slide) - 8px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  grid-column: 1;
+  justify-self: start;
+  transition: opacity 0.25s, transform 0.7s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s 0.25s;
+  transform: translate(-12px) scale(0.92);
+
+  &[data-active="true"] {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 80ms, 0s, 0s;
+    transform: translate(0) scale(1);
+  }
+}
+
+.identity-drawing {
+  --hairline-plate: var(--surface-page);
+  --hairline-hi: var(--text-strong-color);
+  --hairline-edge: var(--text-strong-color);
+  --hairline-mid: var(--text-body-color);
+  --hairline-lo: var(--border-strong);
+  --hairline-stroke: 1.25;
+  width: 100%;
+}
+
+@media (max-width: 700px) {
+  .identity-stage {
+    --identity-slide: 60px;
+    text-align: left;
+    grid-row: 1;
+    justify-self: center;
+    margin: 0;
+  }
+
+  .identity-titles {
+    font-size: clamp(38px, 10vw, 56px);
+    line-height: 1.05;
+  }
+}
+
+/* Keyboard selection / focus ring */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

@@ -1,0 +1,37 @@
+{
+  "heading": "Curiosity,",
+  "highlight": "Curiosity",
+  "headingFull": "put to work.",
+  "featured": {
+    "award": "2026 Webby People's Voice Winner",
+    "title": "My First Voice",
+    "description": "Use AI to give non-verbal children a personalised voice that sounds like them, preserving local accent and cultural identity.",
+    "linkLabel": "Explore My First Voice",
+    "href": "https://linkedin.com/in/aanandmadhav",
+    "visual": "phosphor"
+  },
+  "items": [
+    {
+      "status": "",
+      "title": "Automating WordPress development",
+      "description": "Using AI agents, WordPress Studio, WP-CLI, and disposable local sites to build, test, and ship plugins and complete client websites.",
+      "linkLabel": "Explore the experiments",
+      "href": "https://github.com/aanandmadhav"
+    },
+    {
+      "status": "Active",
+      "title": "AI marketing activation systems",
+      "description": "Personalised video generation, custom graphics, WhatsApp-based flows. AI at production scale.",
+      "linkLabel": "See the system",
+      "href": "https://linkedin.com/in/aanandmadhav"
+    },
+    {
+      "status": "Completed",
+      "title": "AI UGC & content pipelines",
+      "description": "Created video ads with AI for a huge FMCG brand in India - from brief to final assets.",
+      "linkLabel": "See the system",
+      "href": "https://linkedin.com/in/aanandmadhav"
+    }
+  ],
+  "footerNote": "Some experiments become client solutions. Some stay as internal tools. Some just teach me something useful."
+}
