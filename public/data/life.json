@@ -1,20 +1,28 @@
 {
-  "heading": "There is",
-  "highlight": "life",
-  "subheading": "beyond the roadmap.",
-  "intro": "Coffee, slow ferments, books and the places that make me look at things differently.",
-  "allLifeStories": {
-    "label": "More life stories",
-    "href": "#outside-work"
+  "heading": "Off the",
+  "highlight": "clock.",
+  "intro": "When I'm not untangling an EJB, I'm usually somewhere with more trees than terminals, or grinding through one more LeetCode problem.",
+  "image": {
+    "src": "/images/tanmay/mountains.webp",
+    "alt": "Ink sketch of Tanmay in sunglasses and a scarf, standing before a mountain range framed by bare winter trees"
   },
-  "featuredStory": {
-    "image": {
-      "src": "/images/Life/Travel/europe/article-cover.png",
-      "alt": "A travel collage of Aanand among European landmarks"
+  "caption": "Hills, a scarf, and no build pipeline in sight.",
+  "quote": "The only way to do great work is to love what you do.",
+  "quoteAttribution": "Steve Jobs, and my GitHub bio",
+  "notes": [
+    {
+      "title": "Solving LeetCode like a mad man",
+      "body": "Every solution gets committed, so the repo is a public diary of my DSA practice.",
+      "link": { "label": "See the repo", "href": "https://github.com/tanmaysinghx/solving-leetcode-like-a-mad-man" }
     },
-    "caption": "Paris · Nov 2025 · Web Summit",
-    "quote": "The struggle made the approval sweeter. The uncertainty made the arrival meaningful. Going solo made me realize I don't need perfect conditions to begin.",
-    "actionLabel": "Read the full story",
-    "href": "https://linkedin.com/in/aanandmadhav"
-  }
+    {
+      "title": "Chad, the Discord bot",
+      "body": "A music bot for friends' servers, built on Discord.js v14. It has a /credits command, obviously.",
+      "link": { "label": "Meet Chad", "href": "https://github.com/tanmaysinghx/chad-bot-discord" }
+    },
+    {
+      "title": "Infra for fun",
+      "body": "Jenkins pipelines, Docker Compose stacks and a growing collection of VPSes running things I wrote."
+    }
+  ]
 }

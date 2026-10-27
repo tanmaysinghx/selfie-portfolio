@@ -1,28 +1,22 @@
-export interface ProfileConfig {
-  name: string;
-  title: string;
-  jobTitle: string;
-  location: string;
-  status: string;
-  email: string;
-  avatar: {
-    src: string;
-    alt: string;
-  };
-  heroPortrait: {
-    src: string;
-    alt: string;
-  };
-  socials: Array<{
-    name: string;
-    url: string;
-  }>;
-}
-
-export interface NavLink {
+export interface Link {
   label: string;
   href: string;
-  exact?: boolean;
+}
+
+export interface Social {
+  name: string;
+  url: string;
+}
+
+export interface ProfileConfig {
+  name: string;
+  role: string;
+  location: string;
+  email: string;
+  website: string;
+  resume: string;
+  avatar: string;
+  socials: Social[];
 }
 
 export interface NavigationConfig {
@@ -32,59 +26,53 @@ export interface NavigationConfig {
     avatar: string;
     href: string;
   };
-  navLinks: NavLink[];
+  navLinks: Link[];
   searchShortcut: string;
-  primaryCta: {
-    label: string;
-    href: string;
-  };
+  primaryCta: Link;
 }
 
 export interface IdentityItem {
   id: number;
   label: string;
+  /** Name of a hairline figure from identity-figures.js, or `stack` for the inline server sketch. */
   figure: string;
 }
 
 export interface HeroStat {
   value: string;
   label: string;
-  context: string;
   href: string;
 }
 
 export interface HeroConfig {
+  status: string;
   identities: IdentityItem[];
-  introduction: string;
-  cta: {
-    label: string;
-    href: string;
-  };
-  availability: string;
   portrait: {
     src: string;
     alt: string;
   };
+  introduction: string;
+  cta: Link;
+  secondaryCta: Link;
   stats: HeroStat[];
 }
 
-export interface Company {
-  name: string;
-  metric: string;
-  metricLabel: string;
-  description: string;
-  linkLabel: string;
-  href: string;
+export interface Migration {
+  from: string;
+  to: string;
+  note: string;
 }
 
-export interface CaseStudy {
-  slug: string;
+export interface Role {
+  company: string;
+  client: string;
   title: string;
+  period: string;
   metric: string;
   metricLabel: string;
-  href: string;
-  cover?: string;
-  description: string;
+  summary: string;
+  highlights: string[];
+  tags: string[];
 }
 
 export interface WorkConfig {
@@ -92,158 +80,120 @@ export interface WorkConfig {
   highlight: string;
   yearsExperience: string;
   experienceDomain: string;
-  companies: Company[];
-  caseStudies: CaseStudy[];
+  roles: Role[];
+  migrationsTitle: string;
+  migrations: Migration[];
+  education: {
+    school: string;
+    degree: string;
+    period: string;
+  };
 }
 
-export interface CoffeeDay {
-  dayLetter: string;
-  dayName: string;
-  blend: string;
-  roaster: string;
-  brews: string;
-}
-
-export interface FermentationStage {
-  day: number;
-  title: string;
+export interface EcosystemApp {
+  id: string;
+  name: string;
+  tagline: string;
   description: string;
-  teaColor: string;
-  scobyOpacity: number;
-  bubbleCount: number;
+  stack: string[];
+  href: string;
 }
 
-export interface InRotationConfig {
+export interface Library {
+  name: string;
+  kind: string;
+  description: string;
+  install: string;
+  stack: string[];
+  href: string;
+}
+
+/** A package published to a registry (npm or Maven Central). */
+export interface PublishedPackage {
+  name: string;
+  version: string;
+  description: string;
+  href: string;
+}
+
+export interface OpenSourceConfig {
   heading: string;
   highlight: string;
   intro: string;
-  socialLink: {
-    label: string;
-    href: string;
-  };
-  coffeeWidget: {
-    context: string;
-    title: string;
-    body: string;
-    schedule: CoffeeDay[];
-    link: {
-      label: string;
-      href: string;
-    };
-  };
-  kombuchaWidget: {
-    context: string;
-    title: string;
-    body: string;
-    caption: string;
-    stages: FermentationStage[];
-    footerNote: string;
-    link: {
-      label: string;
-      href: string;
-    };
-  };
-  bookWidget: {
-    context: string;
-    title: string;
-    author: string;
-    readingNote: string;
-    link: {
-      label: string;
-      href: string;
-    };
-  };
-  updated: string;
+  githubLink: Link;
+  hub: EcosystemApp;
+  satellites: EcosystemApp[];
+  librariesTitle: string;
+  libraries: Library[];
+  npmTitle: string;
+  npm: PublishedPackage[];
+  npmProfile: Link;
+  mavenTitle: string;
+  maven: PublishedPackage[];
+  mavenProfile: Link;
 }
 
-export interface LabItem {
-  status: string;
-  title: string;
+export interface SkillGroup {
+  label: string;
+  items: string[];
+}
+
+export interface Certification {
+  name: string;
+  issuer: string;
+  valid: string;
+}
+
+export interface TerminalCommand {
+  command: string;
   description: string;
-  linkLabel: string;
-  href: string;
+  output: string[];
 }
 
-export interface ExperimentsConfig {
+export interface StackConfig {
   heading: string;
   highlight: string;
-  headingFull: string;
-  featured: {
-    award: string;
-    title: string;
-    description: string;
-    linkLabel: string;
-    href: string;
-    visual: string;
+  intro: string;
+  groups: SkillGroup[];
+  terminal: {
+    prompt: string;
+    greeting: string[];
+    commands: TerminalCommand[];
   };
-  items: LabItem[];
-  footerNote: string;
-}
-
-export interface ArticleItem {
-  title: string;
-  readTime: string;
-  date: string;
-  description: string;
-  image: string;
-  imageAlt: string;
-  actionLabel: string;
-  href: string;
-}
-
-export interface WritingConfig {
-  heading: string;
-  highlight: string;
-  allWriting: {
-    label: string;
-    href: string;
-  };
-  articles: ArticleItem[];
+  certificationsTitle: string;
+  certifications: Certification[];
 }
 
 export interface LifeConfig {
   heading: string;
   highlight: string;
-  subheading: string;
   intro: string;
-  allLifeStories: {
-    label: string;
-    href: string;
+  image: {
+    src: string;
+    alt: string;
   };
-  featuredStory: {
-    image: {
-      src: string;
-      alt: string;
-    };
-    caption: string;
-    quote: string;
-    actionLabel: string;
-    href: string;
-  };
-}
-
-export interface FooterColumnLink {
-  label: string;
-  href: string;
+  caption: string;
+  quote: string;
+  quoteAttribution: string;
+  notes: Array<{
+    title: string;
+    body: string;
+    link?: Link;
+  }>;
 }
 
 export interface FooterColumn {
   title: string;
-  links: FooterColumnLink[];
+  links: Link[];
 }
 
 export interface FooterConfig {
   heading: string;
   highlight: string;
   intro: string;
-  cta: {
-    label: string;
-    href: string;
-  };
-  socials: Array<{
-    name: string;
-    url: string;
-  }>;
+  cta: Link;
+  secondaryCta: Link;
+  socials: Social[];
   copyright: string;
   tagline: string;
   columns: FooterColumn[];

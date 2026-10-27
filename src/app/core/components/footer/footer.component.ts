@@ -11,20 +11,24 @@ import { PortfolioDataService } from '../../services/portfolio-data.service';
       <div class="container">
         <!-- Main CTA Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] items-start gap-12 lg:gap-16 mb-20">
-          <h2 class="m-0 font-medium text-[clamp(44px,6vw,88px)] tracking-[-0.035em] leading-[0.98]">
-            {{ footer()?.heading || 'Bring me the' }}
-            <span class="text-accent">{{ footer()?.highlight || 'hard problem.' }}</span>
+          <h2 class="m-0 font-medium text-[clamp(40px,5.4vw,80px)] tracking-[-0.035em] leading-[0.98]">
+            {{ footer()?.heading }}
+            <span class="text-accent">{{ footer()?.highlight }}</span>
           </h2>
           <div>
             <p class="m-0 text-muted text-base leading-[1.65]">
               {{ footer()?.intro }}
             </p>
-            <a
-              [href]="footer()?.cta?.href || 'mailto:hello@aanandmadhav.com'"
-              class="primary-cta mt-6 text-[13px] px-4 py-3">
-              {{ footer()?.cta?.label || 'Get in touch →' }}
-            </a>
-            <div class="mt-5 flex gap-4 flex-wrap">
+            <div class="mt-6 flex flex-wrap items-center gap-5">
+              <a [href]="footer()?.cta?.href" class="primary-cta text-[13px] px-4 py-3">
+                {{ footer()?.cta?.label }}
+              </a>
+              <a [href]="footer()?.secondaryCta?.href" class="inline-link" download>
+                <span>{{ footer()?.secondaryCta?.label }}</span>
+                <span aria-hidden="true">↓</span>
+              </a>
+            </div>
+            <div class="mt-6 flex gap-4 flex-wrap">
               <a
                 *ngFor="let social of footer()?.socials"
                 [href]="social.url"
@@ -42,10 +46,10 @@ import { PortfolioDataService } from '../../services/portfolio-data.service';
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-8 pt-8 border-t border-hair">
           <div>
             <span class="font-mono text-[11px] tracking-[0.08em] uppercase text-muted block">
-              {{ footer()?.copyright || '© 2026 Aanand Madhav' }}
+              {{ footer()?.copyright }}
             </span>
             <div class="mt-[6px] text-[13px] text-muted">
-              {{ footer()?.tagline || 'Built in New Delhi. Product, design, and code.' }}
+              {{ footer()?.tagline }}
             </div>
           </div>
 
@@ -57,6 +61,8 @@ import { PortfolioDataService } from '../../services/portfolio-data.service';
               <a
                 *ngFor="let item of col.links"
                 [href]="item.href"
+                [attr.target]="item.href.startsWith('http') ? '_blank' : null"
+                [attr.rel]="item.href.startsWith('http') ? 'noopener noreferrer' : null"
                 class="text-sm text-fg hover:text-accent transition-colors no-underline">
                 {{ item.label }}
               </a>

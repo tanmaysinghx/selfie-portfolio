@@ -2,11 +2,10 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PortfolioDataService } from '../../core/services/portfolio-data.service';
 import { HeroSectionComponent } from './components/hero-section/hero-section.component';
-import { SelectedWorkComponent } from './components/selected-work/selected-work.component';
-import { InRotationComponent } from './components/in-rotation/in-rotation.component';
-import { ExperimentsComponent } from './components/experiments/experiments.component';
-import { RecentWritingComponent } from './components/recent-writing/recent-writing.component';
-import { OutsideWorkComponent } from './components/outside-work/outside-work.component';
+import { ExperienceComponent } from './components/experience/experience.component';
+import { OpenSourceComponent } from './components/open-source/open-source.component';
+import { StackComponent } from './components/stack/stack.component';
+import { OffTheClockComponent } from './components/off-the-clock/off-the-clock.component';
 
 @Component({
   selector: 'app-home',
@@ -14,20 +13,18 @@ import { OutsideWorkComponent } from './components/outside-work/outside-work.com
   imports: [
     CommonModule,
     HeroSectionComponent,
-    SelectedWorkComponent,
-    InRotationComponent,
-    ExperimentsComponent,
-    RecentWritingComponent,
-    OutsideWorkComponent
+    ExperienceComponent,
+    OpenSourceComponent,
+    StackComponent,
+    OffTheClockComponent
   ],
   template: `
     <main class="w-full">
       <app-hero-section [hero]="hero()"></app-hero-section>
-      <app-selected-work [work]="work()"></app-selected-work>
-      <app-in-rotation [inRotation]="inRotation()"></app-in-rotation>
-      <app-experiments [experiments]="experiments()"></app-experiments>
-      <app-recent-writing [writing]="writing()"></app-recent-writing>
-      <app-outside-work [life]="life()"></app-outside-work>
+      <app-experience [work]="work()"></app-experience>
+      <app-open-source [oss]="openSource()"></app-open-source>
+      <app-stack [stack]="stack()"></app-stack>
+      <app-off-the-clock [life]="life()"></app-off-the-clock>
     </main>
   `
 })
@@ -36,8 +33,7 @@ export class HomeComponent {
 
   readonly hero = this.dataService.hero;
   readonly work = this.dataService.work;
-  readonly inRotation = this.dataService.inRotation;
-  readonly experiments = this.dataService.experiments;
-  readonly writing = this.dataService.writing;
+  readonly openSource = this.dataService.openSource;
+  readonly stack = this.dataService.stack;
   readonly life = this.dataService.life;
 }

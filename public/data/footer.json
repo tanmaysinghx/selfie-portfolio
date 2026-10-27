@@ -1,45 +1,41 @@
 {
-  "heading": "Bring me the",
-  "highlight": "hard problem.",
-  "intro": "I am always open to conversations about product, design, and technology - especially the kind that don't have an obvious answer yet. I read every message.",
-  "cta": {
-    "label": "Get in touch →",
-    "href": "mailto:hello@aanandmadhav.com"
-  },
+  "heading": "Got a legacy system that needs",
+  "highlight": "a second life?",
+  "intro": "I'm happiest with the gnarly ones: a JSF screen nobody dares touch, an API that needs securing, or a platform that has to move to a modern JDK without breaking a single policy. Let's talk.",
+  "cta": { "label": "tanmaysinghx@gmail.com →", "href": "mailto:tanmaysinghx@gmail.com" },
+  "secondaryCta": { "label": "Download résumé", "href": "/resume/Tanmay-Singh-Resume.pdf" },
   "socials": [
-    { "name": "X", "url": "https://x.com/aanandmadhav" },
-    { "name": "LinkedIn", "url": "https://linkedin.com/in/aanandmadhav" },
-    { "name": "GitHub", "url": "https://github.com/aanandmadhav" }
+    { "name": "GitHub", "url": "https://github.com/tanmaysinghx" },
+    { "name": "LinkedIn", "url": "https://www.linkedin.com/in/tanmaysinghx" },
+    { "name": "npm", "url": "https://www.npmjs.com/~tanmaysinghx99" }
   ],
-  "copyright": "© 2026 Aanand Madhav",
-  "tagline": "Built in New Delhi. Product, design, and code.",
+  "copyright": "© 2026 Tanmay Singh",
+  "tagline": "Built in Gurgaon with Angular 21. Portraits sketched in ink.",
   "columns": [
     {
-      "title": "Work",
+      "title": "Site",
       "links": [
-        { "label": "My Debt Plan", "href": "#selected-work" },
-        { "label": "Emirates Mars Mission", "href": "#selected-work" },
-        { "label": "Calypsu", "href": "#selected-work" }
+        { "label": "Work", "href": "#work" },
+        { "label": "Open source", "href": "#open-source" },
+        { "label": "Stack", "href": "#stack" },
+        { "label": "Off the clock", "href": "#off-the-clock" }
       ]
     },
     {
-      "title": "Writing",
+      "title": "Projects",
       "links": [
-        { "label": "Design", "href": "#home-writing" },
-        { "label": "Development", "href": "#home-writing" },
-        { "label": "Management", "href": "#home-writing" },
-        { "label": "Philosophy", "href": "#home-writing" }
+        { "label": "Portal SSO", "href": "https://github.com/tanmaysinghx/portal-sso" },
+        { "label": "Hidenseek VPN", "href": "https://github.com/tanmaysinghx/hidenseek-vpn" },
+        { "label": "OpenCourier", "href": "https://github.com/tanmaysinghx/opencourier-service" },
+        { "label": "BrewQ MQ", "href": "https://github.com/tanmaysinghx/brewq-mq" }
       ]
     },
     {
-      "title": "More",
+      "title": "Elsewhere",
       "links": [
-        { "label": "Hire Me", "href": "mailto:hello@aanandmadhav.com" },
-        { "label": "Newsletter", "href": "#contact" },
-        { "label": "Find Me", "href": "https://linkedin.com/in/aanandmadhav" },
-        { "label": "Books", "href": "#in-rotation" },
-        { "label": "Events", "href": "#outside-work" },
-        { "label": "Links", "href": "#contact" }
+        { "label": "GitHub", "href": "https://github.com/tanmaysinghx" },
+        { "label": "LinkedIn", "href": "https://www.linkedin.com/in/tanmaysinghx" },
+        { "label": "npm", "href": "https://www.npmjs.com/~tanmaysinghx99" }
       ]
     }
   ]

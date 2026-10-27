@@ -1,0 +1,86 @@
+{
+  "heading": "The",
+  "highlight": "toolbox.",
+  "intro": "Ten years of Java history live in the systems I work on, from EJB to virtual threads. I'm comfortable at either end of it.",
+  "groups": [
+    { "label": "Languages", "items": ["Java", "TypeScript", "SQL"] },
+    { "label": "Backend", "items": ["Spring Boot", "Spring Framework", "REST APIs", "JSP", "JSF", "Servlets", "EJB"] },
+    { "label": "Frontend", "items": ["Angular", "RxJS", "Signals", "Single-SPA", "Material UI", "Tailwind"] },
+    { "label": "System design", "items": ["Microservices", "Modular monoliths", "Micro frontends", "Event-driven", "Layered architecture"] },
+    { "label": "Data & messaging", "items": ["MySQL", "PostgreSQL", "Redis", "Kafka"] },
+    { "label": "Cloud & DevOps", "items": ["AWS EC2", "Lambda", "CloudWatch", "Docker", "Jenkins", "GitHub Actions"] },
+    { "label": "Security", "items": ["Okta", "OAuth2", "OIDC", "JWT", "RBAC"] },
+    { "label": "Observability", "items": ["Splunk", "CloudWatch", "Micrometer"] }
+  ],
+  "terminal": {
+    "prompt": "tanmay@gurgaon:~$",
+    "greeting": [
+      "Welcome. This is a very small shell.",
+      "Type 'help', or tap a command below."
+    ],
+    "commands": [
+      {
+        "command": "whoami",
+        "description": "the short version",
+        "output": [
+          "Tanmay Singh, Java full-stack engineer (5+ yrs)",
+          "Systems Engineer @ TCS · client: AIG",
+          "Based in Gurgaon, India"
+        ]
+      },
+      {
+        "command": "java -version",
+        "description": "what I run on",
+        "output": [
+          "openjdk version \"25\" (side projects, virtual threads included)",
+          "openjdk version \"17\" (production, after I migrated it from 11)",
+          "jsf + ejb (still under maintenance, lovingly)"
+        ]
+      },
+      {
+        "command": "ls ~/projects",
+        "description": "open source",
+        "output": [
+          "portal-sso/  hidenseek-vpn/  opencourier-service/",
+          "eggless-observability/  brewq-mq/  cipher-spring-boot-starter/",
+          "transcodex-sdk/  nova-ai-agent-sdk/  jmapx-tool/"
+        ]
+      },
+      {
+        "command": "cat certs.txt",
+        "description": "certifications",
+        "output": [
+          "✓ AWS Certified Solutions Architect, Associate",
+          "✓ AWS Certified Developer, Associate",
+          "✓ AWS Certified Cloud Practitioner",
+          "✓ Microsoft Certified: Azure Fundamentals"
+        ]
+      },
+      {
+        "command": "git log --oneline -3",
+        "description": "career, abridged",
+        "output": [
+          "a1g2023 feat: Systems Engineer @ TCS (AIG). JSF → Angular 17, 50+ APIs",
+          "v4n2021 feat: Senior Systems Engineer @ Infosys (Vanguard). Micro frontends",
+          "s7m2017 chore: B.Tech CSE @ SRM Institute of Science and Technology"
+        ]
+      },
+      {
+        "command": "sudo hire tanmay",
+        "description": "the important one",
+        "output": [
+          "[sudo] password for recruiter: ********",
+          "Permission granted. Opening mail client…",
+          "→ tanmaysinghx@gmail.com"
+        ]
+      }
+    ]
+  },
+  "certificationsTitle": "Certified",
+  "certifications": [
+    { "name": "Solutions Architect, Associate", "issuer": "AWS", "valid": "Valid to Jul 2028" },
+    { "name": "Developer, Associate", "issuer": "AWS", "valid": "Valid to Aug 2028" },
+    { "name": "Cloud Practitioner", "issuer": "AWS", "valid": "Valid to Jun 2028" },
+    { "name": "Azure Fundamentals", "issuer": "Microsoft", "valid": "No expiry" }
+  ]
+}

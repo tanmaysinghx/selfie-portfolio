@@ -17,36 +17,35 @@ import { SearchService } from '../../services/search.service';
         <a class="flex items-center gap-2.5 text-fg no-underline group shrink-0" href="/">
           <div class="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-hair-2 transition-transform group-hover:scale-105">
             <img
-              [src]="navigation()?.brand?.avatar || '/images/aanand-avatar.webp'"
-              [alt]="navigation()?.brand?.name || 'Aanand Madhav'"
+              [src]="navigation()?.brand?.avatar"
+              [alt]="navigation()?.brand?.name"
               width="32"
               height="32"
               class="w-full h-full object-cover object-top block" />
           </div>
           <span class="flex flex-col justify-center gap-0.5">
             <span class="text-sm font-medium leading-none tracking-[-0.005em]">
-              {{ navigation()?.brand?.name || 'Aanand Madhav' }}
+              {{ navigation()?.brand?.name }}
             </span>
             <span class="font-mono text-[11px] tracking-[0.08em] uppercase text-muted leading-none">
-              {{ navigation()?.brand?.role || 'Senior PM · UX' }}
+              {{ navigation()?.brand?.role }}
             </span>
           </span>
         </a>
 
         <!-- Desktop Navigation Links -->
-        <nav class="hidden md:flex items-center gap-1" aria-label="Main Navigation">
+        <nav class="hidden lg:flex items-center gap-1" aria-label="Main Navigation">
           <a
             *ngFor="let link of navigation()?.navLinks"
             [href]="link.href"
-            class="relative text-sm tracking-[-0.005em] px-3.5 py-1.5 text-muted hover:text-accent font-normal transition-colors no-underline"
-            [class.font-semibold]="link.label === 'Home'"
-            [class.text-accent-ink]="link.label === 'Home'">
+            class="relative text-sm tracking-[-0.005em] px-3 py-1.5 text-muted hover:text-accent font-normal transition-colors no-underline whitespace-nowrap"
+            >
             {{ link.label }}
           </a>
         </nav>
 
         <!-- Right Side: Search & Primary CTA -->
-        <div class="hidden md:flex items-center gap-3">
+        <div class="hidden lg:flex items-center gap-3">
           <!-- Cmd+K Search Trigger -->
           <button
             type="button"
@@ -61,9 +60,9 @@ import { SearchService } from '../../services/search.service';
 
           <!-- Primary CTA Button -->
           <a
-            [href]="navigation()?.primaryCta?.href || '#contact'"
+            [href]="navigation()?.primaryCta?.href"
             class="primary-cta px-4 py-2 text-[13px] whitespace-nowrap min-h-0">
-            {{ navigation()?.primaryCta?.label || 'Let’s build something →' }}
+            {{ navigation()?.primaryCta?.label }}
           </a>
         </div>
 
@@ -71,7 +70,7 @@ import { SearchService } from '../../services/search.service';
         <button
           type="button"
           (click)="toggleMobileMenu()"
-          class="flex md:hidden flex-col justify-center gap-[5px] cursor-pointer p-2 bg-transparent border-0"
+          class="flex lg:hidden flex-col justify-center gap-[5px] cursor-pointer p-2 bg-transparent border-0"
           aria-label="Toggle navigation menu">
           <span class="block bg-fg w-[22px] h-[1.5px] transition-transform duration-200"
                 [class.rotate-45]="isMobileOpen()"
@@ -87,7 +86,7 @@ import { SearchService } from '../../services/search.service';
       <!-- Mobile Dropdown Menu -->
       <div
         *ngIf="isMobileOpen()"
-        class="md:hidden fixed inset-x-0 top-16 bottom-0 bg-bg z-30 border-t border-hair flex flex-col p-6 overflow-y-auto">
+        class="lg:hidden fixed inset-x-0 top-16 bottom-0 bg-bg z-30 border-t border-hair flex flex-col p-6 overflow-y-auto">
         <a
           *ngFor="let link of navigation()?.navLinks"
           [href]="link.href"
@@ -105,10 +104,10 @@ import { SearchService } from '../../services/search.service';
         </button>
 
         <a
-          [href]="navigation()?.primaryCta?.href || '#contact'"
+          [href]="navigation()?.primaryCta?.href"
           (click)="closeMobileMenu()"
           class="primary-cta mt-6 w-full text-center text-sm py-3.5">
-          {{ navigation()?.primaryCta?.label || 'Let’s build something →' }}
+          {{ navigation()?.primaryCta?.label }}
         </a>
       </div>
     </header>

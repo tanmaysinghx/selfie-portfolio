@@ -1,22 +1,14 @@
 {
-  "name": "Aanand Madhav",
-  "title": "Senior PM · UX",
-  "jobTitle": "Senior Product Manager and UX Expert",
-  "location": "New Delhi",
-  "status": "Product, UX and engineering · New Delhi",
-  "email": "hello@aanandmadhav.com",
-  "avatar": {
-    "src": "/images/aanand-avatar.webp",
-    "alt": "Aanand Madhav"
-  },
-  "heroPortrait": {
-    "src": "/images/hero-aanand.webp",
-    "alt": "The original ink-drawn Aanand Madhav mascot, wearing glasses and a beanie"
-  },
+  "name": "Tanmay Singh",
+  "role": "Java Full-Stack Engineer",
+  "location": "Gurgaon, India",
+  "email": "tanmaysinghx@gmail.com",
+  "website": "https://tanmaysinghx.com",
+  "resume": "/resume/Tanmay-Singh-Resume.pdf",
+  "avatar": "/images/tanmay/avatar.webp",
   "socials": [
-    { "name": "X", "url": "https://x.com/aanandmadhav" },
-    { "name": "LinkedIn", "url": "https://linkedin.com/in/aanandmadhav" },
-    { "name": "GitHub", "url": "https://github.com/aanandmadhav" },
-    { "name": "Instagram", "url": "https://www.instagram.com/aanandmadhav.ai/" }
+    { "name": "GitHub", "url": "https://github.com/tanmaysinghx" },
+    { "name": "LinkedIn", "url": "https://www.linkedin.com/in/tanmaysinghx" },
+    { "name": "npm", "url": "https://www.npmjs.com/~tanmaysinghx99" }
   ]
 }

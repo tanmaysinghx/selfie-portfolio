@@ -6,9 +6,8 @@ import {
   NavigationConfig,
   HeroConfig,
   WorkConfig,
-  InRotationConfig,
-  ExperimentsConfig,
-  WritingConfig,
+  OpenSourceConfig,
+  StackConfig,
   LifeConfig,
   FooterConfig,
   SearchItem
@@ -25,9 +24,8 @@ export class PortfolioDataService {
   readonly navigation = signal<NavigationConfig | null>(null);
   readonly hero = signal<HeroConfig | null>(null);
   readonly work = signal<WorkConfig | null>(null);
-  readonly inRotation = signal<InRotationConfig | null>(null);
-  readonly experiments = signal<ExperimentsConfig | null>(null);
-  readonly writing = signal<WritingConfig | null>(null);
+  readonly openSource = signal<OpenSourceConfig | null>(null);
+  readonly stack = signal<StackConfig | null>(null);
   readonly life = signal<LifeConfig | null>(null);
   readonly footer = signal<FooterConfig | null>(null);
   readonly searchIndex = signal<SearchItem[]>([]);
@@ -39,43 +37,31 @@ export class PortfolioDataService {
 
   async loadAllData(): Promise<void> {
     try {
-      const [
-        profile,
-        navigation,
-        hero,
-        work,
-        inRotation,
-        experiments,
-        writing,
-        life,
-        footer,
-        searchIndex
-      ] = await Promise.all([
-        firstValueFrom(this.http.get<ProfileConfig>('/data/profile.json')),
-        firstValueFrom(this.http.get<NavigationConfig>('/data/navigation.json')),
-        firstValueFrom(this.http.get<HeroConfig>('/data/hero.json')),
-        firstValueFrom(this.http.get<WorkConfig>('/data/work.json')),
-        firstValueFrom(this.http.get<InRotationConfig>('/data/in-rotation.json')),
-        firstValueFrom(this.http.get<ExperimentsConfig>('/data/experiments.json')),
-        firstValueFrom(this.http.get<WritingConfig>('/data/writing.json')),
-        firstValueFrom(this.http.get<LifeConfig>('/data/life.json')),
-        firstValueFrom(this.http.get<FooterConfig>('/data/footer.json')),
-        firstValueFrom(this.http.get<SearchItem[]>('/data/search.json'))
-      ]);
+      const [profile, navigation, hero, work, openSource, stack, life, footer, searchIndex] =
+        await Promise.all([
+          firstValueFrom(this.http.get<ProfileConfig>('/data/profile.json')),
+          firstValueFrom(this.http.get<NavigationConfig>('/data/navigation.json')),
+          firstValueFrom(this.http.get<HeroConfig>('/data/hero.json')),
+          firstValueFrom(this.http.get<WorkConfig>('/data/work.json')),
+          firstValueFrom(this.http.get<OpenSourceConfig>('/data/open-source.json')),
+          firstValueFrom(this.http.get<StackConfig>('/data/stack.json')),
+          firstValueFrom(this.http.get<LifeConfig>('/data/life.json')),
+          firstValueFrom(this.http.get<FooterConfig>('/data/footer.json')),
+          firstValueFrom(this.http.get<SearchItem[]>('/data/search.json'))
+        ]);
 
       this.profile.set(profile);
       this.navigation.set(navigation);
       this.hero.set(hero);
       this.work.set(work);
-      this.inRotation.set(inRotation);
-      this.experiments.set(experiments);
-      this.writing.set(writing);
+      this.openSource.set(openSource);
+      this.stack.set(stack);
       this.life.set(life);
       this.footer.set(footer);
       this.searchIndex.set(searchIndex);
       this.isLoaded.set(true);
     } catch (err) {
-      console.warn('Error fetching portfolio JSON files, loading fallbacks:', err);
+      console.warn('Error fetching portfolio JSON files:', err);
     }
   }
 }

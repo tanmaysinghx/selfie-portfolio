@@ -1,37 +1,20 @@
 {
+  "status": "Currently modernising insurance platforms at TCS for AIG",
   "identities": [
-    { "id": 0, "label": "Builder.", "figure": "laptop" },
-    { "id": 1, "label": "Brewer.", "figure": "brewer" },
+    { "id": 0, "label": "Engineer.", "figure": "laptop" },
+    { "id": 1, "label": "Builder.", "figure": "stack" },
     { "id": 2, "label": "Wanderer.", "figure": "compass" }
   ],
-  "introduction": "I’m Aanand. I bring product, UX and engineering together to build things that matter.",
-  "cta": {
-    "label": "Let’s build something →",
-    "href": "#contact"
-  },
-  "availability": "Open to full-time product leadership roles",
   "portrait": {
-    "src": "/images/hero-aanand.webp",
-    "alt": "The original ink-drawn Aanand Madhav mascot, wearing glasses and a beanie"
+    "src": "/images/tanmay/portrait-scarf.webp",
+    "alt": "Ink sketch of Tanmay Singh in sunglasses and a brown scarf"
   },
+  "introduction": "I’m Tanmay, a Java full-stack engineer. By day I take decade-old JSF, JSP and EJB systems and give them a second life with Spring Boot and Angular. After hours I build self-hosted, open-source infrastructure in Java 25.",
+  "cta": { "label": "See what I’ve built →", "href": "#open-source" },
+  "secondaryCta": { "label": "Download résumé", "href": "/resume/Tanmay-Singh-Resume.pdf" },
   "stats": [
-    {
-      "value": "9 yrs",
-      "label": "Product, UX & delivery",
-      "context": "Across my career",
-      "href": "#selected-work"
-    },
-    {
-      "value": "$300k+",
-      "label": "Monthly revenue at some D2C brands",
-      "context": "YAMU Media",
-      "href": "#selected-work"
-    },
-    {
-      "value": "1,000+",
-      "label": "Qualified leads routed per day",
-      "context": "MediaMen Services",
-      "href": "#selected-work"
-    }
+    { "value": "5+ yrs", "label": "Enterprise Java & Angular", "href": "#work" },
+    { "value": "50+", "label": "Spring Boot REST APIs shipped", "href": "#work" },
+    { "value": "4×", "label": "AWS & Azure certified", "href": "#certifications" }
   ]
 }

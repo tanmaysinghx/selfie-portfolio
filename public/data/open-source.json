@@ -1,0 +1,147 @@
+{
+  "heading": "Things I build",
+  "highlight": "after hours.",
+  "intro": "Most of my side projects plug into one identity provider I wrote myself. Each one ships as a single JAR: run it with java -jar, and move from embedded H2 to Postgres or MySQL when you outgrow it.",
+  "githubLink": { "label": "All 49 repos on GitHub", "href": "https://github.com/tanmaysinghx" },
+  "hub": {
+    "id": "portal",
+    "name": "Portal SSO",
+    "tagline": "Self-hosted OAuth 2.1 / OpenID Connect identity provider",
+    "description": "Authorization code + PKCE on every client, refresh-token rotation, TOTP MFA, an append-only audit log, magic-link sign-in and an admin console, all in one jar. Ships with a drop-in npm SDK for popup or redirect login.",
+    "stack": ["Java 25", "Spring Boot 4", "OAuth 2.1", "OIDC", "H2 → Postgres"],
+    "href": "https://github.com/tanmaysinghx/portal-sso"
+  },
+  "satellites": [
+    {
+      "id": "hidenseek",
+      "name": "Hidenseek VPN",
+      "tagline": "WireGuard VPN for you and your friends",
+      "description": "Bring your own VPS (or ten). A one-line server install, per-device peers, session history, and Tauri apps for Windows, Linux and Android.",
+      "stack": ["WireGuard", "Spring Boot", "Tauri", "React"],
+      "href": "https://github.com/tanmaysinghx/hidenseek-vpn"
+    },
+    {
+      "id": "opencourier",
+      "name": "OpenCourier",
+      "tagline": "Notification platform & template engine",
+      "description": "Multi-tenant email, SMS, push and webhooks with provider failover. Bulk dispatches of 100k+ messages run on Java 25 virtual threads.",
+      "stack": ["Spring Boot 4", "RabbitMQ", "Redis", "Angular 21"],
+      "href": "https://github.com/tanmaysinghx/opencourier-service"
+    },
+    {
+      "id": "eggless",
+      "name": "Eggless Observability",
+      "tagline": "Logs & telemetry in a single JAR",
+      "description": "Real-time WebSocket live tail, a Logback appender and a Spring Boot starter. Boots in under 10 seconds on an embedded database.",
+      "stack": ["Spring Boot 4.1", "Angular 21", "WebSockets"],
+      "href": "https://github.com/tanmaysinghx/eggless-observability"
+    }
+  ],
+  "librariesTitle": "Libraries & tools",
+  "libraries": [
+    {
+      "name": "BrewQ MQ",
+      "kind": "Spring Boot starter",
+      "description": "Durable, Postgres-backed background jobs. Annotate a method with @Job and get retries, backoff and dead-lettering on a virtual-thread worker pool, with no Quartz XML.",
+      "install": "io.github.tanmaysinghx:brewq-spring-boot-starter",
+      "stack": ["Java 25", "Postgres"],
+      "href": "https://github.com/tanmaysinghx/brewq-mq"
+    },
+    {
+      "name": "Cipher Starter",
+      "kind": "Spring Boot starter",
+      "description": "Field-level encryption for JPA columns, Jackson DTOs and AOP methods. Includes blind indexing so encrypted columns stay searchable, plus Argon2id hashing and a KMS SPI.",
+      "install": "io.github.tanmaysinghx:cipher-spring-boot-starter",
+      "stack": ["AES-256-GCM", "JPA", "Jackson"],
+      "href": "https://github.com/tanmaysinghx/cipher-spring-boot-starter"
+    },
+    {
+      "name": "TranscodeX SDK",
+      "kind": "Java SDK",
+      "description": "Multi-threaded FFmpeg pipelines: HLS adaptive streaming, AES-128 segment encryption, thumbnails and metadata, with Spring auto-configuration.",
+      "install": "git clone github.com/tanmaysinghx/transcodex-sdk",
+      "stack": ["Java 25", "FFmpeg", "HLS"],
+      "href": "https://github.com/tanmaysinghx/transcodex-sdk"
+    },
+    {
+      "name": "Nova AI Agent SDK",
+      "kind": "Java SDK",
+      "description": "A fluent agent API with automatic tool calling, memory, RAG and rate limiting, across OpenAI, Gemini, Claude and Ollama.",
+      "install": "git clone github.com/tanmaysinghx/nova-ai-agent-sdk",
+      "stack": ["Java 25", "Virtual threads", "RAG"],
+      "href": "https://github.com/tanmaysinghx/nova-ai-agent-sdk"
+    },
+    {
+      "name": "JMapX",
+      "kind": "CLI + UI",
+      "description": "Bytecode-level analysis of Java apps. Builds a versioned application graph with call graphs, inheritance and archive boundaries, then lets you explore it visually.",
+      "install": "brew install jmapx-tool/tap/jmapx",
+      "stack": ["Java 25", "Bytecode", "jlink"],
+      "href": "https://github.com/tanmaysinghx/jmapx-tool"
+    },
+    {
+      "name": "CoinVault",
+      "kind": "Jakarta EE app",
+      "description": "A peer-to-peer wallet built deliberately old-school: Servlets, JSP, stateless EJBs and JPA on TomEE 11. It keeps the legacy muscles warm.",
+      "install": "git clone github.com/tanmaysinghx/ts-coinvault-application-1440",
+      "stack": ["Jakarta EE 10", "EJB", "TomEE 11"],
+      "href": "https://github.com/tanmaysinghx/ts-coinvault-application-1440"
+    }
+  ],
+  "npmTitle": "Published on npm",
+  "npm": [
+    {
+      "name": "@tanmaysinghx/portal-sso",
+      "version": "1.0.0",
+      "description": "Zero-boilerplate OAuth 2.1 & OIDC SSO SDK with popup login and a drop-in button.",
+      "href": "https://www.npmjs.com/package/@tanmaysinghx/portal-sso"
+    },
+    {
+      "name": "ts-nodify",
+      "version": "1.0.4",
+      "description": "Scaffold an Express backend in seconds: TS or JS, Winston logging, Swagger, Docker and CI files.",
+      "href": "https://www.npmjs.com/package/ts-nodify"
+    },
+    {
+      "name": "ts-code-analysis-tool",
+      "version": "1.0.7",
+      "description": "Concurrent ESLint-powered code analysis with security checks and readable output.",
+      "href": "https://www.npmjs.com/package/ts-code-analysis-tool"
+    }
+  ],
+  "npmProfile": { "label": "npm profile", "href": "https://www.npmjs.com/~tanmaysinghx99" },
+  "mavenTitle": "Published on Maven Central",
+  "maven": [
+    {
+      "name": "cipher-spring-boot-starter",
+      "version": "1.0.0",
+      "description": "Transparent field-level encryption for Spring Boot, with key rotation and blind indexing.",
+      "href": "https://central.sonatype.com/artifact/io.github.tanmaysinghx/cipher-spring-boot-starter"
+    },
+    {
+      "name": "brewq-spring-boot-starter",
+      "version": "1.0.0",
+      "description": "Auto-configuration, @Job method scanning and worker lifecycle for Spring Boot apps.",
+      "href": "https://central.sonatype.com/artifact/io.github.tanmaysinghx/brewq-spring-boot-starter"
+    },
+    {
+      "name": "brewq-core",
+      "version": "1.0.0",
+      "description": "Framework-agnostic job model, state machine and scheduling primitives. No Spring dependency.",
+      "href": "https://central.sonatype.com/artifact/io.github.tanmaysinghx/brewq-core"
+    },
+    {
+      "name": "brewq-store-postgres",
+      "version": "1.0.0",
+      "description": "Postgres-backed job store using SELECT … FOR UPDATE SKIP LOCKED.",
+      "href": "https://central.sonatype.com/artifact/io.github.tanmaysinghx/brewq-store-postgres"
+    },
+    {
+      "name": "brewq-dashboard",
+      "version": "1.0.0",
+      "description": "Web UI and REST API for job status and manual retries.",
+      "href": "https://central.sonatype.com/artifact/io.github.tanmaysinghx/brewq-dashboard"
+    }
+  ],
+  "mavenProfile": { "label": "All artifacts on Maven", "href": "https://mvnrepository.com/search?q=tanmaysinghx" }
+}

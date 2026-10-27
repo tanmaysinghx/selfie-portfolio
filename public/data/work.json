@@ -1,53 +1,55 @@
 {
-  "heading": "Good decisions.",
-  "highlight": "Real products.",
-  "yearsExperience": "9 yrs",
-  "experienceDomain": "in Product, UX & delivery",
-  "companies": [
+  "heading": "Where I’ve been",
+  "highlight": "shipping.",
+  "yearsExperience": "5+ years",
+  "experienceDomain": "across insurance and finance",
+  "roles": [
     {
-      "name": "YAMU Media",
-      "metric": "$300k+",
-      "metricLabel": "Monthly revenue at some D2C brands",
-      "description": "Managing UX and development across D2C ecommerce brands.",
-      "linkLabel": "My work at YAMU",
-      "href": "https://linkedin.com/in/aanandmadhav"
+      "company": "Tata Consultancy Services",
+      "client": "American International Group (AIG)",
+      "title": "Systems Engineer",
+      "period": "Sep 2023 to present",
+      "metric": "5,000+",
+      "metricLabel": "business users on the services I build and run",
+      "summary": "Modernising an enterprise Quote & Bind platform: moving JSF modules to Angular 17 and building the Spring Boot APIs behind them.",
+      "highlights": [
+        "Designed and built 50+ Spring Boot REST APIs with layered architecture, validation, exception handling and reusable service components.",
+        "Led the Java 11 → 17 and TomEE 8 → 10 migration, working through compatibility, configuration and deployment issues.",
+        "Secured enterprise access with Okta, OAuth2, JWT and role-based access control across the API surface.",
+        "Integrated Splunk logging and monitoring so production issues get found in minutes, not mornings.",
+        "Kept critical JSP, JSF, Servlet and EJB insurance workflows healthy while the new stack took shape."
+      ],
+      "tags": ["Java 17", "Spring Boot", "Angular 17", "JSF", "EJB", "TomEE", "Okta", "Splunk"]
     },
     {
-      "name": "MediaMen Services",
-      "metric": "1,000+",
-      "metricLabel": "Qualified leads routed per day",
-      "description": "Product, UX and engineering for the UK debt and IVA market. Decision engine, integrations and a purpose-built CRM.",
-      "linkLabel": "My work at MediaMen",
-      "href": "https://linkedin.com/in/aanandmadhav"
+      "company": "Infosys",
+      "client": "Vanguard",
+      "title": "Senior Systems Engineer",
+      "period": "Jul 2021 to Jul 2023",
+      "metric": "Single-SPA",
+      "metricLabel": "micro frontends, independently built and deployed",
+      "summary": "Migrated legacy financial application modules toward Angular and Spring Boot, cutting technical debt one module at a time.",
+      "highlights": [
+        "Implemented a micro frontend architecture with Single-SPA so teams could ship modules independently.",
+        "Designed reusable Angular components and REST integrations for enterprise financial applications.",
+        "Built CMS-to-API integration layers that simplified configuration and data flows.",
+        "Applied RxJS and centralised error handling for reliable frontend-to-backend communication.",
+        "Raised regression coverage with Jasmine and Karma unit tests, and supported CI/CD releases."
+      ],
+      "tags": ["Angular", "RxJS", "Single-SPA", "Spring Boot", "JSP", "Servlets", "Jasmine"]
     }
   ],
-  "caseStudies": [
-    {
-      "slug": "my-debt-plan",
-      "title": "My Debt Plan",
-      "metric": "1,000+",
-      "metricLabel": "qualified leads routed per day",
-      "href": "#selected-work",
-      "cover": "/images/Work/my-debt-plan/cover.png",
-      "description": "Product ownership across lead routing, 100+ integrations and a large-scale CRM in active build, with day-to-day UX across the operation."
-    },
-    {
-      "slug": "emirates-mars-mission",
-      "title": "Emirates Mars Mission",
-      "metric": "200,000",
-      "metricLabel": "concurrent users on launch night",
-      "href": "#selected-work",
-      "cover": "/images/work-mars-mission.webp",
-      "description": "A website, iOS and Android apps, and a satellite tracker for global media. Shipped in 45 days, with zero major issues on launch night."
-    },
-    {
-      "slug": "skillstrainer",
-      "title": "Skillstrainer",
-      "metric": "300k → 1.5M",
-      "metricLabel": "users supported through growth",
-      "href": "#selected-work",
-      "cover": "",
-      "description": "UX, design systems and infrastructure decisions supporting a vocational learning platform through 5x user growth."
-    }
-  ]
+  "migrationsTitle": "Systems I’ve given a second life",
+  "migrations": [
+    { "from": "JSF", "to": "Angular 17", "note": "Quote & Bind, AIG" },
+    { "from": "Java 11", "to": "Java 17", "note": "Platform upgrade" },
+    { "from": "TomEE 8", "to": "TomEE 10", "note": "App server upgrade" },
+    { "from": "JSP + Servlets", "to": "Spring Boot", "note": "Vanguard modules" },
+    { "from": "Monolith UI", "to": "Micro frontends", "note": "Single-SPA" }
+  ],
+  "education": {
+    "school": "SRM Institute of Science and Technology",
+    "degree": "B.Tech, Computer Science",
+    "period": "2017 to 2021"
+  }
 }
