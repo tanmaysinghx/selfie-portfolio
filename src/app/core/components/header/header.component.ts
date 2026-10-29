@@ -13,16 +13,8 @@ import { SearchService } from '../../services/search.service';
       [ngClass]="isScrolled() ? 'bg-bg/95 backdrop-blur-sm border-b border-hair' : 'bg-bg border-b border-transparent'">
       <div class="container h-16 flex items-center justify-between">
         
-        <!-- Brand Logo / Avatar -->
-        <a class="flex items-center gap-2.5 text-fg no-underline group shrink-0" href="/">
-          <div class="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-hair-2 transition-transform group-hover:scale-105">
-            <img
-              [src]="navigation()?.brand?.avatar"
-              [alt]="navigation()?.brand?.name"
-              width="32"
-              height="32"
-              class="w-full h-full object-cover object-top block" />
-          </div>
+        <!-- Brand -->
+        <a class="flex items-center text-fg no-underline shrink-0" href="/">
           <span class="flex flex-col justify-center gap-0.5">
             <span class="text-sm font-medium leading-none tracking-[-0.005em]">
               {{ navigation()?.brand?.name }}

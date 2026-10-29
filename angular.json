@@ -23,6 +23,13 @@
           "options": {
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
+            "allowedCommonJsDependencies": [
+              "@braintree/sanitize-url",
+              "cytoscape-cose-bilkent",
+              "cytoscape-fcose",
+              "dayjs",
+              "elkjs"
+            ],
             "inlineStyleLanguage": "scss",
             "assets": [
               {
@@ -31,7 +38,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/app/features/blog/blog-prose.scss"
             ]
           },
           "configurations": {

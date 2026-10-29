@@ -14,7 +14,6 @@
   { "category": "npm", "title": "ts-nodify", "description": "Scaffold an Express backend in seconds", "href": "#open-source", "keywords": "npm cli node express scaffold" },
   { "category": "Stack", "title": "Skills & terminal", "description": "Java, Spring Boot, Angular, AWS, Kafka, Redis and a tiny shell", "href": "#stack", "keywords": "skills stack tech java spring angular aws kafka redis docker jenkins terminal" },
   { "category": "Stack", "title": "Certifications", "description": "AWS Solutions Architect, Developer, Cloud Practitioner · Azure Fundamentals", "href": "#certifications", "keywords": "aws azure certified certification" },
-  { "category": "About", "title": "Off the clock", "description": "Mountains, LeetCode and a Discord bot named Chad", "href": "#off-the-clock", "keywords": "life hobbies leetcode discord travel about" },
   { "category": "Contact", "title": "Get in touch", "description": "tanmaysinghx@gmail.com", "href": "#contact", "keywords": "contact email hire mail" },
   { "category": "Contact", "title": "Résumé (PDF)", "description": "Download the September 2026 résumé", "href": "/resume/Tanmay-Singh-Resume.pdf", "keywords": "resume cv pdf download" }
 ]

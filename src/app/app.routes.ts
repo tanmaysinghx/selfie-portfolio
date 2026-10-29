@@ -7,6 +7,16 @@ export const routes: Routes = [
     component: HomeComponent
   },
   {
+    path: 'blog',
+    loadComponent: () =>
+      import('./features/blog/blog-list.component').then(m => m.BlogListComponent)
+  },
+  {
+    path: 'blog/:slug',
+    loadComponent: () =>
+      import('./features/blog/blog-post.component').then(m => m.BlogPostComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }

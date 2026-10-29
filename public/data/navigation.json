@@ -2,14 +2,13 @@
   "brand": {
     "name": "Tanmay Singh",
     "role": "Java · Spring · Angular",
-    "avatar": "/images/tanmay/avatar.webp",
     "href": "/"
   },
   "navLinks": [
     { "label": "Work", "href": "#work" },
     { "label": "Open source", "href": "#open-source" },
     { "label": "Stack", "href": "#stack" },
-    { "label": "Off the clock", "href": "#off-the-clock" },
+    { "label": "Blog", "href": "/blog" },
     { "label": "Contact", "href": "#contact" }
   ],
   "searchShortcut": "⌘K",

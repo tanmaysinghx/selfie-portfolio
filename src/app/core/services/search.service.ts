@@ -1,5 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { PortfolioDataService } from './portfolio-data.service';
+import { BlogService } from './blog.service';
 import { SearchItem } from '../models/portfolio.model';
 
 @Injectable({
@@ -7,13 +8,21 @@ import { SearchItem } from '../models/portfolio.model';
 })
 export class SearchService {
   private dataService = inject(PortfolioDataService);
+  private blogService = inject(BlogService);
 
   readonly isOpen = signal<boolean>(false);
   readonly query = signal<string>('');
 
   readonly filteredResults = computed(() => {
     const q = this.query().trim().toLowerCase();
-    const items = this.dataService.searchIndex();
+    const posts: SearchItem[] = this.blogService.posts().map(post => ({
+      category: 'Blog',
+      title: post.title,
+      description: post.description,
+      href: `/blog/${post.slug}`,
+      keywords: `blog post article writing ${post.tags.join(' ')}`
+    }));
+    const items = [...this.dataService.searchIndex(), ...posts];
 
     if (!q) {
       return items.slice(0, 8);

@@ -8,7 +8,6 @@ import {
   WorkConfig,
   OpenSourceConfig,
   StackConfig,
-  LifeConfig,
   FooterConfig,
   SearchItem
 } from '../models/portfolio.model';
@@ -26,7 +25,6 @@ export class PortfolioDataService {
   readonly work = signal<WorkConfig | null>(null);
   readonly openSource = signal<OpenSourceConfig | null>(null);
   readonly stack = signal<StackConfig | null>(null);
-  readonly life = signal<LifeConfig | null>(null);
   readonly footer = signal<FooterConfig | null>(null);
   readonly searchIndex = signal<SearchItem[]>([]);
   readonly isLoaded = signal<boolean>(false);
@@ -37,7 +35,7 @@ export class PortfolioDataService {
 
   async loadAllData(): Promise<void> {
     try {
-      const [profile, navigation, hero, work, openSource, stack, life, footer, searchIndex] =
+      const [profile, navigation, hero, work, openSource, stack, footer, searchIndex] =
         await Promise.all([
           firstValueFrom(this.http.get<ProfileConfig>('/data/profile.json')),
           firstValueFrom(this.http.get<NavigationConfig>('/data/navigation.json')),
@@ -45,7 +43,6 @@ export class PortfolioDataService {
           firstValueFrom(this.http.get<WorkConfig>('/data/work.json')),
           firstValueFrom(this.http.get<OpenSourceConfig>('/data/open-source.json')),
           firstValueFrom(this.http.get<StackConfig>('/data/stack.json')),
-          firstValueFrom(this.http.get<LifeConfig>('/data/life.json')),
           firstValueFrom(this.http.get<FooterConfig>('/data/footer.json')),
           firstValueFrom(this.http.get<SearchItem[]>('/data/search.json'))
         ]);
@@ -56,7 +53,6 @@ export class PortfolioDataService {
       this.work.set(work);
       this.openSource.set(openSource);
       this.stack.set(stack);
-      this.life.set(life);
       this.footer.set(footer);
       this.searchIndex.set(searchIndex);
       this.isLoaded.set(true);

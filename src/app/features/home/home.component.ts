@@ -5,7 +5,6 @@ import { HeroSectionComponent } from './components/hero-section/hero-section.com
 import { ExperienceComponent } from './components/experience/experience.component';
 import { OpenSourceComponent } from './components/open-source/open-source.component';
 import { StackComponent } from './components/stack/stack.component';
-import { OffTheClockComponent } from './components/off-the-clock/off-the-clock.component';
 
 @Component({
   selector: 'app-home',
@@ -15,8 +14,7 @@ import { OffTheClockComponent } from './components/off-the-clock/off-the-clock.c
     HeroSectionComponent,
     ExperienceComponent,
     OpenSourceComponent,
-    StackComponent,
-    OffTheClockComponent
+    StackComponent
   ],
   template: `
     <main class="w-full">
@@ -24,7 +22,6 @@ import { OffTheClockComponent } from './components/off-the-clock/off-the-clock.c
       <app-experience [work]="work()"></app-experience>
       <app-open-source [oss]="openSource()"></app-open-source>
       <app-stack [stack]="stack()"></app-stack>
-      <app-off-the-clock [life]="life()"></app-off-the-clock>
     </main>
   `
 })
@@ -35,5 +32,4 @@ export class HomeComponent {
   readonly work = this.dataService.work;
   readonly openSource = this.dataService.openSource;
   readonly stack = this.dataService.stack;
-  readonly life = this.dataService.life;
 }
