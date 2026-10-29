@@ -12,7 +12,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Meta } from '@angular/platform-browser';
+import { Meta, Title } from '@angular/platform-browser';
 import { BlogService } from '../../core/services/blog.service';
 import { BlogStats } from '../../core/models/portfolio.model';
 import { TocEntry, renderMarkdown } from './markdown';
@@ -167,6 +167,7 @@ const HEADER_OFFSET = 88;
 export class BlogPostComponent {
   private route = inject(ActivatedRoute);
   private blog = inject(BlogService);
+  private title = inject(Title);
   private metaTags = inject(Meta);
   private destroyRef = inject(DestroyRef);
 
@@ -206,10 +207,11 @@ export class BlogPostComponent {
     });
     this.destroyRef.onDestroy(() => this.teardown());
 
-    // The index may arrive after the body, so keep the meta description in sync with it.
+    // The index may arrive after the body, so keep the tab title and description in sync with it.
     effect(() => {
       const post = this.meta();
       if (!post) return;
+      this.title.setTitle(`${post.title} · Tanmay Singh`);
       this.metaTags.updateTag({ name: 'description', content: post.description });
     });
   }

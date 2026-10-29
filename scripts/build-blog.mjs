@@ -73,6 +73,7 @@ async function main() {
       updated: data.updated,
       tags: data.tags ?? [],
       cover: asset(data.cover),
+      ogImage: asset(data.ogImage),
       coverAlt: data.coverAlt ?? data.title,
       featured: data.featured === true,
       draft: data.draft === true,

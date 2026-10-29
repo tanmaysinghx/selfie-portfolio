@@ -4,10 +4,12 @@ import { HomeComponent } from './features/home/home.component';
 export const routes: Routes = [
   {
     path: '',
+    title: 'Tanmay Singh',
     component: HomeComponent
   },
   {
     path: 'blog',
+    title: 'Tanmay Singh',
     loadComponent: () =>
       import('./features/blog/blog-list.component').then(m => m.BlogListComponent)
   },

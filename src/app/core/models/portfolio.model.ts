@@ -197,6 +197,8 @@ export interface BlogPostMeta {
   updated?: string;
   tags: string[];
   cover?: string;
+  /** PNG/JPG for link previews when the cover is an SVG. */
+  ogImage?: string;
   coverAlt: string;
   featured: boolean;
   draft: boolean;

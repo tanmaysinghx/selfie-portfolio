@@ -20,6 +20,7 @@ date: 2026-11-02
 updated: 2026-11-10        # optional
 tags: [angular, migration]
 cover: cover.webp          # optional; relative to the post folder or an absolute /path
+ogImage: cover.png         # optional; link-preview image (PNG/JPG; SVG covers fall back to a same-named .png)
 coverAlt: Old JSF screen next to the new Angular one
 featured: true             # optional; pins the post to the top of /blog
 draft: true                # optional; visible in `npm start`, never deployed
@@ -60,3 +61,20 @@ Until Redis is connected the counters stay hidden and everything else works.
 
 To try the API locally, run `npx vercel dev` instead of `npm start`. It serves the Angular
 app and `/api` together; `npx vercel env pull .env.local` fetches the Redis keys.
+
+## Google and link previews
+
+`npm run build` (and so every Vercel deploy) runs `scripts/prerender-blog.mjs`, which writes static HTML
+for `/blog` and each post with its title, description, canonical URL, Open Graph/Twitter tags and
+JSON-LD, plus `sitemap.xml`, `robots.txt` and `rss.xml`. Nothing to do per post, but:
+
+- **Write a good `description`.** It's the grey text under your link in Google (aim for 120–160 characters).
+- **SVG cover?** Add a `cover.png` next to it (1200×630). LinkedIn, X and WhatsApp can't show SVG.
+- **Different domain?** Set `SITE_URL` in Vercel's environment variables (defaults to `https://www.tanmaysinghx.com`).
+
+One-time setup so Google finds the site sooner:
+
+1. Open [Google Search Console](https://search.google.com/search-console) → **Add property** → **Domain** → `tanmaysinghx.com`.
+2. Add the TXT record it gives you at your DNS provider (or Vercel → Domains if Vercel manages DNS).
+3. **Sitemaps** → submit `sitemap.xml`.
+4. For a new post, paste its URL into **URL inspection** → **Request indexing** to skip the wait.
