@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">From .java to the CPU</title><desc id="desc">Java source becomes bytecode, which the JVM executes through interpretation and native compilation.</desc>
+<defs><pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#d6cebd"/></pattern><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8" fill="none" stroke="#a44224" stroke-width="1.5"/></marker></defs>
+<path fill="#efeae0" d="M0 0h1200v630H0z"/><path fill="url(#grid)" d="M0 0h1200v630H0z"/>
+<g font-family="monospace" fill="#6b635a" font-size="14" letter-spacing="2"><text x="72" y="68">TANMAY SINGH / NOTES FROM THE WORKBENCH</text><text x="72" y="568">JAVA 25 · JVM FUNDAMENTALS</text><text x="1050" y="568">01</text></g>
+<g font-family="Georgia,serif" font-size="72" fill="#1a1816"><text x="72" y="178">From .java</text><text x="72" y="260" fill="#a44224">to the CPU.</text></g>
+<text x="74" y="310" font-family="sans-serif" font-size="22" fill="#6b635a">One program. Every layer of execution.</text>
+<g stroke="#d6cebd" fill="#f5f1ea"><rect x="72" y="378" width="220" height="112" rx="5"/><rect x="350" y="378" width="220" height="112" rx="5"/><rect x="628" y="378" width="220" height="112" rx="5"/><rect x="906" y="378" width="220" height="112" rx="5"/></g>
+<g font-family="monospace" text-anchor="middle"><g font-size="24" fill="#1a1816"><text x="182" y="423">.java</text><text x="460" y="423">.class</text><text x="738" y="423">JVM</text><text x="1016" y="423">CPU</text></g><g font-size="13" fill="#6b635a"><text x="182" y="456">SOURCE CODE</text><text x="460" y="456">BYTECODE</text><text x="738" y="456">RUNTIME</text><text x="1016" y="456">NATIVE EXECUTION</text></g></g>
+<g fill="none" stroke="#a44224" stroke-width="2" marker-end="url(#arrow)"><path d="M302 434h36"/><path d="M580 434h36"/><path d="M858 434h36"/></g>
+<g transform="translate(854 110)" fill="none" stroke="#a44224" stroke-width="2"><rect x="0" y="0" width="160" height="160" rx="12"/><rect x="32" y="32" width="96" height="96" rx="3"/><path d="M32-16V0m32-16V0m32-16V0m32-16V0M32 160v16m32-16v16m32-16v16m32-16v16M-16 32H0m-16 32H0m-16 32H0m-16 32H0M160 32h16m-16 32h16m-16 32h16m-16 32h16"/><path d="m63 64-16 16 16 16m34-32 16 16-16 16M86 58 74 102"/></g>
+</svg>

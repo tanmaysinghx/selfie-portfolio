@@ -3,7 +3,7 @@
   "identities": [
     { "id": 0, "label": "Engineer.", "figure": "laptop" },
     { "id": 1, "label": "Builder.", "figure": "stack" },
-    { "id": 2, "label": "Wanderer.", "figure": "compass" }
+    { "id": 2, "label": "Explorer.", "figure": "compass" }
   ],
   "portrait": {
     "src": "/images/tanmay/portrait-scarf.webp",

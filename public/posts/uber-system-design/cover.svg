@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-label="Hexagonal city grid with a driver and a rider joined by a route">
+  <defs>
+    <pattern id="hex" width="84" height="145.5" patternUnits="userSpaceOnUse" patternTransform="translate(-20 -30)">
+      <path d="M42 0 L84 24.25 L84 72.75 L42 97 L0 72.75 L0 24.25 Z M42 97 L42 145.5" fill="none" stroke="#d6cebd" stroke-width="1.5"/>
+    </pattern>
+    <pattern id="hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="10" stroke="#a44224" stroke-width="2" opacity="0.35"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="1000" fill="#efeae0"/>
+  <rect width="1600" height="1000" fill="url(#hex)"/>
+
+  <!-- Roads -->
+  <g fill="none" stroke="#c9bfab" stroke-width="14" stroke-linecap="round">
+    <path d="M-20 720 C 300 680, 520 760, 820 600 S 1300 380, 1640 420"/>
+    <path d="M300 -20 C 340 260, 260 520, 420 1020"/>
+    <path d="M1100 -20 C 1060 300, 1180 640, 1080 1020"/>
+  </g>
+
+  <!-- Surge cells -->
+  <g stroke="#a44224" stroke-width="2">
+    <path d="M1148 268 L1190 292.25 L1190 340.75 L1148 365 L1106 340.75 L1106 292.25 Z" fill="url(#hatch)"/>
+    <path d="M1232 268 L1274 292.25 L1274 340.75 L1232 365 L1190 340.75 L1190 292.25 Z" fill="url(#hatch)"/>
+    <path d="M1190 195 L1232 219.25 L1232 267.75 L1190 292 L1148 267.75 L1148 219.25 Z" fill="url(#hatch)"/>
+  </g>
+
+  <!-- Search ring around rider -->
+  <circle cx="1190" cy="300" r="230" fill="none" stroke="#a44224" stroke-width="2" stroke-dasharray="6 10" opacity="0.7"/>
+
+  <!-- Route -->
+  <path d="M470 640 C 640 600, 760 560, 860 520 S 1080 360, 1190 300" fill="none" stroke="#1a1816" stroke-width="5" stroke-dasharray="2 14" stroke-linecap="round"/>
+
+  <!-- Other drivers -->
+  <g fill="#f5f1ea" stroke="#6b635a" stroke-width="3">
+    <circle cx="980" cy="160" r="12"/>
+    <circle cx="1390" cy="470" r="12"/>
+    <circle cx="760" cy="820" r="12"/>
+    <circle cx="210" cy="300" r="12"/>
+    <circle cx="1350" cy="150" r="12"/>
+  </g>
+
+  <!-- Matched driver -->
+  <circle cx="470" cy="640" r="34" fill="#1a1816"/>
+  <path d="M452 646 l10 -18 h16 l10 18 v10 h-36 z" fill="#f5f1ea"/>
+
+  <!-- Rider pin -->
+  <path d="M1190 300 c -34 -40 -46 -62 -46 -84 a46 46 0 0 1 92 0 c0 22 -12 44 -46 84 z" fill="#a44224"/>
+  <circle cx="1190" cy="216" r="16" fill="#f5f1ea"/>
+
+  <text x="80" y="910" font-family="Georgia, serif" font-style="italic" font-size="72" fill="#1a1816">Designing Uber</text>
+  <text x="84" y="958" font-family="monospace" font-size="24" letter-spacing="4" fill="#6b635a">DISPATCH · GEO-INDEX · SURGE · PAYMENTS</text>
+</svg>

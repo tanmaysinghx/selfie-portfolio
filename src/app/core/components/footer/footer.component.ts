@@ -7,19 +7,12 @@ import { PortfolioDataService } from '../../services/portfolio-data.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <footer id="contact" class="border-t border-hair bg-bg-2 py-24 md:pb-12">
-      <div class="container">
-        <!-- Main CTA Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] items-start gap-12 lg:gap-16 mb-20">
-          <h2 class="m-0 font-medium text-[clamp(40px,5.4vw,80px)] tracking-[-0.035em] leading-[0.98]">
-            {{ footer()?.heading }}
-            <span class="text-accent">{{ footer()?.highlight }}</span>
-          </h2>
+    <footer id="contact" class="border-t border-hair bg-bg-2 py-10 md:py-12">
+      <div class="container max-w-[1080px]">
+        <!-- Contact links -->
+        <div class="mb-8">
           <div>
-            <p class="m-0 text-muted text-base leading-[1.65]">
-              {{ footer()?.intro }}
-            </p>
-            <div class="mt-6 flex flex-wrap items-center gap-5">
+            <div class="flex flex-wrap items-center gap-5">
               <a [href]="footer()?.cta?.href" class="primary-cta text-[13px] px-4 py-3">
                 {{ footer()?.cta?.label }}
               </a>
@@ -28,7 +21,7 @@ import { PortfolioDataService } from '../../services/portfolio-data.service';
                 <span aria-hidden="true">↓</span>
               </a>
             </div>
-            <div class="mt-6 flex gap-4 flex-wrap">
+            <div class="mt-4 flex gap-4 flex-wrap">
               <a
                 *ngFor="let social of footer()?.socials"
                 [href]="social.url"
@@ -43,8 +36,8 @@ import { PortfolioDataService } from '../../services/portfolio-data.service';
         </div>
 
         <!-- Links Multi-Column Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-8 pt-8 border-t border-hair">
-          <div>
+        <div class="grid grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-6 pt-6 border-t border-hair">
+          <div class="col-span-2 lg:col-span-1">
             <span class="font-mono text-[11px] tracking-[0.08em] uppercase text-muted block">
               {{ footer()?.copyright }}
             </span>

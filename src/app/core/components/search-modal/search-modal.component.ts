@@ -15,6 +15,7 @@ import { SearchItem } from '../../models/portfolio.model';
       (click)="onBackdropClick($event)">
       
       <div
+        role="dialog" aria-modal="true" aria-label="Search the portfolio"
         class="bg-bg border border-hair-2 w-full max-w-xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] animate-in fade-in zoom-in-95 duration-150"
         (click)="$event.stopPropagation()">
         
@@ -27,11 +28,11 @@ import { SearchItem } from '../../models/portfolio.model';
             [ngModel]="searchService.query()"
             (ngModelChange)="searchService.setQuery($event)"
             placeholder="Type a command or search (projects, notes, stories)..."
-            class="flex-1 bg-transparent border-0 outline-none text-fg text-sm placeholder:text-muted"
+            aria-label="Search"
+            class="min-w-0 flex-1 bg-transparent border-0 outline-none text-fg text-sm placeholder:text-muted"
             autofocus />
-          <kbd class="font-mono text-[10px] uppercase bg-bg border border-hair-2 px-1.5 py-0.5 rounded text-muted">
-            ESC
-          </kbd>
+          <button type="button" (click)="searchService.close()" aria-label="Close search"
+            class="min-w-11 min-h-11 font-mono text-[10px] uppercase bg-bg border border-hair-2 px-2 rounded text-muted cursor-pointer">ESC</button>
         </div>
 
         <!-- Search Results List -->

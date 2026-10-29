@@ -9,21 +9,20 @@ import { BlogService } from '../../core/services/blog.service';
   imports: [CommonModule, RouterLink],
   template: `
     <main class="w-full">
-      <section class="pt-16 pb-12 border-b border-hair" aria-labelledby="blog-title">
+      <section class="blog-list-heading pt-12 pb-10" aria-labelledby="blog-title">
         <div class="container">
-          <p class="font-mono text-[11px] tracking-[0.08em] uppercase text-muted m-0 mb-5">
+          <p class="font-mono text-[10px] tracking-[0.08em] uppercase text-muted m-0 mb-5">
             Blog · {{ posts().length }} {{ posts().length === 1 ? 'post' : 'posts' }}
           </p>
-          <h1 id="blog-title" class="m-0 text-[clamp(44px,6vw,88px)] font-medium tracking-[-0.045em] leading-[0.98]">
+          <h1 id="blog-title" class="m-0 text-[clamp(38px,4.5vw,64px)] font-medium tracking-[-0.045em] leading-[0.98]">
             Notes from the
             <span class="font-serif italic font-normal tracking-[-0.02em] heading-highlight">workbench.</span>
           </h1>
           <p class="text-muted text-[clamp(16px,1.7vw,19px)] mt-6 mb-0 max-w-[620px] leading-relaxed">
-            Long-form write-ups on Java, Spring, Angular and self-hosting, with the diagrams,
-            numbers and videos that went into them.
+            Notes on Java, building software, and what I learn along the way.
           </p>
 
-          <div *ngIf="tags().length" class="flex flex-wrap gap-2 mt-10" role="group" aria-label="Filter by topic">
+          <div *ngIf="blog.posts().length > 3 && tags().length" class="flex flex-wrap gap-2 mt-10" role="group" aria-label="Filter by topic">
             <button
               type="button"
               (click)="activeTag.set(null)"
@@ -43,7 +42,7 @@ import { BlogService } from '../../core/services/blog.service';
         </div>
       </section>
 
-      <section class="py-14">
+      <section class="pt-4 pb-16">
         <div class="container">
           <p *ngIf="blog.isLoaded() && !posts().length" class="text-muted text-[15px]">
             Nothing published yet. The first post is on its way.
@@ -53,13 +52,13 @@ import { BlogService } from '../../core/services/blog.service';
           <a
             *ngIf="lead() as post"
             [routerLink]="['/blog', post.slug]"
-            class="group grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-8 lg:gap-14 items-center text-fg no-underline mb-16">
-            <div class="aspect-[16/10] overflow-hidden bg-bg-2 border border-hair">
+            class="group grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-7 lg:gap-12 items-center text-fg no-underline mb-16">
+            <div class="aspect-[16/9] overflow-hidden bg-bg-2 border border-hair rounded-md">
               <img
                 *ngIf="post.cover; else coverFallback"
                 [src]="post.cover"
                 [alt]="post.coverAlt"
-                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+                class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-[1.03]" />
               <ng-template #coverFallback>
                 <div class="w-full h-full grid place-items-center font-serif italic text-[clamp(32px,4vw,56px)] text-hair-2 p-8 text-center">
                   {{ post.title }}
@@ -68,12 +67,12 @@ import { BlogService } from '../../core/services/blog.service';
             </div>
             <div>
               <p class="font-mono text-[11px] tracking-[0.08em] uppercase text-accent m-0 mb-4">
-                {{ post.featured ? 'Featured' : 'Latest' }} · {{ post.date | date: 'mediumDate' }}
+                {{ post.featured ? 'Featured post' : 'Latest post' }} · {{ post.date | date: 'mediumDate' }}
               </p>
-              <h2 class="font-serif font-normal text-[clamp(32px,3.6vw,52px)] leading-[1.08] m-0 group-hover:text-accent-ink transition-colors text-pretty">
+              <h2 class="font-serif font-normal text-[clamp(30px,3.2vw,44px)] leading-[1.08] m-0 group-hover:text-accent-ink transition-colors text-pretty">
                 {{ post.title }}
               </h2>
-              <p class="text-muted text-[17px] leading-[1.65] mt-5 mb-0">{{ post.description }}</p>
+              <p class="text-muted text-[15px] leading-[1.8] mt-5 mb-0 line-clamp-3">{{ post.description }}</p>
               <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-6">
                 <span class="inline-link"><span>Read the post</span><span aria-hidden="true">→</span></span>
                 <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-muted">{{ post.readingMinutes }} min read</span>

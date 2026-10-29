@@ -8,27 +8,21 @@ import { HairlineArtDirective } from '../../../../shared/directives/hairline-art
   standalone: true,
   imports: [CommonModule, HairlineArtDirective],
   template: `
-    <section class="min-h-[calc(100svh-64px)] py-10 lg:py-16 flex items-center" aria-labelledby="home-title">
+    <section class="portfolio-hero" aria-labelledby="home-title">
       <h1 id="home-title" class="sr-only">Tanmay Singh, Java full-stack engineer</h1>
-      <div class="container grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] items-center gap-10 lg:gap-16">
+      <div class="container hero-grid">
 
         <!-- Left Column: Copy & Identity Stage -->
-        <div class="flex flex-col justify-center">
+        <div class="hero-copy">
 
-          <!-- Live status -->
-          <p class="inline-flex items-center gap-2 self-start font-mono text-[11px] tracking-[0.08em] uppercase text-muted border border-hair px-2.5 py-1.5 mb-6">
-            <span class="relative flex w-2 h-2">
-              <span class="absolute inline-flex w-full h-full rounded-full bg-accent opacity-60 animate-ping"></span>
-              <span class="relative inline-flex w-2 h-2 rounded-full bg-accent"></span>
-            </span>
-            {{ hero?.status }}
-          </p>
+          <p class="eyebrow hero-eyebrow"><span class="status-dot"></span> Java full-stack engineer · Gurgaon, India</p>
+          <p class="hero-greeting">Hello, I’m Tanmay <span aria-hidden="true">↗</span></p>
 
-          <!-- Identity Stage: Engineer, Builder, Wanderer -->
-          <div class="flex flex-col gap-1 sm:gap-2 mb-6" (mouseenter)="stopAutoplay()" (focusin)="stopAutoplay()">
+          <!-- Identity Stage: Engineer, Builder, Explorer -->
+          <div class="identity-list" (mouseenter)="stopAutoplay()" (focusin)="stopAutoplay()">
             <div
               *ngFor="let item of hero?.identities; let idx = index"
-              class="relative flex items-center h-[64px] sm:h-[84px] lg:h-[96px]">
+              class="identity-row relative flex items-center">
 
               <!-- Line art (appears on the left when active) -->
               <div
@@ -72,7 +66,7 @@ import { HairlineArtDirective } from '../../../../shared/directives/hairline-art
                 (focus)="setActiveIndex(idx)"
                 (click)="setActiveIndex(idx)"
                 [attr.aria-pressed]="activeIndex() === idx"
-                class="bg-transparent border-0 p-0 text-left cursor-pointer font-medium tracking-[-0.045em] leading-none text-[clamp(46px,7vw,96px)] select-none">
+                class="identity-button">
                 <span
                   class="inline-block transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]"
                   [ngClass]="activeIndex() === idx ?
@@ -85,12 +79,12 @@ import { HairlineArtDirective } from '../../../../shared/directives/hairline-art
           </div>
 
           <!-- Hero Intro Paragraph -->
-          <p class="max-w-[500px] text-[clamp(16px,1.7vw,19px)] text-muted mb-7 leading-[1.65]">
+          <p class="hero-introduction">
             {{ hero?.introduction }}
           </p>
 
           <!-- CTAs -->
-          <div class="flex flex-wrap items-center gap-5">
+          <div class="hero-actions flex flex-wrap items-center gap-6">
             <a [href]="hero?.cta?.href" class="primary-cta text-[13px] px-4 py-3">
               {{ hero?.cta?.label }}
             </a>
@@ -100,24 +94,12 @@ import { HairlineArtDirective } from '../../../../shared/directives/hairline-art
             </a>
           </div>
 
-          <!-- Key Hero Stats -->
-          <div class="grid grid-cols-3 gap-4 pt-6 mt-10 border-t border-hair max-w-lg">
-            <a
-              *ngFor="let stat of hero?.stats"
-              [href]="stat.href"
-              class="flex flex-col gap-1 text-fg no-underline group">
-              <strong class="font-medium text-[clamp(20px,2.2vw,30px)] tracking-[-0.02em] leading-tight group-hover:text-accent transition-colors">
-                {{ stat.value }}
-              </strong>
-              <span class="text-[12px] text-muted leading-snug">
-                {{ stat.label }}
-              </span>
-            </a>
-          </div>
         </div>
 
         <!-- Right Column: Sketched portrait -->
-        <figure class="m-0 w-full max-w-[520px] mx-auto">
+        <figure class="hero-portrait">
+          <div class="portrait-art">
+            <span class="portrait-note" aria-hidden="true">Always building.<br>Always curious.</span>
           <img
             *ngIf="hero?.portrait as portrait"
             [src]="portrait.src"
@@ -125,9 +107,24 @@ import { HairlineArtDirective } from '../../../../shared/directives/hairline-art
             width="1100"
             height="1035"
             fetchpriority="high"
-            class="block w-full aspect-square object-contain" />
+            class="portrait-image" />
+          </div>
+          <figcaption class="portrait-caption">
+            <span class="status-dot"></span>
+            <span>{{ hero?.status }}</span>
+            <span class="portrait-caption-arrow" aria-hidden="true">↗</span>
+          </figcaption>
         </figure>
 
+        <div class="hero-bottom">
+          <div class="hero-stats">
+            <a *ngFor="let stat of hero?.stats" [href]="stat.href" class="hero-stat">
+              <strong>{{ stat.value }}</strong>
+              <span>{{ stat.label }}</span>
+            </a>
+          </div>
+          <a href="#work" class="hero-scroll"><span>A little further down</span><span aria-hidden="true">↓</span></a>
+        </div>
       </div>
     </section>
   `,

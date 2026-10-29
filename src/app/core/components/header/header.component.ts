@@ -1,4 +1,4 @@
-import { Component, inject, signal, HostListener } from '@angular/core';
+import { Component, inject, signal, HostListener, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PortfolioDataService } from '../../services/portfolio-data.service';
 import { SearchService } from '../../services/search.service';
@@ -15,12 +15,10 @@ import { SearchService } from '../../services/search.service';
         
         <!-- Brand -->
         <a class="flex items-center text-fg no-underline shrink-0" href="/">
-          <span class="flex flex-col justify-center gap-0.5">
+          <span class="brand-monogram" aria-hidden="true">ts<span>.</span></span>
+          <span class="flex flex-col justify-center gap-1.5">
             <span class="text-sm font-medium leading-none tracking-[-0.005em]">
               {{ navigation()?.brand?.name }}
-            </span>
-            <span class="font-mono text-[11px] tracking-[0.08em] uppercase text-muted leading-none">
-              {{ navigation()?.brand?.role }}
             </span>
           </span>
         </a>
@@ -62,8 +60,11 @@ import { SearchService } from '../../services/search.service';
         <button
           type="button"
           (click)="toggleMobileMenu()"
-          class="flex lg:hidden flex-col justify-center gap-[5px] cursor-pointer p-2 bg-transparent border-0"
-          aria-label="Toggle navigation menu">
+          id="mobile-menu-trigger"
+          class="mobile-menu-trigger flex lg:hidden flex-col justify-center gap-[5px] cursor-pointer p-2 bg-transparent border-0"
+          [attr.aria-label]="isMobileOpen() ? 'Close navigation menu' : 'Open navigation menu'"
+          aria-controls="mobile-navigation"
+          [attr.aria-expanded]="isMobileOpen()">
           <span class="block bg-fg w-[22px] h-[1.5px] transition-transform duration-200"
                 [class.rotate-45]="isMobileOpen()"
                 [class.translate-y-[6.5px]]="isMobileOpen()"></span>
@@ -78,6 +79,7 @@ import { SearchService } from '../../services/search.service';
       <!-- Mobile Dropdown Menu -->
       <div
         *ngIf="isMobileOpen()"
+        id="mobile-navigation"
         class="lg:hidden fixed inset-x-0 top-16 bottom-0 bg-bg z-30 border-t border-hair flex flex-col p-6 overflow-y-auto">
         <a
           *ngFor="let link of navigation()?.navLinks"
@@ -105,7 +107,8 @@ import { SearchService } from '../../services/search.service';
     </header>
   `
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnDestroy {
+  private previousOverflow = '';
   private dataService = inject(PortfolioDataService);
   readonly searchService = inject(SearchService);
 
@@ -118,12 +121,51 @@ export class HeaderComponent {
     this.isScrolled.set(window.scrollY > 20);
   }
 
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.closeMobileMenu();
+  }
+
   toggleMobileMenu(): void {
-    this.isMobileOpen.update(v => !v);
+    if (this.isMobileOpen()) {
+      this.closeMobileMenu();
+      return;
+    }
+    this.previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    this.isMobileOpen.set(true);
+    requestAnimationFrame(() => document.querySelector<HTMLAnchorElement>('#mobile-navigation a')?.focus());
   }
 
   closeMobileMenu(): void {
+    if (!this.isMobileOpen()) return;
     this.isMobileOpen.set(false);
+    document.body.style.overflow = this.previousOverflow;
+    document.getElementById('mobile-menu-trigger')?.focus();
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onMenuTab(event: KeyboardEvent): void {
+    if (event.key !== 'Tab' || !this.isMobileOpen()) return;
+    const trigger = document.getElementById('mobile-menu-trigger');
+    const controls = document.querySelectorAll<HTMLElement>('#mobile-navigation a, #mobile-navigation button');
+    const last = controls[controls.length - 1];
+    if (event.shiftKey && document.activeElement === trigger) {
+      event.preventDefault();
+      last?.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      trigger?.focus();
+    }
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    if (window.innerWidth >= 1024) this.closeMobileMenu();
+  }
+
+  ngOnDestroy(): void {
+    if (this.isMobileOpen()) document.body.style.overflow = this.previousOverflow;
   }
 
   openSearchFromMobile(): void {

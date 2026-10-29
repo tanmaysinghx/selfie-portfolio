@@ -17,6 +17,7 @@ const HUB_POSITION = { x: 50, y: 47 };
   template: `
     <section id="open-source" class="py-20 scroll-mt-20 bg-bg-2 border-y border-hair" aria-labelledby="home-oss-title">
       <div class="container">
+        <p class="eyebrow section-eyebrow">02 / BUILT AFTER HOURS</p>
         <!-- Section Head -->
         <div class="flex flex-col sm:flex-row justify-between sm:items-end gap-6 mb-10">
           <div>
@@ -35,7 +36,7 @@ const HUB_POSITION = { x: 50, y: 47 };
         <!-- Ecosystem: diagram + detail -->
         <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-5 mb-16">
           <!-- Diagram -->
-          <div class="relative bg-bg border border-hair aspect-square sm:aspect-[5/4] overflow-hidden">
+          <div class="ecosystem-diagram relative bg-bg border border-hair aspect-square sm:aspect-[5/4] overflow-hidden">
             <span class="absolute top-4 left-4 font-mono text-[10px] tracking-[0.08em] uppercase text-muted">The Portal ecosystem · click a node</span>
             <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
               <line
@@ -76,7 +77,7 @@ const HUB_POSITION = { x: 50, y: 47 };
           </div>
 
           <!-- Detail panel -->
-          <article class="bg-bg border border-hair p-7 sm:p-8 flex flex-col gap-5" aria-live="polite">
+          <article class="project-detail bg-bg border border-hair p-7 sm:p-8 flex flex-col gap-5" aria-live="polite">
             <span class="font-mono text-[11px] tracking-[0.08em] uppercase text-accent">
               {{ selected()?.id === oss?.hub?.id ? 'Flagship' : 'Signs in with Portal SSO' }}
             </span>
@@ -100,7 +101,7 @@ const HUB_POSITION = { x: 50, y: 47 };
           <span class="font-mono text-[11px] tracking-[0.08em] uppercase text-muted hidden sm:inline">Java 25 · Spring Boot 4</span>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-hair border border-hair mb-16">
-          <article *ngFor="let lib of oss?.libraries" class="bg-bg p-6 flex flex-col gap-3 group">
+          <article *ngFor="let lib of oss?.libraries" class="library-card bg-bg p-6 flex flex-col gap-3 group">
             <div class="flex items-baseline justify-between gap-3">
               <h4 class="m-0 text-lg font-medium group-hover:text-accent transition-colors">
                 <a [href]="lib.href" target="_blank" rel="noopener noreferrer" class="text-inherit no-underline">{{ lib.name }}</a>
@@ -135,7 +136,7 @@ const HUB_POSITION = { x: 50, y: 47 };
             target="_blank"
             rel="noopener noreferrer"
             class="grid grid-cols-1 md:grid-cols-[1.1fr_80px_1.6fr_24px] items-center gap-2 md:gap-6 p-5 md:px-6 no-underline text-fg group hover:bg-accent-wash transition-colors">
-            <span class="font-mono text-[15px] group-hover:text-accent transition-colors">{{ pkg.name }}</span>
+            <span class="break-words min-w-0 font-mono text-[15px] group-hover:text-accent transition-colors">{{ pkg.name }}</span>
             <span class="font-mono text-[11px] text-muted">v{{ pkg.version }}</span>
             <span class="text-muted text-[13px] leading-snug">{{ pkg.description }}</span>
             <b class="hidden md:block text-[22px] font-normal leading-none group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" aria-hidden="true">↗</b>
@@ -156,7 +157,7 @@ const HUB_POSITION = { x: 50, y: 47 };
             target="_blank"
             rel="noopener noreferrer"
             class="grid grid-cols-1 md:grid-cols-[1.1fr_80px_1.6fr_24px] items-center gap-2 md:gap-6 p-5 md:px-6 no-underline text-fg group hover:bg-accent-wash transition-colors">
-            <span class="font-mono text-[15px] group-hover:text-accent transition-colors break-all">{{ pkg.name }}</span>
+            <span class="break-words min-w-0 font-mono text-[15px] group-hover:text-accent transition-colors break-all">{{ pkg.name }}</span>
             <span class="font-mono text-[11px] text-muted">v{{ pkg.version }}</span>
             <span class="text-muted text-[13px] leading-snug">{{ pkg.description }}</span>
             <b class="hidden md:block text-[22px] font-normal leading-none group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" aria-hidden="true">↗</b>

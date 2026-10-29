@@ -9,6 +9,7 @@ import { WorkConfig } from '../../../../core/models/portfolio.model';
   template: `
     <section id="work" class="py-20 scroll-mt-20" aria-labelledby="home-work-title">
       <div class="container">
+        <p class="eyebrow section-eyebrow">01 / THE DAY JOB</p>
         <!-- Section Head -->
         <div class="flex flex-col sm:flex-row justify-between sm:items-baseline gap-4 mb-8">
           <h2 id="home-work-title" class="m-0 font-medium text-[clamp(28px,3.5vw,44px)] tracking-[-0.02em] leading-[1.15]">
@@ -25,7 +26,7 @@ import { WorkConfig } from '../../../../core/models/portfolio.model';
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
           <article
             *ngFor="let role of work?.roles; let idx = index"
-            class="bg-bg-2 p-7 sm:p-8 flex flex-col gap-5 transition-transform hover:-translate-y-0.5 duration-200">
+            class="experience-card bg-bg-2 p-7 sm:p-8 flex flex-col gap-5 transition-transform hover:-translate-y-0.5 duration-200">
             <header class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
               <h3 class="m-0 text-[21px] font-medium text-fg">{{ role.company }}</h3>
               <span class="font-mono text-[11px] tracking-[0.08em] uppercase text-muted">{{ role.period }}</span>
@@ -34,7 +35,7 @@ import { WorkConfig } from '../../../../core/models/portfolio.model';
               </p>
             </header>
 
-            <div class="flex items-center gap-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-6">
               <strong class="text-accent text-[clamp(38px,4.4vw,58px)] font-normal leading-tight tracking-[-0.025em] whitespace-nowrap">
                 {{ role.metric }}
               </strong>

@@ -41,8 +41,8 @@
   ],
   "migrationsTitle": "Systems I’ve given a second life",
   "migrations": [
-    { "from": "JSF", "to": "Angular 17", "note": "Quote & Bind, AIG" },
-    { "from": "Java 11", "to": "Java 17", "note": "Platform upgrade" },
+    { "from": "JSF", "to": "Angular 21", "note": "Quote & Bind, AIG" },
+    { "from": "Java 11", "to": "Java 25", "note": "Platform upgrade" },
     { "from": "TomEE 8", "to": "TomEE 10", "note": "App server upgrade" },
     { "from": "JSP + Servlets", "to": "Spring Boot", "note": "Vanguard modules" },
     { "from": "Monolith UI", "to": "Micro frontends", "note": "Single-SPA" }

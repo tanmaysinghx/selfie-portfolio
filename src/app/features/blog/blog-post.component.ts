@@ -40,19 +40,16 @@ const HEADER_OFFSET = 88;
 
       <article *ngIf="!notFound()" class="pb-20">
         <!-- Post header -->
-        <header class="container pt-12 pb-10">
-          <div class="max-w-[860px]">
-            <a routerLink="/blog" class="inline-link mb-10"><span aria-hidden="true">←</span><span>All posts</span></a>
-            <div class="flex flex-wrap gap-1.5 mb-5">
-              <span *ngFor="let tag of meta()?.tags" class="font-mono text-[10px] uppercase tracking-[0.06em] px-1.5 py-0.5 bg-hair/50 text-muted">{{ tag }}</span>
-            </div>
-            <h1 class="font-serif font-normal text-[clamp(40px,5.4vw,76px)] leading-[1.04] tracking-[-0.015em] m-0 text-balance">
+        <header class="container article-shell post-header">
+          <div class="post-heading">
+            <a routerLink="/blog" class="post-back-link"><span aria-hidden="true">←</span><span>All posts</span></a>
+            <h1 class="post-title">
               {{ meta()?.title }}
             </h1>
-            <p *ngIf="meta()?.description" class="text-muted text-[clamp(17px,1.8vw,21px)] leading-[1.55] mt-6 mb-0 max-w-[680px]">
+            <p *ngIf="meta()?.description" class="post-description">
               {{ meta()?.description }}
             </p>
-            <div class="flex flex-wrap items-center gap-x-5 gap-y-2 mt-8 font-mono text-[11px] uppercase tracking-[0.08em] text-muted">
+            <div class="post-metadata">
               <time *ngIf="meta()?.date" [attr.datetime]="meta()?.date">{{ meta()?.date | date: 'longDate' }}</time>
               <span *ngIf="meta()?.updated">Updated {{ meta()?.updated | date: 'mediumDate' }}</span>
               <span *ngIf="meta()">{{ meta()?.readingMinutes }} min read</span>
@@ -61,14 +58,21 @@ const HEADER_OFFSET = 88;
           </div>
         </header>
 
-        <figure *ngIf="meta()?.cover" class="container m-0 mb-14">
-          <div class="bg-bg-2 border border-hair overflow-hidden">
-            <img [src]="meta()?.cover" [alt]="meta()?.coverAlt" class="block w-full max-h-[620px] object-cover" />
-          </div>
-        </figure>
+        <div *ngIf="toc().length > 1" class="container article-shell mb-10 lg:hidden">
+          <details class="border-y border-hair py-4">
+            <summary class="cursor-pointer text-sm font-medium py-2">On this page</summary>
+            <nav aria-label="Article contents" class="pt-3 max-h-[60dvh] overflow-y-auto">
+              <a *ngFor="let entry of sectionToc()"
+                [href]="'#' + entry.id"
+                (click)="scrollToHeading($event, entry.id)"
+                class="block py-2 text-sm text-muted hover:text-accent no-underline"
+                [class.pl-4]="entry.depth === 3">{{ entry.text }}</a>
+            </nav>
+          </details>
+        </div>
 
         <!-- Body + table of contents -->
-        <div class="container grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_220px] gap-14">
+        <div class="container article-shell article-layout">
           <div class="min-w-0">
             <div *ngIf="loading()" class="blog-loading">Loading post…</div>
             <div #content class="blog-prose" (click)="onContentClick($event)"></div>
@@ -97,17 +101,15 @@ const HEADER_OFFSET = 88;
             </div>
           </div>
 
-          <aside *ngIf="toc().length > 1" class="hidden lg:block" aria-label="On this page">
-            <nav class="sticky top-24">
+          <aside *ngIf="toc().length > 1" class="post-contents hidden lg:block" aria-label="On this page">
+            <nav class="sticky top-24 max-h-[calc(100dvh-120px)] overflow-y-auto pr-2">
               <p class="font-mono text-[11px] uppercase tracking-[0.08em] text-muted m-0 mb-4">On this page</p>
               <ol class="m-0 p-0 list-none border-l border-hair">
-                <li *ngFor="let entry of toc()">
+                <li *ngFor="let entry of sectionToc()">
                   <a
                     [href]="'#' + entry.id"
                     (click)="scrollToHeading($event, entry.id)"
-                    class="block py-1.5 text-[13px] leading-snug no-underline border-l -ml-px transition-colors"
-                    [class.pl-4]="entry.depth === 2"
-                    [class.pl-7]="entry.depth === 3"
+                    class="toc-section-link block py-2 text-[12px] leading-relaxed no-underline border-l -ml-px pl-4 transition-colors"
                     [ngClass]="activeId() === entry.id ? 'text-accent border-accent' : 'text-muted border-transparent hover:text-fg'">
                     {{ entry.text }}
                   </a>
@@ -118,7 +120,7 @@ const HEADER_OFFSET = 88;
         </div>
 
         <!-- Previous / next -->
-        <nav *ngIf="newer() || older()" class="container mt-20" aria-label="More posts">
+        <nav *ngIf="newer() || older()" class="container article-shell mt-20" aria-label="More posts">
           <div class="grid grid-cols-1 md:grid-cols-2 border-t border-hair">
             <a *ngIf="older() as post" [routerLink]="['/blog', post.slug]" class="group py-8 md:pr-8 text-fg no-underline">
               <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-muted">← Older</span>
@@ -174,6 +176,7 @@ export class BlogPostComponent {
   readonly loading = signal<boolean>(true);
   readonly notFound = signal<boolean>(false);
   readonly toc = signal<TocEntry[]>([]);
+  readonly sectionToc = computed(() => this.toc().filter(entry => entry.depth === 2));
   readonly activeId = signal<string>('');
   readonly progress = signal<number>(0);
   readonly stats = signal<BlogStats | null>(null);
@@ -281,7 +284,7 @@ export class BlogPostComponent {
   }
 
   private observeHeadings(root: HTMLElement): void {
-    const headings = root.querySelectorAll<HTMLElement>('h2[id], h3[id]');
+    const headings = root.querySelectorAll<HTMLElement>('h2[id]');
     this.observer = new IntersectionObserver(
       entries => {
         const visible = entries.filter(e => e.isIntersecting);
@@ -313,6 +316,8 @@ export class BlogPostComponent {
     if (!target) return;
     window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET, behavior: 'smooth' });
     history.replaceState(null, '', `#${id}`);
+    const details = (event.currentTarget as HTMLElement | null)?.closest('details');
+    if (details) details.open = false;
   }
 
   /** Delegated clicks for everything inside the rendered markdown. */
@@ -321,10 +326,29 @@ export class BlogPostComponent {
 
     const copy = target.closest<HTMLButtonElement>('[data-copy]');
     if (copy) {
-      const code = copy.closest('.blog-code')?.querySelector('code')?.textContent ?? '';
-      await navigator.clipboard.writeText(code);
-      copy.textContent = 'Copied ✓';
-      setTimeout(() => (copy.textContent = 'Copy'), 1600);
+      const panel = copy.closest<HTMLElement>('.blog-code');
+      const code = panel?.dataset['code'] !== undefined
+        ? decodeURIComponent(panel.dataset['code'])
+        : panel?.querySelector('code')?.textContent ?? '';
+      const label = copy.querySelector('[data-copy-label]') ?? copy;
+      try {
+        await navigator.clipboard.writeText(code);
+        label.textContent = 'Copied';
+        copy.dataset['copied'] = 'true';
+      } catch {
+        label.textContent = 'Select code';
+        const source = panel?.querySelector('code');
+        if (source) {
+          const range = document.createRange();
+          range.selectNodeContents(source);
+          window.getSelection()?.removeAllRanges();
+          window.getSelection()?.addRange(range);
+        }
+      }
+      setTimeout(() => {
+        label.textContent = 'Copy';
+        delete copy.dataset['copied'];
+      }, 2000);
       return;
     }
 

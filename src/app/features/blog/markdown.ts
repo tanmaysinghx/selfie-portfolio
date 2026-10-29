@@ -95,9 +95,20 @@ export function renderMarkdown(markdown: string, slug: string): RenderedPost {
 </figure>\n`;
         }
 
-        return `<div class="blog-code">
-  <div class="blog-code-bar"><span>${escapeHtml(language || 'text')}</span><button type="button" data-copy>Copy</button></div>
-  <pre><code class="${language ? `language-${escapeHtml(language)}` : 'nohighlight'}">${escapeHtml(text)}</code></pre>
+        const className = language === 'java' ? text.match(/public\s+(?:final\s+)?class\s+(\w+)/)?.[1] : null;
+        const languageLabels: Record<string, string> = { java: 'Java', bash: 'Shell commands', shell: 'Shell commands', text: 'Output', json: 'JSON' };
+        const label = (lang ?? '').trim().split(/\s+/).slice(1).join(' ') ||
+          (className ? `${className}.java` : (languageLabels[language] ?? (language || 'Code')));
+        const lines = text.split('\n');
+        const numbers = lines.length > 3
+          ? `<span class="blog-code-numbers" aria-hidden="true">${lines.map((_, i) => i + 1).join('\n')}</span>`
+          : '';
+        return `<div class="blog-code" data-code="${encodeURIComponent(text)}">
+  <div class="blog-code-bar">
+    <span class="blog-code-file"><svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" aria-hidden="true"><path d="M9 2H4v12h8V5L9 2Z"/><path d="M9 2v4h3"/></svg>${escapeHtml(label)}</span>
+    <button type="button" data-copy aria-label="Copy ${escapeHtml(label)}" aria-live="polite"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1"/><path d="M10 5V2H2v9h3"/></svg><span data-copy-label>Copy</span></button>
+  </div>
+  <pre tabindex="0" aria-label="${escapeHtml(label)} code, scroll to see more">${numbers}<code class="${language ? `language-${escapeHtml(language)}` : 'nohighlight'}">${escapeHtml(text)}</code></pre>
 </div>\n`;
       },
 
@@ -130,7 +141,8 @@ export function renderMarkdown(markdown: string, slug: string): RenderedPost {
       link({ href, title, tokens }: Tokens.Link) {
         const inner = this.parser.parseInline(tokens);
         const external = /^https?:\/\//.test(href);
-        return `<a href="${escapeHtml(resolve(href))}"${title ? ` title="${escapeHtml(title)}"` : ''}${
+        const reference = /^Sources?:/i.test(inner);
+        return `<a${reference ? ' class="blog-reference"' : ''} href="${escapeHtml(resolve(href))}"${title ? ` title="${escapeHtml(title)}"` : ''}${
           external ? ' target="_blank" rel="noopener noreferrer"' : ''
         }>${inner}</a>`;
       }
