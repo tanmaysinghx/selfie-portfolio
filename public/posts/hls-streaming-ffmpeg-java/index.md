@@ -1,7 +1,7 @@
 ---
 title: HLS video streaming from scratch with FFmpeg and Java
 description: Turn one MP4 into an adaptive, encrypted, CDN-friendly stream. Bitrate ladders, segment sizes, ABR, AES-128 and a Java pipeline that runs it all, with charts at every step.
-date: 2026-10-26
+date: 2026-09-26
 tags: [video, ffmpeg, java, streaming]
 cover: cover.svg
 coverAlt: A film strip split into segments that fan out into four quality lanes, with a player path hopping between them

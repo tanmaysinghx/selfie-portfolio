@@ -1,7 +1,7 @@
 ---
 title: Designing Uber, end to end
 description: A detailed system design of a ride-hailing platform, from a driver's GPS ping to the payment captured after the trip, with the trade-offs at every step.
-date: 2026-10-29
+date: 2026-10-12
 tags: [system-design, distributed-systems, architecture]
 cover: cover.svg
 coverAlt: Hexagonal city grid with a driver and a rider joined by a dotted route

@@ -142,6 +142,31 @@
 }
 
 // Images: wider than the text column on large screens, click to zoom.
+.blog-image-open {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: zoom-in;
+}
+.blog-zoom-hint, .blog-diagram-open {
+  display: block;
+  margin-top: 10px;
+  color: var(--accent-ink);
+  font: 500 13px/1.5 var(--sans);
+}
+.blog-diagram-open {
+  background: transparent;
+  border: 1px solid var(--hair);
+  padding: 8px 12px;
+  cursor: zoom-in;
+}
+.blog-image-open:focus-visible, .blog-diagram-open:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
 .blog-figure img {
   display: block;
   width: 100%;

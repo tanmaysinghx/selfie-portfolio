@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="t d">
+<title id="t">Inside the surge</title><desc id="d">A cricket stadium drawn in ink on warm paper, with rust-colored delivery routes spreading toward viewers.</desc>
+<defs><pattern id="lines" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><path d="M0 0V24" stroke="#c9bfab" stroke-width="1"/></pattern></defs>
+<rect width="1600" height="1000" fill="#efeae0"/>
+<g fill="none" stroke="#c9bfab" stroke-width="2"><ellipse cx="800" cy="440" rx="620" ry="290" stroke-dasharray="5 12"/><ellipse cx="800" cy="440" rx="490" ry="230" stroke-dasharray="5 12"/></g>
+<g fill="none" stroke="#a44224" stroke-width="4"><path d="M540 430L325 245H220M1060 430L1275 245H1380M540 470L325 650H220M1060 470L1275 650H1380"/></g>
+<ellipse cx="800" cy="465" rx="330" ry="170" fill="url(#lines)" stroke="#1a1816" stroke-width="4"/><ellipse cx="800" cy="430" rx="330" ry="170" fill="#f5f1ea" stroke="#1a1816" stroke-width="4"/><ellipse cx="800" cy="430" rx="275" ry="125" fill="#e4ddcd" stroke="#a44224" stroke-width="3"/><ellipse cx="800" cy="430" rx="205" ry="88" fill="none" stroke="#b7ac98" stroke-width="2"/><path d="M780 370H820V490H780Z" fill="#a44224"/>
+<g stroke="#1a1816" stroke-width="5"><path d="M530 340V215M1070 340V215"/><path d="M500 212H560M1040 212H1100" stroke-width="12"/></g>
+<g fill="#a44224"><circle cx="220" cy="245" r="15"/><circle cx="1380" cy="245" r="15"/><circle cx="220" cy="650" r="15"/><circle cx="1380" cy="650" r="15"/></g>
+<text x="100" y="892" fill="#1a1816" font-family="Georgia,serif" font-size="60" font-style="italic">Inside the surge.</text><text x="103" y="942" fill="#6b635a" font-family="monospace" font-size="18" letter-spacing="4">JIOHOTSTAR · STREAMING AT SCALE</text>
+</svg>

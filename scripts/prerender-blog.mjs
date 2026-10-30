@@ -4,6 +4,7 @@
 // so search engines and link previews see the content without running JavaScript.
 import { mkdir, readFile, writeFile, access } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import ts from 'typescript';
 
 const ROOT = join(import.meta.dirname, '..');
@@ -26,7 +27,7 @@ async function loadRenderer() {
   const out = join(ROOT, 'node_modules', '.cache', 'blog-prerender', 'markdown.mjs');
   await mkdir(dirname(out), { recursive: true });
   await writeFile(out, outputText);
-  return (await import(`${out}?t=${Date.now()}`)).renderMarkdown;
+  return (await import(`${pathToFileURL(out).href}?t=${Date.now()}`)).renderMarkdown;
 }
 
 /** Social networks can't show SVG, so an SVG cover uses a same-named .png next to it when there is one. */

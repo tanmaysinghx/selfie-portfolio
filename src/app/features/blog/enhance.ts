@@ -60,7 +60,7 @@ export async function renderDiagrams(root: HTMLElement): Promise<void> {
     const source = decodeURIComponent(figure.dataset['mermaid'] ?? '');
     try {
       const { svg } = await mermaid.render(`blog-mermaid-${Date.now()}-${index}`, source);
-      figure.innerHTML = svg;
+      figure.innerHTML = svg + '<button type="button" class="blog-diagram-open" data-zoom-diagram>View diagram &amp; zoom ↗</button>';
     } catch (err) {
       figure.innerHTML = `<p class="blog-error">Diagram failed to render: ${String((err as Error).message ?? err)
         .replace(/</g, '&lt;')}</p>`;

@@ -114,7 +114,7 @@ export function renderMarkdown(markdown: string, slug: string): RenderedPost {
 
       image({ href, title, text }: Tokens.Image) {
         const caption = title || '';
-        return `<figure class="blog-figure"><img src="${escapeHtml(resolve(href))}" alt="${escapeHtml(text)}" loading="lazy" data-zoom />${
+        return `<figure class="blog-figure"><button type="button" class="blog-image-open" data-zoom aria-label="Enlarge image: ${escapeHtml(text || 'Article image')}"><img src="${escapeHtml(resolve(href))}" alt="${escapeHtml(text)}" loading="lazy" /><span class="blog-zoom-hint">View image &amp; zoom ↗</span></button>${
           caption ? `<figcaption>${escapeHtml(caption)}</figcaption>` : ''
         }</figure>`;
       },

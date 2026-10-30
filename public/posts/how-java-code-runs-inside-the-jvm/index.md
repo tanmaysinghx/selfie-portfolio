@@ -1,7 +1,7 @@
 ---
 title: From .java to the CPU: how Java code actually runs
 description: Follow a real program from source code to bytecode, class loading, stack frames, JIT compilation and garbage collection—with diagrams and experiments you can run yourself.
-date: 2026-10-29
+date: 2026-09-12
 tags: [java, jvm, bytecode, fundamentals]
 cover: cover.svg
 coverAlt: A diagram tracing Java source through bytecode and the JVM to native CPU instructions

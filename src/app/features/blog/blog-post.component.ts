@@ -136,17 +136,35 @@ const HEADER_OFFSET = 88;
     </main>
 
     <!-- Image lightbox -->
-    <div
-      *ngIf="zoomed() as image"
-      class="fixed inset-0 z-50 bg-fg/85 backdrop-blur-sm grid place-items-center p-6 cursor-zoom-out"
-      (click)="zoomed.set(null)">
-      <figure class="m-0 max-w-[min(1400px,100%)]">
-        <img [src]="image.src" [alt]="image.alt" class="block max-w-full max-h-[85vh] mx-auto" />
-        <figcaption *ngIf="image.alt" class="text-bg/80 text-sm text-center mt-3">{{ image.alt }}</figcaption>
-      </figure>
-    </div>
+    <dialog #imageDialog class="image-viewer" aria-label="Image viewer"
+      (cancel)="closeZoom()" (close)="closeZoom()" (click)="onViewerBackdrop($event)">
+      <ng-container *ngIf="zoomed() as image">
+        <div class="viewer-toolbar">
+          <button type="button" (click)="changeZoom(-0.5)" [disabled]="zoomScale() <= 1" aria-label="Zoom out">−</button>
+          <output aria-live="polite">{{ zoomScale() * 100 | number: '1.0-0' }}%</output>
+          <button type="button" (click)="changeZoom(0.5)" [disabled]="zoomScale() >= 4" aria-label="Zoom in">+</button>
+          <button type="button" (click)="zoomScale.set(1)">Fit</button>
+          <a [href]="image.src" target="_blank" rel="noopener noreferrer">Open original ↗</a>
+          <button type="button" (click)="closeZoom()" autofocus aria-label="Close image viewer">Close ✕</button>
+        </div>
+        <div class="viewer-viewport" tabindex="0" aria-label="Image; scroll to explore when zoomed">
+          <img [src]="image.src" [alt]="image.alt" [style.width.px]="image.width * zoomScale()" />
+        </div>
+        <p class="viewer-caption">{{ image.alt }} <span>Use + to zoom, then scroll to explore. Escape to close.</span></p>
+      </ng-container>
+    </dialog>
   `,
   styles: `
+    .image-viewer { width: 96vw; max-width: 1600px; max-height: 94dvh; padding: 0; border: 1px solid var(--hair); border-radius: 12px; background: var(--bg); color: var(--fg); overflow: hidden; }
+    .image-viewer::backdrop { background: rgb(0 0 0 / 80%); backdrop-filter: blur(5px); }
+    .viewer-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-bottom: 1px solid var(--hair); }
+    .viewer-toolbar button, .viewer-toolbar a { min-height: 44px; padding: 8px 12px; border: 1px solid var(--hair); border-radius: 6px; background: var(--bg); color: var(--fg); font: inherit; font-size: 14px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
+    .viewer-toolbar button:disabled { opacity: .4; cursor: default; }
+    .viewer-toolbar output { min-width: 48px; text-align: center; font-size: 14px; }
+    .viewer-viewport { height: 65dvh; overflow: auto; overscroll-behavior: contain; background: var(--bg-2); }
+    .viewer-viewport img { display: block; max-width: none; height: auto; margin: 0 auto; }
+    .viewer-caption { margin: 0; padding: 10px 16px; font-size: 13px; max-height: 12dvh; overflow: auto; }
+    .viewer-caption span { display: block; color: var(--muted); margin-top: 4px; }
     .like-button {
       display: inline-flex;
       align-items: center;
@@ -172,6 +190,7 @@ export class BlogPostComponent {
   private destroyRef = inject(DestroyRef);
 
   @ViewChild('content', { static: false }) content?: ElementRef<HTMLElement>;
+  @ViewChild('imageDialog', { static: true }) imageDialog?: ElementRef<HTMLDialogElement>;
 
   readonly slug = signal<string>('');
   readonly loading = signal<boolean>(true);
@@ -183,7 +202,10 @@ export class BlogPostComponent {
   readonly stats = signal<BlogStats | null>(null);
   readonly liked = signal<boolean>(false);
   readonly copied = signal<boolean>(false);
-  readonly zoomed = signal<{ src: string; alt: string } | null>(null);
+  readonly zoomed = signal<{ src: string; alt: string; width: number } | null>(null);
+  readonly zoomScale = signal(1);
+  private zoomObjectUrl?: string;
+  private previousOverflow?: string;
 
   readonly meta = computed(() => this.blog.posts().find(p => p.slug === this.slug()));
   private readonly index = computed(() => this.blog.posts().findIndex(p => p.slug === this.slug()));
@@ -257,6 +279,7 @@ export class BlogPostComponent {
   }
 
   private teardown(): void {
+    this.closeZoom();
     this.charts.forEach(chart => chart.destroy());
     this.charts = [];
     this.observer?.disconnect();
@@ -309,7 +332,33 @@ export class BlogPostComponent {
 
   @HostListener('window:keydown.escape')
   closeZoom(): void {
+    this.imageDialog?.nativeElement.close();
     this.zoomed.set(null);
+    if (this.zoomObjectUrl) URL.revokeObjectURL(this.zoomObjectUrl);
+    this.zoomObjectUrl = undefined;
+    if (this.previousOverflow !== undefined) document.body.style.overflow = this.previousOverflow;
+    this.previousOverflow = undefined;
+  }
+
+  changeZoom(delta: number): void {
+    this.zoomScale.update(value => Math.min(4, Math.max(1, value + delta)));
+  }
+
+  onViewerBackdrop(event: MouseEvent): void {
+    const dialog = this.imageDialog?.nativeElement;
+    if (!dialog || event.target !== dialog) return;
+    const rect = dialog.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) this.closeZoom();
+  }
+
+  private openImage(src: string, alt: string, width: number, height: number): void {
+    const fittedWidth = Math.min(width || 1200, window.innerWidth * .94, 1560,
+      window.innerHeight * .65 * ((width || 1200) / (height || 630)));
+    this.zoomed.set({ src, alt, width: fittedWidth });
+    this.zoomScale.set(1);
+    this.previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    this.imageDialog?.nativeElement.showModal();
   }
 
   scrollToHeading(event: Event, id: string): void {
@@ -361,8 +410,24 @@ export class BlogPostComponent {
       return;
     }
 
-    if (target instanceof HTMLImageElement && target.hasAttribute('data-zoom')) {
-      this.zoomed.set({ src: target.currentSrc || target.src, alt: target.alt });
+    const imageButton = target.closest<HTMLElement>('[data-zoom]');
+    const image = imageButton?.querySelector('img');
+    if (image) {
+      this.openImage(image.currentSrc || image.src, image.alt, image.naturalWidth, image.naturalHeight);
+      return;
+    }
+
+    const diagramButton = target.closest<HTMLElement>('[data-zoom-diagram]');
+    const diagram = diagramButton?.closest('figure')?.querySelector('svg');
+    if (diagram) {
+      const copy = diagram.cloneNode(true) as SVGSVGElement;
+      const box = diagram.viewBox.baseVal;
+      copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      copy.setAttribute('width', String(box.width || 1200));
+      copy.setAttribute('height', String(box.height || 630));
+      copy.style.maxWidth = 'none';
+      this.zoomObjectUrl = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(copy)], { type: 'image/svg+xml' }));
+      this.openImage(this.zoomObjectUrl, 'Article architecture diagram', box.width, box.height);
       return;
     }
 

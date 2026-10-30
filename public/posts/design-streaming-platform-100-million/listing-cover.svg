@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="t d">
+<title id="t">Designing for 100 million viewers</title><desc id="d">An ink-and-rust network blueprint on warm paper, connecting one stream to many screens.</desc>
+<defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M50 0H0V50" fill="none" stroke="#d6cebd" stroke-width="1"/></pattern></defs>
+<rect width="1600" height="1000" fill="#efeae0"/><rect width="1600" height="1000" fill="url(#grid)" opacity=".5"/>
+<g fill="none" stroke="#b7ac98" stroke-width="3"><circle cx="800" cy="445" r="310" stroke-dasharray="4 12"/><path d="M800 445L410 225M800 445L1190 225M800 445L410 640M800 445L1190 640M800 445V100M800 445V735"/></g>
+<g fill="#f5f1ea" stroke="#1a1816" stroke-width="4"><rect x="345" y="185" width="130" height="85" rx="6"/><rect x="1125" y="185" width="130" height="85" rx="6"/><rect x="345" y="598" width="130" height="85" rx="6"/><rect x="1125" y="598" width="130" height="85" rx="6"/><rect x="758" y="55" width="84" height="115" rx="10"/><rect x="758" y="687" width="84" height="115" rx="10"/></g>
+<g fill="#a44224"><circle cx="800" cy="445" r="125"/><path d="M397 208L431 227L397 246ZM1177 208L1211 227L1177 246ZM397 621L431 640L397 659ZM1177 621L1211 640L1177 659Z"/></g>
+<text x="800" y="463" fill="#f5f1ea" text-anchor="middle" font-family="Georgia,serif" font-size="70">100M</text>
+<g font-family="Georgia,serif" fill="#1a1816"><text x="100" y="892" font-size="54" font-style="italic">One stream. A hundred million screens.</text></g><text x="103" y="942" fill="#6b635a" font-family="monospace" font-size="18" letter-spacing="4">SYSTEM DESIGN · JAVA / GO / AWS</text>
+</svg>
