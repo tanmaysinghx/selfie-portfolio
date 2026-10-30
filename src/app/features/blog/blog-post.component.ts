@@ -77,16 +77,20 @@ const HEADER_OFFSET = 88;
             <div *ngIf="loading()" class="blog-loading">Loading post…</div>
             <div #content class="blog-prose" (click)="onContentClick($event)"></div>
 
+            <p *ngIf="reactionMessage()" role="status" class="text-xs text-muted mt-8 max-w-[720px]">
+              {{ reactionMessage() }}
+              <button type="button" class="inline-link bg-transparent border-x-0 border-t-0 ml-2" [disabled]="retryingStats()" (click)="retryStats()">{{ retryingStats() ? 'Checking…' : 'Retry' }}</button>
+            </p>
             <!-- Reactions & share -->
             <div *ngIf="!loading()" class="mt-16 pt-8 border-t border-hair flex flex-wrap items-center justify-between gap-6 max-w-[720px]">
               <button
                 type="button"
                 (click)="like()"
-                [disabled]="liked()"
+                [disabled]="liked() || liking()"
                 class="like-button"
                 [attr.aria-pressed]="liked()">
                 <span class="text-lg leading-none" aria-hidden="true">{{ liked() ? '♥' : '♡' }}</span>
-                <span>{{ liked() ? 'Thanks!' : 'Enjoyed this?' }}</span>
+                <span>{{ liking() ? 'Saving…' : liked() ? 'Thanks!' : 'Enjoyed this?' }}</span>
                 <span *ngIf="stats()?.configured" class="font-mono text-[11px] text-muted">{{ stats()?.likes | number }}</span>
               </button>
 
@@ -201,6 +205,9 @@ export class BlogPostComponent {
   readonly progress = signal<number>(0);
   readonly stats = signal<BlogStats | null>(null);
   readonly liked = signal<boolean>(false);
+  readonly liking = signal(false);
+  readonly reactionMessage = signal('');
+  readonly retryingStats = signal(false);
   readonly copied = signal<boolean>(false);
   readonly zoomed = signal<{ src: string; alt: string; width: number } | null>(null);
   readonly zoomScale = signal(1);
@@ -249,6 +256,8 @@ export class BlogPostComponent {
     this.notFound.set(false);
     this.toc.set([]);
     this.stats.set(null);
+    this.liking.set(false);
+    this.reactionMessage.set('');
     this.liked.set(this.blog.hasLiked(slug));
     window.scrollTo({ top: 0 });
 
@@ -292,12 +301,18 @@ export class BlogPostComponent {
         ? await this.blog.getStats(slug)
         : await this.blog.recordView(slug);
       if (!viewed.includes(slug)) {
-        sessionStorage.setItem(VIEWED_KEY, JSON.stringify([...viewed, slug]));
+        try { sessionStorage.setItem(VIEWED_KEY, JSON.stringify([...viewed, slug])); } catch { /* Optional browser storage. */ }
       }
-      if (this.slug() === slug) this.stats.set(stats);
+      if (this.slug() === slug) { this.stats.set(stats); this.reactionMessage.set(''); }
     } catch {
-      // No /api locally (plain `ng serve`) or Redis not set up: counters just stay hidden.
+      if (this.slug() === slug) this.reactionMessage.set('Reactions are temporarily unavailable. You can keep reading and try again shortly.');
     }
+  }
+
+  async retryStats(): Promise<void> {
+    if (this.retryingStats()) return;
+    this.retryingStats.set(true);
+    try { await this.loadStats(this.slug()); } finally { this.retryingStats.set(false); }
   }
 
   private viewedThisSession(): string[] {
@@ -439,14 +454,16 @@ export class BlogPostComponent {
   }
 
   async like(): Promise<void> {
-    if (this.liked()) return;
-    this.liked.set(true);
-    const current = this.stats();
-    if (current) this.stats.set({ ...current, likes: current.likes + 1 });
+    if (this.liked() || this.liking()) return;
+    const slug = this.slug();
+    this.liking.set(true);
     try {
-      this.stats.set(await this.blog.like(this.slug()));
+      const stats = await this.blog.like(slug);
+      if (this.slug() === slug) { this.stats.set(stats); this.liked.set(true); this.reactionMessage.set(''); }
     } catch {
-      // Keep the optimistic state; the like is remembered locally either way.
+      if (this.slug() === slug) this.reactionMessage.set('We couldn’t confirm your like. Please try again shortly.');
+    } finally {
+      if (this.slug() === slug) this.liking.set(false);
     }
   }
 

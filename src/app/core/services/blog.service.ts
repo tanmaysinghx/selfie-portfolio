@@ -1,9 +1,9 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, timeout } from 'rxjs';
 import { BlogPostMeta, BlogStats } from '../models/portfolio.model';
 
-const LIKED_KEY = 'blog:liked';
+const LIKED_KEY = 'blog:keystone-liked';
 
 @Injectable({
   providedIn: 'root'
@@ -41,16 +41,22 @@ export class BlogService {
   }
 
   getStats(slug: string): Promise<BlogStats> {
-    return firstValueFrom(this.http.get<BlogStats>(`/api/stats?slug=${encodeURIComponent(slug)}`));
+    return firstValueFrom(this.http.get<BlogStats>(`/api/stats?slug=${encodeURIComponent(slug)}`).pipe(timeout(5000))).then(this.requireStats);
   }
 
   recordView(slug: string): Promise<BlogStats> {
-    return firstValueFrom(this.http.post<BlogStats>('/api/stats', { slug, action: 'view' }));
+    return firstValueFrom(this.http.post<BlogStats>('/api/stats', { slug, action: 'view' }).pipe(timeout(5000))).then(this.requireStats);
   }
 
-  like(slug: string): Promise<BlogStats> {
+  async like(slug: string): Promise<BlogStats> {
+    const stats = this.requireStats(await firstValueFrom(this.http.post<BlogStats>('/api/stats', { slug, action: 'like' }).pipe(timeout(5000))));
     this.rememberLiked(slug);
-    return firstValueFrom(this.http.post<BlogStats>('/api/stats', { slug, action: 'like' }));
+    return stats;
+  }
+
+  private requireStats(value: BlogStats): BlogStats {
+    if (!value || value.configured !== true || !Number.isSafeInteger(value.likes) || !Number.isSafeInteger(value.views) || value.likes < 0 || value.views < 0) throw new Error('Reactions unavailable');
+    return value;
   }
 
   hasLiked(slug: string): boolean {

@@ -6,6 +6,8 @@
     "blog": "node scripts/build-blog.mjs --drafts",
     "prestart": "node scripts/build-blog.mjs --drafts",
     "start": "ng serve",
+    "start:keystone": "node --env-file-if-exists=.env.local scripts/dev-with-keystone.mjs",
+    "test:stats": "node scripts/test-stats.mjs",
     "prebuild": "node scripts/build-blog.mjs",
     "build": "ng build",
     "postbuild": "node scripts/prerender-blog.mjs",

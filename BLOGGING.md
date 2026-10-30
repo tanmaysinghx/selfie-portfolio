@@ -50,17 +50,25 @@ git commit -m "post: my new post"
 git push                       # Vercel builds and publishes
 ```
 
-## Views and likes (one-time Vercel setup)
+## Views and likes (Keystone)
 
-`api/stats.ts` is a Vercel Function that counts views and likes in Redis.
-Until Redis is connected the counters stay hidden and everything else works.
+Blog reactions now use the sibling **Keystone** Rust service. The browser still calls
+`/api/stats`; that server-only gateway forwards to Keystone with a short timeout.
 
-1. Vercel dashboard → your project → **Storage** → **Create Database** → **Upstash for Redis** (free tier).
-2. Connect it to the project. This adds `KV_REST_API_URL` and `KV_REST_API_TOKEN` env vars.
-3. Redeploy.
+1. Start Keystone from `../keystone` with `cargo run -p keystone`.
+2. Set `KEYSTONE_URL` and `KEYSTONE_SERVICE_KEY` in the portfolio server environment
+   (Vercel settings for deployment, `.env.local` for local development). The key must match
+   Keystone. Never put it in Angular configuration.
+3. For local integration, run `npm run blog` then `npm run start:keystone`.
+   Plain `npm start` does not run the gateway.
 
-To try the API locally, run `npx vercel dev` instead of `npm start`. It serves the Angular
-app and `/api` together; `npx vercel env pull .env.local` fetches the Redis keys.
+`node ../keystone/scripts/configure-local.mjs` can configure the local shared key without
+printing it. Production needs a deployed HTTPS Keystone URL reachable from Vercel.
+
+If Keystone is down, the article stays readable and a small retry message appears. A like
+is remembered only after confirmation. Keystone deduplicates repeated likes and daily views
+using a persistent SQLite unique key and an opaque visitor cookie. Old Upstash counters are
+not automatically migrated or deleted. See `../keystone/README.md` for setup and limitations.
 
 ## Google and link previews
 
