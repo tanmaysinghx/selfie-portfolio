@@ -70,6 +70,28 @@ is remembered only after confirmation. Keystone deduplicates repeated likes and 
 using a persistent SQLite unique key and an opaque visitor cookie. Old Upstash counters are
 not automatically migrated or deleted. See `../keystone/README.md` for setup and limitations.
 
+## Shares and comments (APIs not built yet)
+
+Posts already show views, likes, shares and comments, plus a comments section. Until the
+endpoints below exist, counts show "—" (never a fake 0), comments show "Comments aren't open
+yet" with a draft saved on the reader's device, and share buttons still work. Every response is
+validated, so a 404, a 503, a timeout or the SPA's `index.html` all count as "unavailable".
+
+| Endpoint | Request | Response the page expects |
+| --- | --- | --- |
+| `GET /api/stats?slug=` | — | `{ views, likes, configured: true, shares?, comments? }` (non-negative integers) |
+| `POST /api/stats` | `{ slug, action: "share", channel: "copy" \| "linkedin" \| "x" \| "native" }` | Same as above |
+| `GET /api/comments?slug=` | — | `{ comments: [{ id, name, body, createdAt }] }` (oldest first, ISO dates) |
+| `POST /api/comments` | `{ slug, name, body, website }` | `{ comment: { id, name, body, createdAt }, status: "published" \| "pending" }` |
+
+- `api/stats.ts` currently accepts only `view` and `like`, so it answers `share` with a 400.
+  Allow `share` there when Keystone supports it, and pass `shares`/`comments` through.
+- `website` is a honeypot field hidden from people. Reject the comment if it is not empty.
+- Limits the form enforces: name ≤ 60 characters, comment 2–1000. Validate them on the server too,
+  and render comments as plain text.
+- Return `status: "pending"` to hold comments for moderation. The author sees an
+  "Awaiting approval" label and everyone else sees nothing until it is approved.
+
 ## Google and link previews
 
 `npm run build` (and so every Vercel deploy) runs `scripts/prerender-blog.mjs`, which writes static HTML

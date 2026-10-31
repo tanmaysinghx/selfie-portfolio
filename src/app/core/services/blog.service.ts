@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom, timeout } from 'rxjs';
-import { BlogPostMeta, BlogStats } from '../models/portfolio.model';
+import { BlogComment, BlogCommentPage, BlogPostMeta, BlogStats, PostedComment, ShareChannel } from '../models/portfolio.model';
 
 const LIKED_KEY = 'blog:keystone-liked';
 
@@ -54,9 +54,35 @@ export class BlogService {
     return stats;
   }
 
+  /** Counts a share. The share itself already happened, so callers treat failure as "count unknown". */
+  async recordShare(slug: string, channel: ShareChannel): Promise<BlogStats> {
+    return this.requireStats(await firstValueFrom(this.http.post<BlogStats>('/api/stats', { slug, action: 'share', channel }).pipe(timeout(5000))));
+  }
+
+  async getComments(slug: string): Promise<BlogComment[]> {
+    const page = await firstValueFrom(this.http.get<BlogCommentPage>(`/api/comments?slug=${encodeURIComponent(slug)}`).pipe(timeout(5000)));
+    if (!page || !Array.isArray(page.comments) || !page.comments.every(isComment)) throw new Error('Comments unavailable');
+    return page.comments;
+  }
+
+  async postComment(slug: string, name: string, body: string, website: string): Promise<PostedComment> {
+    // "website" is a honeypot: people never see the field, bots fill it in.
+    const result = await firstValueFrom(this.http.post<PostedComment>('/api/comments', { slug, name, body, website }).pipe(timeout(8000)));
+    if (!result || !isComment(result.comment) || (result.status !== 'published' && result.status !== 'pending')) throw new Error('Comments unavailable');
+    return result;
+  }
+
+  // Not-yet-deployed endpoints can answer with a 404, a 503 or (in dev) the SPA's index.html,
+  // so every response is validated before the page trusts it.
   private requireStats(value: BlogStats): BlogStats {
-    if (!value || value.configured !== true || !Number.isSafeInteger(value.likes) || !Number.isSafeInteger(value.views) || value.likes < 0 || value.views < 0) throw new Error('Reactions unavailable');
-    return value;
+    if (!value || value.configured !== true || !isCount(value.likes) || !isCount(value.views)) throw new Error('Reactions unavailable');
+    return {
+      views: value.views,
+      likes: value.likes,
+      configured: true,
+      ...(isCount(value.shares) ? { shares: value.shares } : {}),
+      ...(isCount(value.comments) ? { comments: value.comments } : {})
+    };
   }
 
   hasLiked(slug: string): boolean {
@@ -78,4 +104,14 @@ export class BlogService {
       // Storage blocked: the server still dedupes likes per visitor.
     }
   }
+}
+
+function isCount(value: unknown): value is number {
+  return Number.isSafeInteger(value) && (value as number) >= 0;
+}
+
+function isComment(value: unknown): value is BlogComment {
+  const c = value as BlogComment;
+  return !!c && typeof c.id === 'string' && typeof c.name === 'string' && typeof c.body === 'string' &&
+    typeof c.createdAt === 'string' && !Number.isNaN(Date.parse(c.createdAt));
 }

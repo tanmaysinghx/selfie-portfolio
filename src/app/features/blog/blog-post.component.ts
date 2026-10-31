@@ -14,9 +14,10 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Meta, Title } from '@angular/platform-browser';
 import { BlogService } from '../../core/services/blog.service';
-import { BlogStats } from '../../core/models/portfolio.model';
+import { BlogStats, ShareChannel } from '../../core/models/portfolio.model';
 import { TocEntry, renderMarkdown } from './markdown';
 import { highlightCode, renderCharts, renderDiagrams } from './enhance';
+import { BlogCommentsComponent } from './blog-comments.component';
 
 const VIEWED_KEY = 'blog:viewed';
 const HEADER_OFFSET = 88;
@@ -24,7 +25,7 @@ const HEADER_OFFSET = 88;
 @Component({
   selector: 'app-blog-post',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, BlogCommentsComponent],
   template: `
     <div class="fixed top-0 left-0 right-0 h-[3px] z-50 pointer-events-none" aria-hidden="true">
       <div class="h-full bg-accent origin-left" [style.transform]="'scaleX(' + progress() + ')'"></div>
@@ -54,6 +55,12 @@ const HEADER_OFFSET = 88;
               <span *ngIf="meta()?.updated">Updated {{ meta()?.updated | date: 'mediumDate' }}</span>
               <span *ngIf="meta()">{{ meta()?.readingMinutes }} min read</span>
               <span *ngIf="stats()?.configured">{{ stats()?.views | number }} {{ stats()?.views === 1 ? 'view' : 'views' }}</span>
+              <span *ngIf="stats()?.configured">{{ stats()?.likes | number }} {{ stats()?.likes === 1 ? 'like' : 'likes' }}</span>
+              <a *ngIf="commentCount() !== undefined" href="#comments-heading" class="post-meta-link"
+                (click)="scrollToHeading($event, 'comments-heading')">{{ commentCount() }} {{ commentCount() === 1 ? 'comment' : 'comments' }}</a>
+            </div>
+            <div *ngIf="meta()?.tags?.length" class="post-tags" aria-label="Topics">
+              <a *ngFor="let tag of meta()?.tags" routerLink="/blog" [queryParams]="{ tag }" class="post-tag">{{ tag }}</a>
             </div>
           </div>
         </header>
@@ -94,15 +101,28 @@ const HEADER_OFFSET = 88;
                 <span *ngIf="stats()?.configured" class="font-mono text-[11px] text-muted">{{ stats()?.likes | number }}</span>
               </button>
 
-              <div class="flex items-center gap-4 text-[13px]">
+              <div class="flex flex-wrap items-center gap-4 text-[13px]">
                 <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-muted">Share</span>
+                <button *ngIf="canNativeShare" type="button" (click)="nativeShare()" class="inline-link bg-transparent border-x-0 border-t-0">Share…</button>
                 <button type="button" (click)="copyLink()" class="inline-link bg-transparent border-x-0 border-t-0">
                   {{ copied() ? 'Copied ✓' : 'Copy link' }}
                 </button>
-                <a [href]="shareLinkedIn()" target="_blank" rel="noopener noreferrer" class="inline-link">LinkedIn</a>
-                <a [href]="shareX()" target="_blank" rel="noopener noreferrer" class="inline-link">X</a>
+                <a [href]="shareLinkedIn()" target="_blank" rel="noopener noreferrer" class="inline-link" (click)="countShare('linkedin')">LinkedIn</a>
+                <a [href]="shareX()" target="_blank" rel="noopener noreferrer" class="inline-link" (click)="countShare('x')">X</a>
               </div>
             </div>
+
+            <!-- Engagement counts: a dash means the count isn't available (yet), never zero. -->
+            <dl *ngIf="!loading()" class="post-engagement" aria-label="Post engagement">
+              <div><dt>Views</dt><dd [attr.title]="countTitle(stats()?.views)">{{ formatCount(stats()?.views) }}</dd></div>
+              <div><dt>Likes</dt><dd [attr.title]="countTitle(stats()?.likes)">{{ formatCount(stats()?.likes) }}</dd></div>
+              <div><dt>Shares</dt><dd [attr.title]="countTitle(stats()?.shares)">{{ formatCount(stats()?.shares) }}</dd></div>
+              <div><dt>Comments</dt><dd [attr.title]="countTitle(commentCount())">
+                <a href="#comments-heading" (click)="scrollToHeading($event, 'comments-heading')">{{ formatCount(commentCount()) }}</a>
+              </dd></div>
+            </dl>
+
+            <app-blog-comments *ngIf="!loading()" [slug]="slug()" (countChange)="loadedComments.set($event)" />
           </div>
 
           <aside *ngIf="toc().length > 1" class="post-contents hidden lg:block" aria-label="On this page">
@@ -123,6 +143,20 @@ const HEADER_OFFSET = 88;
           </aside>
         </div>
 
+        <!-- Related posts -->
+        <section *ngIf="!loading() && related().length" class="container article-shell mt-20" aria-labelledby="related-heading">
+          <h2 id="related-heading" class="font-mono text-[11px] uppercase tracking-[0.08em] text-muted font-normal m-0 mb-6">Keep reading</h2>
+          <div class="related-posts">
+            <a *ngFor="let post of related()" [routerLink]="['/blog', post.slug]" class="related-card">
+              <div class="related-cover">
+                <img *ngIf="post.cover" [src]="post.cover" [alt]="post.coverAlt" loading="lazy" />
+              </div>
+              <span class="related-title">{{ post.title }}</span>
+              <span class="related-meta">{{ post.date | date: 'mediumDate' }} · {{ post.readingMinutes }} min read</span>
+            </a>
+          </div>
+        </section>
+
         <!-- Previous / next -->
         <nav *ngIf="newer() || older()" class="container article-shell mt-20" aria-label="More posts">
           <div class="grid grid-cols-1 md:grid-cols-2 border-t border-hair">
@@ -138,6 +172,10 @@ const HEADER_OFFSET = 88;
         </nav>
       </article>
     </main>
+
+    <button *ngIf="!notFound()" type="button" class="back-to-top" (click)="backToTop()"
+      [attr.data-hidden]="!showBackToTop()" [attr.tabindex]="showBackToTop() ? 0 : -1"
+      aria-label="Back to top">↑</button>
 
     <!-- Image lightbox -->
     <dialog #imageDialog class="image-viewer" aria-label="Image viewer"
@@ -218,6 +256,24 @@ export class BlogPostComponent {
   private readonly index = computed(() => this.blog.posts().findIndex(p => p.slug === this.slug()));
   readonly newer = computed(() => (this.index() > 0 ? this.blog.posts()[this.index() - 1] : undefined));
   readonly older = computed(() => (this.index() >= 0 ? this.blog.posts()[this.index() + 1] : undefined));
+  /** Up to three other posts, ranked by shared tags, then recency (the index is newest first). */
+  readonly related = computed(() => {
+    const tags = new Set(this.meta()?.tags ?? []);
+    // Previous / next already link to their neighbours below.
+    const skip = new Set([this.slug(), this.newer()?.slug, this.older()?.slug]);
+    return this.blog.posts()
+      .filter(p => !skip.has(p.slug))
+      .map(post => ({ post, shared: post.tags.filter(t => tags.has(t)).length }))
+      .filter(r => r.shared > 0)
+      .sort((a, b) => b.shared - a.shared)
+      .slice(0, 3)
+      .map(r => r.post);
+  });
+  readonly showBackToTop = signal(false);
+  /** Count from the comments list once it loads; until then, whatever the stats API reports. */
+  readonly loadedComments = signal<number | null>(null);
+  readonly commentCount = computed(() => this.loadedComments() ?? this.stats()?.comments);
+  readonly canNativeShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
 
   readonly shareLinkedIn = computed(
     () => `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(this.url())}`
@@ -256,6 +312,7 @@ export class BlogPostComponent {
     this.notFound.set(false);
     this.toc.set([]);
     this.stats.set(null);
+    this.loadedComments.set(null);
     this.liking.set(false);
     this.reactionMessage.set('');
     this.liked.set(this.blog.hasLiked(slug));
@@ -343,6 +400,13 @@ export class BlogPostComponent {
     const total = rect.height - window.innerHeight + HEADER_OFFSET;
     const read = HEADER_OFFSET - rect.top;
     this.progress.set(total > 0 ? Math.min(1, Math.max(0, read / total)) : 0);
+    this.showBackToTop.set(window.scrollY > window.innerHeight * 1.5);
+  }
+
+  backToTop(): void {
+    const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
+    history.replaceState(null, '', location.pathname);
   }
 
   @HostListener('window:keydown.escape')
@@ -471,5 +535,33 @@ export class BlogPostComponent {
     await navigator.clipboard.writeText(this.url());
     this.copied.set(true);
     setTimeout(() => this.copied.set(false), 1800);
+    this.countShare('copy');
+  }
+
+  async nativeShare(): Promise<void> {
+    try {
+      await navigator.share({ title: this.meta()?.title, url: this.url() });
+      this.countShare('native');
+    } catch {
+      // Dismissing the share sheet rejects too; nothing was shared, so nothing to count.
+    }
+  }
+
+  /** Best-effort: the share already happened, so a missing or failing API only leaves the count unknown. */
+  async countShare(channel: ShareChannel): Promise<void> {
+    const slug = this.slug();
+    try {
+      const stats = await this.blog.recordShare(slug, channel);
+      if (this.slug() === slug) this.stats.set(stats);
+    } catch { /* Shares API not available yet. */ }
+  }
+
+  formatCount(value: number | null | undefined): string {
+    if (value === null || value === undefined) return '—';
+    return new Intl.NumberFormat(undefined, { notation: value >= 10000 ? 'compact' : 'standard', maximumFractionDigits: 1 }).format(value);
+  }
+
+  countTitle(value: number | null | undefined): string | null {
+    return value === null || value === undefined ? 'Not available yet' : null;
   }
 }

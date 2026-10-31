@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlogService } from '../../core/services/blog.service';
 
 @Component({
@@ -25,7 +26,7 @@ import { BlogService } from '../../core/services/blog.service';
           <div *ngIf="blog.posts().length > 3 && tags().length" class="flex flex-wrap gap-2 mt-10" role="group" aria-label="Filter by topic">
             <button
               type="button"
-              (click)="activeTag.set(null)"
+              (click)="setTag(null)"
               [attr.aria-pressed]="activeTag() === null"
               class="tag-chip">
               All
@@ -33,7 +34,7 @@ import { BlogService } from '../../core/services/blog.service';
             <button
               *ngFor="let tag of tags()"
               type="button"
-              (click)="activeTag.set(activeTag() === tag ? null : tag)"
+              (click)="setTag(activeTag() === tag ? null : tag)"
               [attr.aria-pressed]="activeTag() === tag"
               class="tag-chip">
               {{ tag }}
@@ -131,7 +132,18 @@ import { BlogService } from '../../core/services/blog.service';
 })
 export class BlogListComponent {
   readonly blog = inject(BlogService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
   readonly activeTag = signal<string | null>(null);
+
+  constructor() {
+    // The tag lives in the URL (?tag=java) so filtered views can be linked to from posts.
+    this.route.queryParamMap.pipe(takeUntilDestroyed()).subscribe(params => this.activeTag.set(params.get('tag')));
+  }
+
+  setTag(tag: string | null): void {
+    this.router.navigate([], { queryParams: { tag }, replaceUrl: true });
+  }
 
   readonly tags = computed(() => [...new Set(this.blog.posts().flatMap(p => p.tags))].sort());
 

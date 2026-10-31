@@ -208,5 +208,28 @@ export interface BlogPostMeta {
 export interface BlogStats {
   views: number;
   likes: number;
+  /** Optional until the stats API reports them; absent means "unknown", not zero. */
+  shares?: number;
+  comments?: number;
   configured: boolean;
+}
+
+export type ShareChannel = 'copy' | 'linkedin' | 'x' | 'native';
+
+export interface BlogComment {
+  id: string;
+  name: string;
+  body: string;
+  /** ISO 8601 timestamp. */
+  createdAt: string;
+}
+
+export interface BlogCommentPage {
+  comments: BlogComment[];
+}
+
+export interface PostedComment {
+  comment: BlogComment;
+  /** "pending" means it is held for moderation and not shown to everyone yet. */
+  status: 'published' | 'pending';
 }

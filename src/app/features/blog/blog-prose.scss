@@ -18,17 +18,23 @@
 }
 
 .blog-prose {
-  max-width: 680px;
+  // Text keeps a comfortable measure; figures, tables, code and charts use the full column.
+  max-width: 860px;
   font-size: 17px;
   line-height: 1.9;
   color: #2c2824;
 
   > :first-child { margin-top: 0; }
+  > :is(p, ul, ol, h2, h3, h4, blockquote, hr, .blog-callout) { max-width: 680px; }
 
   p, ul, ol { margin: 0 0 1.6em; }
   ul, ol { padding-left: 1.3em; }
-  li { margin: 0.35em 0; }
-  li::marker { color: var(--accent); }
+  // Tailwind's preflight strips list markers; prose needs them back.
+  ul { list-style: disc; }
+  ol { list-style: decimal; }
+  li { margin: 0.35em 0; padding-left: 0.2em; }
+  li::marker { color: var(--accent); font-variant-numeric: tabular-nums; }
+  ol > li::marker { font: 500 0.82em var(--mono); }
 
   strong { color: var(--fg); font-weight: 600; }
 
@@ -400,6 +406,59 @@
   color: var(--muted);
 }
 .article-layout { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 64px; }
+
+// Tags under the post metadata, linking back to the filtered list.
+.post-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+.post-tag {
+  font: 500 10px/1 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 7px 9px;
+  border: 1px solid var(--hair-2);
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s, border-color 0.15s;
+  &:hover { color: var(--accent-ink); border-color: var(--accent); }
+}
+
+// "Keep reading": related posts by shared tags.
+.related-posts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+.related-card {
+  display: block;
+  color: var(--fg);
+  text-decoration: none;
+  .related-cover { aspect-ratio: 16 / 10; overflow: hidden; border: 1px solid var(--hair); background: var(--bg-2); }
+  img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+  &:hover img { transform: scale(1.04); }
+  &:hover .related-title { color: var(--accent-ink); }
+}
+.related-title { display: block; margin-top: 14px; font-size: 17px; font-weight: 500; line-height: 1.35; letter-spacing: -0.01em; transition: color 0.15s; }
+.related-meta { display: block; margin-top: 6px; font: 11px/1.5 var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.back-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 40;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--hair-2);
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px -12px rgba(26, 24, 22, 0.35);
+  transition: opacity 0.2s, transform 0.2s, border-color 0.15s, color 0.15s;
+  &:hover { border-color: var(--accent); color: var(--accent-ink); }
+  &:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  &[data-hidden='true'] { opacity: 0; transform: translateY(8px); pointer-events: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top, .related-card img { transition: none; }
+}
 .post-contents { min-width: 0; opacity: 0.85; }
 .post-contents nav { scrollbar-width: thin; scrollbar-color: var(--hair) transparent; }
 .post-contents a { font-size: 11px; }
@@ -414,6 +473,7 @@
   .article-layout { grid-template-columns: minmax(0, 1fr); }
   .article-shell { max-width: 800px; }
   .blog-prose { max-width: none; }
+  .related-posts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 639px) {
   .post-header { padding-top: 28px; padding-bottom: 32px; }
@@ -432,5 +492,30 @@
   .blog-diagram { padding: 24px 12px; }
   .blog-chart { padding: 20px 12px; }
   .blog-prose th, .blog-prose td { padding: 12px; font-size: 13px; }
+  // Let wide tables scroll sideways instead of squeezing every column into one-word lines.
+  .blog-prose th, .blog-prose td { min-width: 9.5em; }
+  .related-posts { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .back-to-top { right: 16px; bottom: 16px; }
   .blog-prose :not(pre) > code { overflow-wrap: anywhere; }
+}
+
+// Engagement counts under the reactions bar.
+.post-engagement {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  max-width: 720px;
+  margin: 24px 0 0;
+  border: 1px solid var(--hair);
+  background: var(--bg-2);
+  > div { padding: 14px 16px; border-left: 1px solid var(--hair); }
+  > div:first-child { border-left: 0; }
+  dt { font: 500 10px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  dd { margin: 6px 0 0; font-size: 22px; font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--fg); }
+  dd a { color: inherit; text-decoration: none; &:hover { color: var(--accent-ink); } }
+}
+.post-meta-link { color: inherit; text-decoration: none; &:hover { color: var(--accent); } }
+@media (max-width: 639px) {
+  .post-engagement { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .post-engagement > div:nth-child(3) { border-left: 0; }
+  .post-engagement > div:nth-child(n + 3) { border-top: 1px solid var(--hair); }
 }
