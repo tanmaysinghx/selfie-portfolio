@@ -22,7 +22,7 @@ tags: [angular, migration]
 cover: cover.webp          # optional; relative to the post folder or an absolute /path
 ogImage: cover.png         # optional; link-preview image (PNG/JPG; SVG covers fall back to a same-named .png)
 coverAlt: Old JSF screen next to the new Angular one
-featured: true             # optional; pins the post to the top of /blog
+featured: true             # optional; pins the post to the top of /blog (newest featured post leads)
 draft: true                # optional; visible in `npm start`, never deployed
 ---
 ```

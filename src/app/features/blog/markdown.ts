@@ -64,10 +64,12 @@ export function renderMarkdown(markdown: string, slug: string): RenderedPost {
         const seen = usedIds.get(base) ?? 0;
         usedIds.set(base, seen + 1);
         const id = seen ? `${base}-${seen}` : base;
+        const text = inner.replace(/<[^>]+>/g, '');
         if (depth === 2 || depth === 3) {
-          toc.push({ id, depth, text: inner.replace(/<[^>]+>/g, '') });
+          toc.push({ id, depth, text });
         }
-        return `<h${depth} id="${id}"><a class="blog-anchor" href="#${id}" aria-hidden="true" tabindex="-1">#</a>${inner}</h${depth}>\n`;
+        // Clicking the "#" copies a link straight to this section (handled in the post component).
+        return `<h${depth} id="${id}">${inner}<a class="blog-anchor" href="#${id}" data-heading-link aria-label="Copy link to section: ${escapeHtml(text)}"><span aria-hidden="true">#</span></a></h${depth}>\n`;
       },
 
       code({ text, lang }: Tokens.Code) {

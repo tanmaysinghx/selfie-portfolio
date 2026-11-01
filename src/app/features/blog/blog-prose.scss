@@ -71,15 +71,37 @@
   h4 { font-size: 18px; margin: 1.6em 0 0.4em; }
 
   .blog-anchor {
-    position: absolute;
-    left: -1.1em;
-    color: var(--hair-2);
+    position: relative;
+    display: inline-block;
+    margin-left: 0.3em;
+    padding: 0 0.15em;
+    color: var(--muted);
+    font-weight: 400;
     text-decoration: none;
     opacity: 0;
     transition: opacity 0.15s, color 0.15s;
   }
-  :is(h2, h3, h4):hover .blog-anchor { opacity: 1; }
+  :is(h2, h3, h4):hover .blog-anchor,
+  .blog-anchor:focus-visible,
+  .blog-anchor[data-copied] { opacity: 1; }
   .blog-anchor:hover { color: var(--accent); }
+  .blog-anchor:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+  // "Link copied" bubble after a click.
+  .blog-anchor[data-copied]::after {
+    content: attr(data-copied);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 6px);
+    transform: translateX(-50%);
+    padding: 5px 8px;
+    border-radius: 4px;
+    background: var(--fg);
+    color: var(--bg);
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    pointer-events: none;
+  }
 
   hr {
     border: 0;
@@ -456,8 +478,75 @@
   &:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   &[data-hidden='true'] { opacity: 0; transform: translateY(8px); pointer-events: none; }
 }
+// "7 min left" pill, next to the back-to-top button.
+.reading-left {
+  position: fixed;
+  right: 80px;
+  bottom: 30px;
+  z-index: 40;
+  padding: 8px 12px;
+  border: 1px solid var(--hair-2);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--muted);
+  font: 500 11px/1 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 6px 20px -12px rgba(26, 24, 22, 0.35);
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  &[data-hidden='true'] { opacity: 0; transform: translateY(8px); }
+  &[data-finished='true'] { color: var(--accent-ink); border-color: var(--accent); }
+}
+
+// "Pick up where you left off" bar on a returning visit.
+.resume-bar {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: min(520px, calc(100vw - 48px));
+  padding: 12px 12px 12px 16px;
+  border: 1px solid var(--hair-2);
+  background: var(--bg);
+  color: var(--fg);
+  box-shadow: 0 12px 32px -16px rgba(26, 24, 22, 0.45);
+  animation: resume-in 0.25s ease-out;
+  .resume-text { min-width: 0; font-size: 13px; line-height: 1.45; }
+  .resume-text strong { display: block; font-weight: 600; }
+  .resume-text span { display: block; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .resume-go {
+    flex: none;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 0;
+    background: var(--fg);
+    color: var(--bg);
+    font: 500 13px/1 var(--sans);
+    cursor: pointer;
+    &:hover { background: var(--accent-ink); color: #fff; }
+  }
+  .resume-close {
+    flex: none;
+    width: 36px;
+    height: 40px;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-size: 16px;
+    cursor: pointer;
+    &:hover { color: var(--fg); }
+  }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+}
+@keyframes resume-in { from { opacity: 0; transform: translateY(12px); } }
+
 @media (prefers-reduced-motion: reduce) {
-  .back-to-top, .related-card img { transition: none; }
+  .back-to-top, .related-card img, .reading-left { transition: none; }
+  .resume-bar { animation: none; }
 }
 .post-contents { min-width: 0; opacity: 0.85; }
 .post-contents nav { scrollbar-width: thin; scrollbar-color: var(--hair) transparent; }
@@ -483,7 +572,8 @@
   .blog-prose { font-size: 16px; line-height: 1.85; }
   .blog-prose h2 { margin-top: 56px; padding-top: 28px; }
   .blog-prose h3 { font-size: 20px; margin-top: 36px; }
-  .blog-prose .blog-anchor { display: none; }
+  // No hover on touch screens, so keep the section link faintly visible.
+  .blog-prose .blog-anchor { opacity: 0.45; }
   .blog-code { margin: 28px 0; border-radius: 6px; }
   .blog-code pre { font-size: 12px; padding: 18px 14px; gap: 14px; max-height: 360px; }
   .blog-code-numbers { padding-right: 12px; }
@@ -496,6 +586,8 @@
   .blog-prose th, .blog-prose td { min-width: 9.5em; }
   .related-posts { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   .back-to-top { right: 16px; bottom: 16px; }
+  .reading-left { right: 70px; bottom: 22px; }
+  .resume-bar { left: 12px; right: 12px; bottom: 12px; max-width: none; }
   .blog-prose :not(pre) > code { overflow-wrap: anywhere; }
 }
 

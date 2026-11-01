@@ -23,3 +23,19 @@ describe('blog code editor panels', () => {
     expect(root.querySelector('pre')?.getAttribute('tabindex')).toBe('0');
   });
 });
+
+describe('blog heading links', () => {
+  it('gives each heading a labelled, focusable link to itself after its text', () => {
+    const { html, toc } = renderMarkdown('## Cookies: the *leakiest* wall', 'test');
+    const root = document.createElement('div');
+    root.innerHTML = html;
+    const heading = root.querySelector('h2')!;
+    const link = heading.querySelector<HTMLAnchorElement>('[data-heading-link]')!;
+    expect(heading.id).toBe('cookies-the-leakiest-wall');
+    expect(link.getAttribute('href')).toBe('#cookies-the-leakiest-wall');
+    expect(link.getAttribute('aria-label')).toBe('Copy link to section: Cookies: the leakiest wall');
+    expect(link.hasAttribute('tabindex')).toBe(false);
+    expect(heading.lastElementChild).toBe(link);
+    expect(toc[0].text).toBe('Cookies: the leakiest wall');
+  });
+});

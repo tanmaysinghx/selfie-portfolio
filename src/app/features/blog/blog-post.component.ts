@@ -14,6 +14,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Meta, Title } from '@angular/platform-browser';
 import { BlogService } from '../../core/services/blog.service';
+import { ReadingProgressService, ReadingState } from '../../core/services/reading-progress.service';
 import { BlogStats, ShareChannel } from '../../core/models/portfolio.model';
 import { TocEntry, renderMarkdown } from './markdown';
 import { highlightCode, renderCharts, renderDiagrams } from './enhance';
@@ -177,6 +178,21 @@ const HEADER_OFFSET = 88;
       [attr.data-hidden]="!showBackToTop()" [attr.tabindex]="showBackToTop() ? 0 : -1"
       aria-label="Back to top">↑</button>
 
+    <p *ngIf="!notFound() && !loading() && meta()" class="reading-left" aria-hidden="true"
+      [attr.data-hidden]="progress() < 0.02 || !!resume()" [attr.data-finished]="progress() >= 0.98">
+      {{ progress() >= 0.98 ? 'Finished ✓' : minutesLeft() + ' min left' }}
+    </p>
+
+    <!-- Returning reader -->
+    <div *ngIf="resume() as state" class="resume-bar" role="region" aria-label="Continue reading">
+      <p class="resume-text m-0">
+        <strong>Pick up where you left off?</strong>
+        <span>{{ percent(state.progress) }}% read<ng-container *ngIf="state.headingText"> · {{ state.headingText }}</ng-container></span>
+      </p>
+      <button type="button" class="resume-go" (click)="resumeReading()">Continue</button>
+      <button type="button" class="resume-close" (click)="resume.set(null)" aria-label="Dismiss and read from the top">✕</button>
+    </div>
+
     <!-- Image lightbox -->
     <dialog #imageDialog class="image-viewer" aria-label="Image viewer"
       (cancel)="closeZoom()" (close)="closeZoom()" (click)="onViewerBackdrop($event)">
@@ -227,6 +243,7 @@ const HEADER_OFFSET = 88;
 export class BlogPostComponent {
   private route = inject(ActivatedRoute);
   private blog = inject(BlogService);
+  private reading = inject(ReadingProgressService);
   private title = inject(Title);
   private metaTags = inject(Meta);
   private destroyRef = inject(DestroyRef);
@@ -241,6 +258,9 @@ export class BlogPostComponent {
   readonly sectionToc = computed(() => this.toc().filter(entry => entry.depth === 2));
   readonly activeId = signal<string>('');
   readonly progress = signal<number>(0);
+  readonly minutesLeft = computed(() => Math.max(1, Math.ceil((this.meta()?.readingMinutes ?? 1) * (1 - this.progress()))));
+  /** Saved place from an earlier visit, offered until the reader continues, dismisses or scrolls past it. */
+  readonly resume = signal<ReadingState | null>(null);
   readonly stats = signal<BlogStats | null>(null);
   readonly liked = signal<boolean>(false);
   readonly liking = signal(false);
@@ -285,6 +305,8 @@ export class BlogPostComponent {
 
   private charts: { destroy(): void }[] = [];
   private observer?: IntersectionObserver;
+  private headings: HTMLElement[] = [];
+  private saveTimer?: ReturnType<typeof setTimeout>;
 
   constructor() {
     this.route.paramMap.pipe(takeUntilDestroyed()).subscribe(params => {
@@ -311,6 +333,9 @@ export class BlogPostComponent {
     this.loading.set(true);
     this.notFound.set(false);
     this.toc.set([]);
+    this.progress.set(0);
+    this.resume.set(null);
+    this.headings = [];
     this.stats.set(null);
     this.loadedComments.set(null);
     this.liking.set(false);
@@ -336,15 +361,30 @@ export class BlogPostComponent {
     const root = this.content?.nativeElement;
     if (!root) return;
     root.innerHTML = html;
+    this.headings = Array.from(root.querySelectorAll<HTMLElement>('h2[id], h3[id]'));
+
+    // A shared section link (/blog/post#section) opens at that section; otherwise offer the saved place.
+    const hash = decodeURIComponent(location.hash.slice(1));
+    const landedOnHash = !!hash && this.scrollToId(hash, 'auto');
+    const saved = this.reading.get(slug);
+    if (!landedOnHash && saved && saved.progress >= 0.05 && saved.progress < 0.95) this.resume.set(saved);
 
     this.observeHeadings(root);
     this.loadStats(slug);
     void highlightCode(root);
-    void renderDiagrams(root);
+    const diagrams = renderDiagrams(root);
     this.charts = await renderCharts(root);
+
+    // Diagrams and charts change the page height as they draw, so land on the section again if the reader hasn't moved.
+    if (landedOnHash) {
+      const landedAt = window.scrollY;
+      await diagrams;
+      if (this.slug() === slug && Math.abs(window.scrollY - landedAt) < 2) this.scrollToId(hash, 'auto');
+    }
   }
 
   private teardown(): void {
+    this.flushReading();
     this.closeZoom();
     this.charts.forEach(chart => chart.destroy());
     this.charts = [];
@@ -401,6 +441,55 @@ export class BlogPostComponent {
     const read = HEADER_OFFSET - rect.top;
     this.progress.set(total > 0 ? Math.min(1, Math.max(0, read / total)) : 0);
     this.showBackToTop.set(window.scrollY > window.innerHeight * 1.5);
+    this.trackReading();
+  }
+
+  /** Saves the reader's place shortly after they stop scrolling. */
+  private trackReading(): void {
+    if (this.loading() || this.notFound() || !this.slug()) return;
+    const progress = this.progress();
+    const offered = this.resume();
+    // While "pick up where you left off" is showing, an earlier position mustn't overwrite the saved one.
+    if (offered && progress <= offered.progress) return;
+    if (offered) this.resume.set(null);
+    if (progress < 0.03) return;
+    clearTimeout(this.saveTimer);
+    this.saveTimer = setTimeout(() => this.saveReading(), 400);
+  }
+
+  @HostListener('window:pagehide')
+  flushReading(): void {
+    if (this.saveTimer === undefined) return;
+    clearTimeout(this.saveTimer);
+    this.saveReading();
+  }
+
+  private saveReading(): void {
+    this.saveTimer = undefined;
+    const slug = this.slug();
+    if (!slug || this.notFound()) return;
+    const progress = this.progress();
+    const heading = this.headings.filter(h => h.getBoundingClientRect().top <= HEADER_OFFSET + 24).pop();
+    const headingText = heading ? this.toc().find(entry => entry.id === heading.id)?.text : undefined;
+    this.reading.save(slug, { progress, headingId: heading?.id, headingText, finished: progress >= 0.95 });
+  }
+
+  resumeReading(): void {
+    const state = this.resume();
+    this.resume.set(null);
+    if (!state) return;
+    const smooth = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+    if (state.headingId && this.scrollToId(state.headingId, smooth)) return;
+    // No section heading recorded: fall back to the same share of the article.
+    const root = this.content?.nativeElement;
+    if (!root) return;
+    const top = root.getBoundingClientRect().top + window.scrollY;
+    const total = root.offsetHeight - window.innerHeight + HEADER_OFFSET;
+    window.scrollTo({ top: top - HEADER_OFFSET + state.progress * total, behavior: smooth });
+  }
+
+  percent(value: number): number {
+    return Math.round(value * 100);
   }
 
   backToTop(): void {
@@ -442,12 +531,17 @@ export class BlogPostComponent {
 
   scrollToHeading(event: Event, id: string): void {
     event.preventDefault();
-    const target = document.getElementById(id);
-    if (!target) return;
-    window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET, behavior: 'smooth' });
+    if (!this.scrollToId(id, 'smooth')) return;
     history.replaceState(null, '', `#${id}`);
     const details = (event.currentTarget as HTMLElement | null)?.closest('details');
     if (details) details.open = false;
+  }
+
+  private scrollToId(id: string, behavior: ScrollBehavior): boolean {
+    const target = document.getElementById(id);
+    if (!target) return false;
+    window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET, behavior });
+    return true;
   }
 
   /** Delegated clicks for everything inside the rendered markdown. */
@@ -507,6 +601,21 @@ export class BlogPostComponent {
       copy.style.maxWidth = 'none';
       this.zoomObjectUrl = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(copy)], { type: 'image/svg+xml' }));
       this.openImage(this.zoomObjectUrl, 'Article architecture diagram', box.width, box.height);
+      return;
+    }
+
+    // The "#" beside a heading: jump there and copy a link to the section.
+    const headingLink = target.closest<HTMLAnchorElement>('[data-heading-link]');
+    if (headingLink) {
+      const id = decodeURIComponent(headingLink.getAttribute('href')!.slice(1));
+      this.scrollToHeading(event, id);
+      try {
+        await navigator.clipboard.writeText(`${this.url()}#${encodeURIComponent(id)}`);
+        headingLink.dataset['copied'] = 'Link copied';
+      } catch {
+        headingLink.dataset['copied'] = 'Link is in the address bar';
+      }
+      setTimeout(() => delete headingLink.dataset['copied'], 1800);
       return;
     }
 
