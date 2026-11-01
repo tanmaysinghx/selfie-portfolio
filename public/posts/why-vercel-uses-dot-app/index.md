@@ -23,6 +23,13 @@ Those rules don't only apply to Vercel. They apply to **your** domain too. If yo
 > [!IMPORTANT]
 > **How to read this post.** Vercel hasn't published one official paragraph explaining the domain choice. The browser rules (origins, sites, the Public Suffix List, cookie scoping, HSTS preloading) are documented standards. The reasoning about *why* a platform would pick a separate `.app` domain is an engineering explanation built on those rules and on the public history of other platforms, like GitHub, that made the same move.
 
+Prefer to watch first? This video walks through the same idea, from cookie tossing to the Public Suffix List and HSTS preloading. The rest of this post goes deeper into each piece and adds two topics of its own: webhooks, and how all of this applies to your own `app1`/`app2` subdomains.
+
+```youtube
+https://www.youtube.com/watch?v=7KeFUBs5vvg
+Why Vercel uses .app for your projects, not .com
+```
+
 ## 1. A thought experiment: everyone lives on vercel.com
 
 Imagine Vercel had gone the obvious way:
