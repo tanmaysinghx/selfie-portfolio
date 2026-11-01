@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="t d">
+<title id="t">Bad neighbours</title><desc id="d">A row of ink-drawn houses on warm paper. Two share one roof and pass a rust-coloured cookie between them; the rest each sit behind their own fence.</desc>
+<defs><pattern id="lines" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><path d="M0 0V24" stroke="#c9bfab" stroke-width="1"/></pattern></defs>
+<rect width="1600" height="1000" fill="#efeae0"/>
+<path d="M80 640H1520" stroke="#1a1816" stroke-width="4"/>
+<g transform="translate(140 300)" stroke="#1a1816" stroke-width="4">
+<rect x="34" y="150" width="440" height="190" fill="url(#lines)" stroke="none"/>
+<path d="M0 130L225 0L450 130" fill="none" stroke="#a44224" stroke-width="6"/>
+<rect x="20" y="130" width="180" height="210" fill="#f5f1ea"/><rect x="250" y="130" width="180" height="210" fill="#f5f1ea"/>
+<rect x="85" y="250" width="50" height="90" fill="#efeae0"/><rect x="315" y="250" width="50" height="90" fill="#efeae0"/>
+<circle cx="225" cy="200" r="26" fill="#a44224"/><circle cx="216" cy="192" r="4" fill="#f5f1ea" stroke="none"/><circle cx="234" cy="208" r="4" fill="#f5f1ea" stroke="none"/><circle cx="230" cy="190" r="3" fill="#f5f1ea" stroke="none"/>
+<path d="M150 200H190M260 200H300" stroke-dasharray="6 8"/>
+</g>
+<text x="365" y="690" fill="#6b635a" font-family="monospace" font-size="22" letter-spacing="3" text-anchor="middle">app1 · app2 .yourdomain.com</text>
+<g transform="translate(700 380)" stroke="#1a1816" stroke-width="4" fill="none">
+<g id="hs"><path d="M0 260V40M20 260V40M40 260V40M180 260V40M200 260V40M0 90H200M0 200H200" stroke-width="3" stroke="#6b635a"/><path d="M45 110L100 60L155 110" /><rect x="55" y="110" width="90" height="150" fill="#f5f1ea"/><rect x="85" y="200" width="30" height="60" fill="#efeae0"/><circle cx="100" cy="150" r="14" fill="#a44224" stroke="none"/></g>
+<use href="#hs" x="230"/><use href="#hs" x="460"/>
+</g>
+<text x="1040" y="690" fill="#6b635a" font-family="monospace" font-size="22" letter-spacing="3" text-anchor="middle">alice · bob · mallory .vercel.app</text>
+<text x="100" y="872" fill="#1a1816" font-family="Georgia,serif" font-size="72" font-style="italic">Bad neighbours.</text><text x="103" y="930" fill="#6b635a" font-family="monospace" font-size="20" letter-spacing="4">WHY VERCEL USES .APP, NOT .COM</text>
+</svg>

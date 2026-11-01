@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">Bad neighbours</title><desc id="desc">A row of houses: two share one roof and pass a cookie between them, while the others each sit behind their own fence on .app.</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#111d3b"/><stop offset="1" stop-color="#080e20"/></linearGradient><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#9ab8e8" stroke-opacity=".06"/></pattern></defs>
+<rect width="1200" height="630" fill="url(#bg)"/><rect width="1200" height="630" fill="url(#grid)"/>
+<g font-family="Segoe UI,Arial,sans-serif"><rect x="64" y="52" width="300" height="34" rx="17" fill="#123a4a"/><circle cx="84" cy="69" r="5" fill="#69f1cf"/><text x="100" y="75" fill="#8ff3df" font-size="14" letter-spacing="2">WEB SECURITY / DESIGN</text>
+<text x="64" y="156" fill="#f4f7ff" font-size="72" font-weight="700">Bad neighbours.</text><text x="66" y="204" fill="#adbfdb" font-size="26">Why Vercel puts your project on .app, not .com</text>
+<g transform="translate(64 300)">
+<path d="M0 70L130 0L260 70" fill="none" stroke="#ffb283" stroke-width="4"/>
+<rect x="18" y="70" width="100" height="110" rx="6" fill="#14243f" stroke="#a6b4ff" stroke-width="2"/><rect x="142" y="70" width="100" height="110" rx="6" fill="#14243f" stroke="#a6b4ff" stroke-width="2"/>
+<text x="68" y="214" text-anchor="middle" fill="#cdd8f0" font-size="16">app1.</text><text x="192" y="214" text-anchor="middle" fill="#cdd8f0" font-size="16">app2.</text>
+<circle cx="130" cy="112" r="14" fill="#d9a066"/><circle cx="125" cy="108" r="2.5" fill="#6b4a2a"/><circle cx="135" cy="116" r="2.5" fill="#6b4a2a"/>
+<path d="M88 112H110M150 112H172" stroke="#ffb283" stroke-width="3"/>
+<text x="130" y="250" text-anchor="middle" fill="#ffbf97" font-size="15" letter-spacing="1">*.yourdomain.com</text>
+</g>
+<g transform="translate(420 300)" fill="none">
+<g id="h"><rect x="0" y="0" width="150" height="200" rx="10" stroke="#61dcd4" stroke-width="2" stroke-dasharray="8 6"/><path d="M25 80L75 40L125 80" stroke="#a6b4ff" stroke-width="3"/><rect x="35" y="80" width="80" height="80" rx="5" fill="#14243f" stroke="#a6b4ff" stroke-width="2"/><circle cx="75" cy="122" r="11" fill="#d9a066"/></g>
+<use href="#h" x="180"/><use href="#h" x="360"/><use href="#h" x="540"/>
+</g>
+<g font-size="15" text-anchor="middle" fill="#8ff3df"><text x="495" y="530">alice.vercel.app</text><text x="675" y="530">bob.vercel.app</text><text x="855" y="530">you.vercel.app</text><text x="1035" y="530">mallory.vercel.app</text></g>
+<text x="64" y="594" fill="#8197b9" font-size="15" letter-spacing="2">ORIGINS · SITES · PUBLIC SUFFIX LIST · COOKIES · WEBHOOKS</text></g></svg>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-labelledby="t d">
+<title id="t">One shared site versus separate sites</title><desc id="d">Left: app1 and app2 under tanmaysinghx.com share one cookie jar, so a cookie set with Domain=tanmaysinghx.com reaches both. Right: alice and mallory under vercel.app, a public suffix, each have their own jar, and a cookie set with Domain=vercel.app is rejected.</desc>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#ffb283"/></marker><marker id="ax" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#ff7a7a"/></marker></defs>
+<rect width="1200" height="640" rx="20" fill="#0e1830"/>
+<g font-family="Segoe UI,Arial,sans-serif">
+<text x="54" y="62" font-size="16" letter-spacing="3" fill="#71e0cd">SAME URL SHAPE, DIFFERENT TRUST</text>
+<text x="54" y="106" font-size="32" font-weight="700" fill="#f0f5ff">Who shares a cookie jar is decided by the Public Suffix List.</text>
+<path d="M600 140V560" stroke="#2a3d5c" stroke-width="2" stroke-dasharray="6 8"/>
+
+<!-- Left: one site -->
+<text x="54" y="160" font-size="15" letter-spacing="2" fill="#a6bad7">YOUR DOMAIN · NOT A PUBLIC SUFFIX</text>
+<rect x="54" y="180" width="510" height="300" rx="16" fill="#152844" stroke="#ffb283" stroke-width="2"/>
+<text x="76" y="212" font-size="17" fill="#ffbf97">site = tanmaysinghx.com</text>
+<g transform="translate(96 238)"><path d="M0 50L70 0L140 50" fill="none" stroke="#a6b4ff" stroke-width="3"/><rect x="14" y="50" width="112" height="90" rx="6" fill="#1b3350" stroke="#a6b4ff" stroke-width="2"/><rect x="56" y="98" width="28" height="42" fill="#0e1830" stroke="#a6b4ff" stroke-width="2"/><text x="70" y="170" text-anchor="middle" font-size="16" fill="#edf3ff">app1.</text></g>
+<g transform="translate(382 238)"><path d="M0 50L70 0L140 50" fill="none" stroke="#a6b4ff" stroke-width="3"/><rect x="14" y="50" width="112" height="90" rx="6" fill="#1b3350" stroke="#a6b4ff" stroke-width="2"/><rect x="56" y="98" width="28" height="42" fill="#0e1830" stroke="#a6b4ff" stroke-width="2"/><text x="70" y="170" text-anchor="middle" font-size="16" fill="#edf3ff">app2.</text></g>
+<g transform="translate(309 330)"><rect x="-34" y="-30" width="68" height="74" rx="12" fill="#22324f" stroke="#ffb283" stroke-width="2"/><rect x="-26" y="-42" width="52" height="14" rx="4" fill="#ffb283"/><circle cx="-10" cy="4" r="9" fill="#d9a066"/><circle cx="12" cy="18" r="9" fill="#d9a066"/><circle cx="8" cy="-10" r="7" fill="#d9a066"/></g>
+<text x="309" y="400" text-anchor="middle" font-size="14" fill="#ffbf97">one shared jar</text>
+<path d="M240 318H268" stroke="#ffb283" stroke-width="3" marker-end="url(#ah)"/><path d="M350 318H378" stroke="#ffb283" stroke-width="3" marker-end="url(#ah)"/>
+<text x="76" y="446" font-size="15" fill="#c8d4e9" font-family="Consolas,monospace">Set-Cookie: s=…; Domain=tanmaysinghx.com</text>
+<text x="76" y="468" font-size="15" fill="#6ce5c6">✓ accepted — sent to every subdomain</text>
+<text x="54" y="514" font-size="17" fill="#edf3ff">app1 → app2 is same-site.</text>
+<text x="54" y="540" font-size="15" fill="#a6bad7">Shared cookies, cookie tossing, SameSite doesn't apply.</text>
+
+<!-- Right: separate sites -->
+<text x="636" y="160" font-size="15" letter-spacing="2" fill="#a6bad7">VERCEL.APP · ON THE PUBLIC SUFFIX LIST</text>
+<rect x="636" y="180" width="236" height="300" rx="16" fill="#152844" stroke="#6ce5c6" stroke-width="2"/>
+<rect x="892" y="180" width="254" height="300" rx="16" fill="#152844" stroke="#6ce5c6" stroke-width="2"/>
+<text x="656" y="212" font-size="15" fill="#8ff3df">site = alice.vercel.app</text>
+<text x="910" y="212" font-size="15" fill="#8ff3df">site = mallory.vercel.app</text>
+<g transform="translate(662 238)"><path d="M0 50L70 0L140 50" fill="none" stroke="#a6b4ff" stroke-width="3"/><rect x="14" y="50" width="112" height="90" rx="6" fill="#1b3350" stroke="#a6b4ff" stroke-width="2"/><rect x="56" y="98" width="28" height="42" fill="#0e1830" stroke="#a6b4ff" stroke-width="2"/><text x="70" y="170" text-anchor="middle" font-size="16" fill="#edf3ff">alice.</text></g>
+<g transform="translate(822 316)"><rect x="-20" y="-18" width="40" height="44" rx="8" fill="#22324f" stroke="#6ce5c6" stroke-width="2"/><rect x="-15" y="-26" width="30" height="9" rx="3" fill="#6ce5c6"/><circle cx="0" cy="6" r="7" fill="#d9a066"/></g>
+<g transform="translate(920 238)"><path d="M0 50L70 0L140 50" fill="none" stroke="#ff7a7a" stroke-width="3"/><rect x="14" y="50" width="112" height="90" rx="6" fill="#1b3350" stroke="#ff7a7a" stroke-width="2"/><rect x="56" y="98" width="28" height="42" fill="#0e1830" stroke="#ff7a7a" stroke-width="2"/><text x="70" y="170" text-anchor="middle" font-size="16" fill="#edf3ff">mallory.</text></g>
+<g transform="translate(1100 316)"><rect x="-20" y="-18" width="40" height="44" rx="8" fill="#22324f" stroke="#6ce5c6" stroke-width="2"/><rect x="-15" y="-26" width="30" height="9" rx="3" fill="#6ce5c6"/><circle cx="0" cy="6" r="7" fill="#d9a066"/></g>
+<path d="M934 300C900 270 880 270 862 300" fill="none" stroke="#ff7a7a" stroke-width="3" stroke-dasharray="6 6" marker-end="url(#ax)"/>
+<g transform="translate(882 268)" stroke="#ff7a7a" stroke-width="4" stroke-linecap="round"><path d="M-9 -9L9 9M9 -9L-9 9"/></g>
+<text x="656" y="446" font-size="15" fill="#c8d4e9" font-family="Consolas,monospace">Set-Cookie: s=…; Domain=vercel.app</text>
+<text x="656" y="468" font-size="15" fill="#ff9a9a">✗ rejected: public suffix</text>
+<text x="636" y="514" font-size="17" fill="#edf3ff">alice → mallory is cross-site.</text>
+<text x="636" y="540" font-size="15" fill="#a6bad7">Separate jars, no tossing, SameSite protects again.</text>
+
+<path d="M54 572H1146" stroke="#2a3d5c"/>
+<text x="54" y="606" fill="#92a8c9" font-size="15">ILLUSTRATIVE · Browser behaviour per RFC 6265 and the Public Suffix List. Not an official Vercel diagram.</text>
+</g></svg>
