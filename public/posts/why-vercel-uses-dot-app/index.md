@@ -119,10 +119,10 @@ sequenceDiagram
   participant E as app1.tanmaysinghx.com (compromised)
   participant B as app2.tanmaysinghx.com (your bank-like app)
   V->>E: Visits a page on app1
-  E-->>V: Set-Cookie: session=ATTACKER; Domain=tanmaysinghx.com; Path=/account
+  E-->>V: Set-Cookie: session=ATTACKER#59; Domain=tanmaysinghx.com#59; Path=/account
   Note over V: Browser now holds two "session" cookies
   V->>B: GET /account/cards
-  Note over V,B: Cookie: session=ATTACKER; session=victim-real
+  Note over V,B: Cookie: session=ATTACKER#59; session=victim-real
   B-->>V: Shows the attacker's account
   V->>B: Saves a new card (into the attacker's account)
 ```
