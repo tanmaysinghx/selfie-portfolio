@@ -3,7 +3,7 @@ import { test, after, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { loadApi } from './load-api.mjs';
 
-const { stats, comments, track, insights } = await loadApi('api-test');
+const { stats, comments, track, insights, health } = await loadApi('api-test');
 const originalFetch = globalThis.fetch;
 const saved = { url: process.env.BACKEND_URL, key: process.env.BACKEND_API_KEY };
 after(() => {
@@ -27,16 +27,33 @@ function post(path, body, headers = {}) {
 }
 
 test('stats: missing config or an unreachable backend degrade to 503 without leaking details', async () => {
-  delete process.env.BACKEND_URL;
+  delete process.env.BACKEND_API_KEY;
   let res = await stats.GET(new Request(`${SITE}/api/stats?slug=post`));
   assert.equal(res.status, 503); assert.equal((await res.json()).configured, false);
 
   process.env.BACKEND_URL = 'http://127.0.0.1:8080';
+  process.env.BACKEND_API_KEY = 'test-key';
   globalThis.fetch = async () => { throw new Error('private upstream error'); };
   res = await stats.POST(post('/api/stats', { slug: 'post', action: 'like' }));
   assert.equal(res.status, 503);
   assert.match(res.headers.get('set-cookie'), /visitor_id=.*HttpOnly; SameSite=Lax; Path=\/api/);
   assert.doesNotMatch(await res.text(), /private upstream/);
+});
+
+test('stats and health use the production backend when no URL override is set', async () => {
+  delete process.env.BACKEND_URL;
+  const calls = [];
+  globalThis.fetch = async (url, options) => {
+    calls.push(new URL(url));
+    assert.equal(new URL(url).origin, 'https://selfie.tanmaysinghx.com');
+    assert.equal(options.headers['x-api-key'], 'test-key');
+    return envelope(counts);
+  };
+  assert.equal((await stats.GET(new Request(`${SITE}/api/stats?slug=post`))).status, 200);
+  const response = await health.GET();
+  assert.equal(response.status, 200);
+  assert.equal((await response.json()).backend, 'ok');
+  assert.equal(calls.length, 3);
 });
 
 test('stats: refuses non-HTTPS remote backends and URLs with credentials', async () => {

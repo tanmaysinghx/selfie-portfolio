@@ -17,6 +17,7 @@ export async function loadApi(cacheName) {
   }
   const bust = `?t=${Date.now()}`;
   return {
+    backend: await import(new URL('_lib/backend.mjs', out).href),
     stats: await import(new URL('stats.mjs', out).href + bust),
     comments: await import(new URL('comments.mjs', out).href + bust),
     health: await import(new URL('health.mjs', out).href + bust),

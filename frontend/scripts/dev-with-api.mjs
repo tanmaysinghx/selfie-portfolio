@@ -1,4 +1,4 @@
-// Local stand-in for Vercel's /api functions: serves them on 127.0.0.1:4301 and starts
+// Local stand-in for Vercel's /api functions: serves them on an available loopback port and starts
 // `ng serve` with a proxy to it. Backend settings come from .env.local (BACKEND_URL, BACKEND_API_KEY).
 import { createServer } from 'node:http';
 import { spawn } from 'node:child_process';
@@ -19,7 +19,7 @@ const server = createServer(async (req, res) => {
       if (Buffer.byteLength(body) > MAX) { res.writeHead(413); res.end(); return; }
     }
     // The Angular proxy keeps the browser's Origin, so validate against the dev server's origin.
-    const request = new Request(`http://localhost:4200${req.url}`, {
+    const request = new Request(`http://${req.headers.host ?? 'localhost:4200'}${req.url}`, {
       method: req.method, headers: req.headers, body: req.method === 'POST' ? body : undefined
     });
     const response = await handler(request);
@@ -31,10 +31,26 @@ const server = createServer(async (req, res) => {
   }
 });
 
-server.listen(4301, '127.0.0.1', () => {
-  const target = process.env.BACKEND_URL ? `→ ${process.env.BACKEND_URL}` : '(BACKEND_URL not set: the UI will show its offline states)';
-  console.log(`Local API gateway on 127.0.0.1:4301 ${target}`);
+let child;
+server.on('error', error => {
+  console.error(`Local API gateway failed: ${error.message}`);
+  child?.kill();
+  process.exitCode = 1;
 });
-const child = spawn(process.execPath, ['node_modules/@angular/cli/bin/ng.js', 'serve', '--proxy-config', 'proxy.api.json'], { cwd: root, stdio: 'inherit' });
-child.on('exit', code => { server.close(); process.exitCode = code ?? 0; });
-for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => { child.kill(); server.close(); });
+server.listen(0, '127.0.0.1', () => {
+  const gatewayUrl = `http://127.0.0.1:${server.address().port}`;
+  const target = `→ ${routes.backend.backendUrl()}`;
+  console.log(`Local API gateway on ${gatewayUrl} ${target}`);
+  child = spawn(process.execPath, ['node_modules/@angular/cli/bin/ng.js', 'serve', '--proxy-config', 'proxy.api.cjs', ...process.argv.slice(2)], {
+    cwd: root,
+    stdio: 'inherit',
+    env: { ...process.env, SELFIE_DEV_GATEWAY_URL: gatewayUrl }
+  });
+  child.on('error', error => {
+    console.error(`Angular dev server failed: ${error.message}`);
+    server.close();
+    process.exitCode = 1;
+  });
+  child.on('exit', code => { server.close(); process.exitCode = code ?? 0; });
+});
+for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => { child?.kill(); server.close(); });

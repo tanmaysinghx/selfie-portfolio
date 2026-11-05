@@ -60,9 +60,13 @@ export async function readJsonBody(request: Request): Promise<{ body?: Record<st
   }
 }
 
-/** Backend base URL, or null when unset or unsafe (non-HTTPS outside localhost, embedded credentials). */
+export function backendUrl(): string {
+  return process.env.BACKEND_URL || 'https://selfie.tanmaysinghx.com/';
+}
+
+/** Backend base URL, or null when the key is unset or the URL is unsafe. */
 function baseUrl(): URL | null {
-  const raw = process.env.BACKEND_URL;
+  const raw = backendUrl();
   if (!raw || !process.env.BACKEND_API_KEY) return null;
   try {
     const url = new URL(raw);

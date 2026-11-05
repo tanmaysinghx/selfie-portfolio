@@ -7,10 +7,14 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 To start a local development server, run:
 
 ```bash
-ng serve
+npm start
 ```
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+
+API requests are forwarded through a local gateway to `BACKEND_URL` (configured as `https://selfie.tanmaysinghx.com/`). The gateway loads `.env` and then `.env.local`, which takes precedence. Set `BACKEND_API_KEY` in your local env file; it stays server-side. Restart `npm start` after changing these settings. Browser requests still show the local `/api` URL because the gateway makes the remote call.
+
+The backend URL defaults to `https://selfie.tanmaysinghx.com/` in `api/_lib/backend.ts`, including on Vercel. `BACKEND_URL` is an optional environment override. Configure the secret `BACKEND_API_KEY` in Vercel's environment variables and redeploy to apply changes. The health endpoint's `env.BACKEND_URL` field reports whether an environment override is present; `false` is normal when using the code default.
 
 ## Code scaffolding
 

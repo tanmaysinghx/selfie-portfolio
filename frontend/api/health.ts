@@ -9,7 +9,7 @@ export async function GET(): Promise<Response> {
   const report = (backend: string, status = 200) =>
     json({ gateway: 'ok', backend, env: { BACKEND_URL: hasUrl, BACKEND_API_KEY: hasKey } }, status);
 
-  if (!hasUrl || !hasKey) return report('not_configured', 503);
+  if (!hasKey) return report('not_configured', 503);
   if (!backendConfigured()) return report('invalid_url', 503); // must be https:// (http only for localhost)
 
   const ready = await callBackend<unknown>('GET', '/health/ready');
