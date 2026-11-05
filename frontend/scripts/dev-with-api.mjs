@@ -10,7 +10,7 @@ const MAX = 4096;
 
 const server = createServer(async (req, res) => {
   try {
-    const name = req.url?.match(/^\/api\/(stats|comments)(?:\?|$)/)?.[1];
+    const name = req.url?.match(/^\/api\/(stats|comments|health)(?:\?|$)/)?.[1];
     const handler = name && routes[name][req.method];
     if (!handler) { res.writeHead(404, { 'content-type': 'application/json' }); res.end('{"error":"not found"}'); return; }
     let body = '';
