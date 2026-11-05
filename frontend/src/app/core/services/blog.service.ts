@@ -58,14 +58,14 @@ export class BlogService {
   }
 
   async like(slug: string): Promise<BlogStats> {
-    const stats = this.requireStats(await this.call(this.http.post<BlogStats>('/api/stats', { slug, action: 'like' }), 5000));
+    const stats = this.requireStats(await this.call(this.http.post<BlogStats>('/api/stats', { slug, action: 'like' }), 5000, true));
     this.rememberLiked(slug);
     return stats;
   }
 
   /** Counts a share. The share itself already happened, so callers treat failure as "count unknown". */
   async recordShare(slug: string, channel: ShareChannel): Promise<BlogStats> {
-    return this.requireStats(await this.call(this.http.post<BlogStats>('/api/stats', { slug, action: 'share', channel }), 5000));
+    return this.requireStats(await this.call(this.http.post<BlogStats>('/api/stats', { slug, action: 'share', channel }), 5000, true));
   }
 
   async getComments(slug: string): Promise<BlogComment[]> {
@@ -76,7 +76,7 @@ export class BlogService {
 
   async postComment(slug: string, name: string, body: string, website: string): Promise<PostedComment> {
     // "website" is a honeypot: people never see the field, bots fill it in.
-    const result = await this.call(this.http.post<PostedComment>('/api/comments', { slug, name, body, website }), 8000);
+    const result = await this.call(this.http.post<PostedComment>('/api/comments', { slug, name, body, website }), 8000, true);
     if (!result || !isComment(result.comment) || (result.status !== 'published' && result.status !== 'pending')) throw new Error('Comments unavailable');
     return result;
   }
@@ -89,10 +89,11 @@ export class BlogService {
   /**
    * Runs an API call with a timeout. Outages (network errors, timeouts, 5xx, a SPA page
    * instead of JSON) open a short backoff window during which calls fail immediately,
-   * so pages keep working without waiting on a backend that is down.
+   * so pages keep working without waiting on a backend that is down. Clicks (`userAction`)
+   * always try the API: a person pressing a button should never be refused without a request.
    */
-  private async call<T>(request: Observable<T>, ms: number): Promise<T> {
-    if (Date.now() < this.apiDownUntil) throw new ApiUnavailableError();
+  private async call<T>(request: Observable<T>, ms: number, userAction = false): Promise<T> {
+    if (!userAction && Date.now() < this.apiDownUntil) throw new ApiUnavailableError();
     try {
       const value = await firstValueFrom(request.pipe(timeout(ms)));
       this.apiDownUntil = 0;

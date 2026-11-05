@@ -2,8 +2,29 @@ use selfie_backend::{AppState, config::Config, lazy_pool, router, spawn_migratio
 use std::sync::{Arc, atomic::AtomicBool};
 use tracing_subscriber::{EnvFilter, fmt};
 
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
+fn main() -> anyhow::Result<()> {
+    // `selfie-backend healthcheck` is the container HEALTHCHECK: the distroless image has no curl.
+    if std::env::args().nth(1).as_deref() == Some("healthcheck") {
+        std::process::exit(if healthcheck() { 0 } else { 1 });
+    }
+    tokio::runtime::Builder::new_multi_thread().enable_all().build()?.block_on(serve())
+}
+
+/// Exits 0 when `GET /health/live` on the local port answers 200 within 2 seconds.
+fn healthcheck() -> bool {
+    use std::{io::{Read, Write}, net::TcpStream, time::Duration};
+    let port = std::env::var("PORT").ok().filter(|p| !p.is_empty()).unwrap_or_else(|| "8080".into());
+    let Ok(addr) = format!("127.0.0.1:{port}").parse() else { return false };
+    let Ok(mut stream) = TcpStream::connect_timeout(&addr, Duration::from_secs(2)) else { return false };
+    let _ = stream.set_read_timeout(Some(Duration::from_secs(2)));
+    if stream.write_all(b"GET /health/live HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n").is_err() {
+        return false;
+    }
+    let mut head = [0u8; 12];
+    stream.read_exact(&mut head).is_ok() && head.starts_with(b"HTTP/1.1 200")
+}
+
+async fn serve() -> anyhow::Result<()> {
     // Local development reads backend/.env; in production the platform injects variables.
     let _ = dotenvy::dotenv();
     let config = Config::from_env()?;
