@@ -4,6 +4,7 @@ pub mod blog;
 pub mod config;
 pub mod extract;
 pub mod health;
+pub mod insights;
 pub mod response;
 pub mod validate;
 
@@ -45,9 +46,15 @@ pub struct AppState {
     pub config: Arc<Config>,
     /// Flipped to true once migrations have run. Until then data routes answer 503.
     pub ready: Arc<AtomicBool>,
+    /// Shared, single-flight cache for `/api/v1/insights`.
+    pub insights: Arc<insights::InsightsCache>,
 }
 
 impl AppState {
+    pub fn new(db: MySqlPool, config: Config, ready: bool) -> Self {
+        Self { db, config: Arc::new(config), ready: Arc::new(AtomicBool::new(ready)), insights: insights::InsightsCache::new() }
+    }
+
     pub fn is_ready(&self) -> bool {
         self.ready.load(Ordering::Acquire)
     }
@@ -98,6 +105,9 @@ pub fn router(state: AppState) -> Router {
         .route("/posts/{slug}/likes", post(blog::record_like))
         .route("/posts/{slug}/shares", post(blog::record_share))
         .route("/posts/{slug}/comments", get(blog::list_comments).post(blog::create_comment))
+        .route("/site/pageviews", post(insights::record_page_view))
+        .route("/site/engagement", post(insights::record_engagement))
+        .route("/insights", get(insights::get_insights))
         .route_layer(middleware::from_fn_with_state(state.clone(), health::require_ready))
         .route_layer(middleware::from_fn_with_state(state.clone(), auth::require_service_key));
 

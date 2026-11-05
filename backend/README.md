@@ -81,6 +81,15 @@ Every response is JSON and carries an `x-request-id` header (an incoming one is 
 | POST | `/api/v1/posts/{slug}/shares` | `{ visitorId, channel: copy\|linkedin\|x\|native }` | stats. Counts once per visitor, per channel, per day. |
 | GET | `/api/v1/posts/{slug}/comments?limit=50&after=<id>` | – | `{ comments: [{ id, name, body, createdAt }], nextCursor }`. Published comments only, oldest first. |
 | POST | `/api/v1/posts/{slug}/comments` | `{ name, body, visitorId }` | `201 { comment, status: published\|pending }` |
+| POST | `/api/v1/site/pageviews` | `{ visitorId, path }` | `{ accepted }`. Counts once per visitor, per path, per UTC day; the query string is ignored. |
+| POST | `/api/v1/site/engagement` | `{ visitorId, path, seconds: 1–120 }` | `{ accepted }`. Adds *active* seconds, capped at 4 h per path, visitor and day. `/blog/{slug}` paths count as reading time for that post. |
+| GET | `/api/v1/insights` | – | `{ site, posts, readerThresholdSeconds, generatedAt }`, cached for 30 s (see below) |
+
+**Insights.** `site` holds `pageViews`, `visitors`, `postViews`, `likes`, `shares`, `comments`, `timeOnSiteSeconds`, `readingSeconds` and `avgVisitSeconds`. `posts` holds one entry per post: `{ slug, views, likes, shares, comments, readers, readingSeconds, avgReadSeconds }`.
+
+- **Readers** are visitors who actively read a post for at least 30 seconds, so clicks alone don't count.
+- **Order:** most read first (readers, then reading time, then views).
+- **Caching:** the result is cached in memory for 30 s. Concurrent requests share one computation, and the last good copy is served if MySQL errors.
 
 `visitorId` is the v4 UUID from the gateway's `visitor_id` cookie. Reactions are idempotent: a retry or a double-click never counts twice. Re-submitting the same comment within 10 minutes returns the original comment.
 

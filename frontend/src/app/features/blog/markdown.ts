@@ -64,7 +64,8 @@ export function renderMarkdown(markdown: string, slug: string): RenderedPost {
         const seen = usedIds.get(base) ?? 0;
         usedIds.set(base, seen + 1);
         const id = seen ? `${base}-${seen}` : base;
-        const text = inner.replace(/<[^>]+>/g, '');
+        // Plain text for the sidebar and aria-label: tags stripped, entities (&#39; &amp; …) decoded.
+        const text = decodeEntities(inner.replace(/<[^>]+>/g, ''));
         if (depth === 2 || depth === 3) {
           toc.push({ id, depth, text });
         }
@@ -152,4 +153,15 @@ export function renderMarkdown(markdown: string, slug: string): RenderedPost {
   });
 
   return { html: marked.parse(markdown, { async: false }), toc };
+}
+
+/** Decodes the few entities marked emits, so TOC text isn't double-escaped by Angular. */
+function decodeEntities(text: string): string {
+  return text
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)))
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&');
 }

@@ -62,6 +62,16 @@ server-only API key, a visitor cookie and a 2.5-second timeout.
 | `POST /api/stats { slug, action, channel? }` (view, like, share) | `api/stats.ts` | `POST /api/v1/posts/{slug}/views`, `/likes`, `/shares` |
 | `GET /api/comments?slug=` | `api/comments.ts` | `GET /api/v1/posts/{slug}/comments` (cursor-paged) |
 | `POST /api/comments { slug, name, body, website }` | `api/comments.ts` | `POST /api/v1/posts/{slug}/comments` |
+| `POST /api/track { type: "pageview" \| "engagement", path, seconds? }` | `api/track.ts` | `POST /api/v1/site/pageviews`, `/engagement` |
+| `GET /api/insights` (edge-cached for 60 s) | `api/insights.ts` | `GET /api/v1/insights` |
+| `GET /api/health` | `api/health.ts` | `/health/ready` + a keyed call (reports config problems) |
+
+**Analytics** (`AnalyticsService`) sends one page view per route and *active* time. Time counts only
+while the tab is visible and the reader has done something in the last 30 seconds. It's sent every
+30 s, and with `sendBeacon` when the tab is hidden. No third parties are involved, and Do Not Track
+or Global Privacy Control turn it off. On `/blog`, the stats strip (site views, visitors, likes,
+reading time) and the **Most read** section (top 3 by readers; the featured card is unchanged and
+isn't repeated) come from `/api/insights`. Both render only when that call succeeds.
 
 **Local development** (from `frontend/`):
 

@@ -233,3 +233,37 @@ export interface PostedComment {
   /** "pending" means it is held for moderation and not shown to everyone yet. */
   status: 'published' | 'pending';
 }
+
+/** Site-wide totals from /api/insights. Every field is a non-negative integer. */
+export interface SiteInsights {
+  pageViews: number;
+  visitors: number;
+  postViews: number;
+  likes: number;
+  shares: number;
+  comments: number;
+  timeOnSiteSeconds: number;
+  readingSeconds: number;
+  avgVisitSeconds: number;
+}
+
+export interface PostInsight {
+  slug: string;
+  views: number;
+  likes: number;
+  shares: number;
+  comments: number;
+  /** Visitors who actively read for at least readerThresholdSeconds. */
+  readers: number;
+  readingSeconds: number;
+  avgReadSeconds: number;
+}
+
+export interface Insights {
+  configured: true;
+  site: SiteInsights;
+  /** Most read first. */
+  posts: PostInsight[];
+  readerThresholdSeconds: number;
+  generatedAt: string;
+}

@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, firstValueFrom, timeout } from 'rxjs';
-import { BlogComment, BlogCommentPage, BlogPostMeta, BlogStats, PostedComment, ShareChannel } from '../models/portfolio.model';
+import { BlogComment, BlogCommentPage, BlogPostMeta, BlogStats, Insights, PostedComment, ShareChannel } from '../models/portfolio.model';
 
 const LIKED_KEY = 'blog:keystone-liked';
 /** After the API looks down, skip calls for this long so pages don't wait on timeouts. */
@@ -22,6 +22,10 @@ export class BlogService {
   readonly isLoaded = signal<boolean>(false);
   /** Epoch ms until which reaction/comment calls fail fast. 0 = API assumed healthy. */
   private apiDownUntil = 0;
+
+  /** Site totals and post rankings; null while unknown or when the API is unavailable. */
+  readonly insights = signal<Insights | null>(null);
+  private insightsAt = 0;
 
   constructor() {
     this.loadIndex();
@@ -79,6 +83,21 @@ export class BlogService {
     const result = await this.call(this.http.post<PostedComment>('/api/comments', { slug, name, body, website }), 8000, true);
     if (!result || !isComment(result.comment) || (result.status !== 'published' && result.status !== 'pending')) throw new Error('Comments unavailable');
     return result;
+  }
+
+  /**
+   * Loads site stats and rankings at most once a minute. Never throws: on any failure the
+   * signal keeps its last good value (or stays null), and the page simply hides those parts.
+   */
+  async loadInsights(): Promise<void> {
+    if (Date.now() - this.insightsAt < 60_000) return;
+    this.insightsAt = Date.now();
+    try {
+      const data = await this.call(this.http.get<Insights>('/api/insights'), 5000);
+      if (isInsights(data)) this.insights.set(data);
+    } catch {
+      this.insightsAt = 0; // allow a retry on the next visit to the page
+    }
   }
 
   /** Lets a "Retry" button try the API again even inside the backoff window. */
@@ -142,6 +161,13 @@ export class BlogService {
 function isOutage(err: unknown): boolean {
   if (err instanceof HttpErrorResponse) return err.status === 0 || err.status >= 500 || err.status === 404;
   return true; // timeouts and unparseable responses
+}
+
+function isInsights(value: unknown): value is Insights {
+  const v = value as Insights;
+  const site = ['pageViews', 'visitors', 'likes', 'readingSeconds'] as const;
+  return !!v && v.configured === true && !!v.site && site.every(k => isCount(v.site[k])) &&
+    Array.isArray(v.posts) && v.posts.every(p => !!p && typeof p.slug === 'string' && isCount(p.views) && isCount(p.readers));
 }
 
 function isCount(value: unknown): value is number {

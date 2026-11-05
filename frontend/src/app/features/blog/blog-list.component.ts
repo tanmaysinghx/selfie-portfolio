@@ -27,6 +27,14 @@ const PAGE_SIZE = 5;
             Notes on Java, building software, and what I learn along the way.
           </p>
 
+          <!-- Site stats: shown only when the stats API answers; nothing renders otherwise. -->
+          <dl *ngIf="siteStats().length" class="site-stats" aria-label="Site stats">
+            <div *ngFor="let s of siteStats()" [attr.title]="s.title">
+              <dt>{{ s.label }}</dt>
+              <dd>{{ s.value }}</dd>
+            </div>
+          </dl>
+
           <a *ngIf="continueReading() as item" [routerLink]="['/blog', item.post.slug]" class="continue-card group">
             <span class="continue-ring" [style.--p]="percent(item.state.progress)" aria-hidden="true"></span>
             <span class="min-w-0">
@@ -76,6 +84,25 @@ const PAGE_SIZE = 5;
               </div>
             </div>
           </a>
+
+          <!-- Most read: ranked by readers who actually read, not just clicks. Hidden without stats. -->
+          <section *ngIf="mostRead().length" class="most-read mb-16" aria-labelledby="most-read-title">
+            <div class="flex items-baseline justify-between gap-4 mb-5">
+              <h2 id="most-read-title" class="m-0 text-[clamp(22px,2.2vw,28px)] font-medium tracking-[-0.02em]">Most read</h2>
+              <span class="font-mono text-[10px] uppercase tracking-[0.08em] text-muted">By readers</span>
+            </div>
+            <ol class="m-0 p-0 list-none grid grid-cols-1 md:grid-cols-3 gap-px bg-hair border border-hair">
+              <li *ngFor="let item of mostRead(); let i = index" class="bg-bg">
+                <a [routerLink]="['/blog', item.post.slug]" class="group flex gap-4 h-full p-5 text-fg no-underline">
+                  <span class="most-read-rank" aria-hidden="true">{{ i + 1 }}</span>
+                  <span class="min-w-0">
+                    <span class="block font-medium leading-[1.3] group-hover:text-accent-ink transition-colors text-pretty">{{ item.post.title }}</span>
+                    <span class="block mt-2 font-mono text-[10px] uppercase tracking-[0.06em] text-muted">{{ readerLine(item.stats) }}</span>
+                  </span>
+                </a>
+              </li>
+            </ol>
+          </section>
 
           <div *ngIf="blog.posts().length" #listTop class="list-top">
             <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-5 mb-6">
@@ -212,6 +239,27 @@ const PAGE_SIZE = 5;
 
     .list-top { scroll-margin-top: 96px; }
 
+    .site-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 28px;
+      margin: 24px 0 0;
+    }
+    .site-stats > div { display: flex; flex-direction: column-reverse; gap: 2px; }
+    .site-stats dt { font: 500 10px/1.2 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .site-stats dd { margin: 0; font-size: 22px; font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+
+    .most-read-rank {
+      flex: none;
+      font-family: var(--serif, Georgia, serif);
+      font-style: italic;
+      font-size: 34px;
+      line-height: 0.9;
+      color: var(--accent);
+      min-width: 1ch;
+    }
+    .most-read a:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
     .continue-card {
       display: flex;
       align-items: center;
@@ -305,6 +353,43 @@ export class BlogListComponent {
       this.query.set(params.get('q') ?? '');
       this.requestedPage.set(Math.max(1, Number.parseInt(params.get('page') ?? '1', 10) || 1));
     });
+    // Optional: stats and "Most read" appear only if the API answers. The list never waits for it.
+    void this.blog.loadInsights();
+  }
+
+  /** Site-wide totals for the strip under the heading; empty when stats are unavailable. */
+  readonly siteStats = computed(() => {
+    const site = this.blog.insights()?.site;
+    if (!site || site.pageViews === 0) return [];
+    return [
+      { value: compact(site.pageViews), label: site.pageViews === 1 ? 'site view' : 'site views', title: `${site.pageViews.toLocaleString()} page views` },
+      { value: compact(site.visitors), label: site.visitors === 1 ? 'visitor' : 'visitors', title: `${site.visitors.toLocaleString()} unique visitors` },
+      { value: compact(site.likes), label: site.likes === 1 ? 'like' : 'likes', title: `${site.likes.toLocaleString()} likes across all posts` },
+      { value: duration(site.readingSeconds), label: 'spent reading', title: `Average visit: ${duration(site.avgVisitSeconds)}` }
+    ].filter(s => s.value !== '0' && s.value !== '0 min');
+  });
+
+  /**
+   * Up to three published posts with the most readers (then reading time, then views). The
+   * featured card stays as it is; it's left out here so the same post isn't shown twice.
+   */
+  readonly mostRead = computed(() => {
+    const insights = this.blog.insights();
+    const lead = this.lead()?.slug;
+    if (!insights || this.filtering() || this.page() !== 1) return [];
+    const bySlug = new Map(this.blog.posts().map(p => [p.slug, p]));
+    return insights.posts
+      .filter(i => i.slug !== lead && bySlug.has(i.slug) && (i.readers > 0 || i.views > 0))
+      .slice(0, 3)
+      .map(i => ({ post: bySlug.get(i.slug)!, stats: i }));
+  });
+
+  readerLine(stats: { readers: number; views: number; avgReadSeconds: number }): string {
+    const parts: string[] = [];
+    if (stats.readers) parts.push(`${compact(stats.readers)} ${stats.readers === 1 ? 'reader' : 'readers'}`);
+    if (stats.avgReadSeconds >= 60) parts.push(`avg ${duration(stats.avgReadSeconds)} read`);
+    if (stats.views) parts.push(`${compact(stats.views)} ${stats.views === 1 ? 'view' : 'views'}`);
+    return parts.join(' · ');
   }
 
   /** "/" focuses search, like most docs sites. Ignored while typing in a field. */
@@ -409,4 +494,16 @@ export class BlogListComponent {
     }
     return links;
   });
+}
+
+/** 1234 -> "1.2K", 1500000 -> "1.5M". */
+function compact(n: number): string {
+  return new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 }).format(n);
+}
+
+/** Seconds -> "45 min", "3.5 h", "1,204 h". */
+function duration(seconds: number): string {
+  if (seconds < 3600) return `${Math.round(seconds / 60)} min`;
+  const hours = seconds / 3600;
+  return `${hours < 10 ? hours.toFixed(1).replace(/\.0$/, '') : Math.round(hours).toLocaleString()} h`;
 }

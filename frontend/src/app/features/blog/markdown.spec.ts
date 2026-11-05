@@ -38,4 +38,9 @@ describe('blog heading links', () => {
     expect(heading.lastElementChild).toBe(link);
     expect(toc[0].text).toBe('Cookies: the leakiest wall');
   });
+
+  it('shows apostrophes and ampersands in the table of contents as plain text', () => {
+    const { toc } = renderMarkdown("## How to know you're at risk\n\n## Q&A", 'post');
+    expect(toc.map(t => t.text)).toEqual(["How to know you're at risk", 'Q&A']);
+  });
 });

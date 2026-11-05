@@ -32,6 +32,20 @@ pub fn visitor_hash(salt: &str, visitor: &str) -> String {
     format!("{:x}", hasher.finalize())
 }
 
+/// Normalizes a site path for analytics: drops query and fragment, lowercases, trims a trailing
+/// slash, and accepts only short, plain paths (`/`, `/blog`, `/blog/some-post`).
+pub fn site_path(raw: &str) -> Result<String, ApiError> {
+    let path = raw.split(['?', '#']).next().unwrap_or("").to_ascii_lowercase();
+    let path = if path.len() > 1 { path.trim_end_matches('/').to_string() } else { path };
+    let ok = path.starts_with('/')
+        && path.len() <= 200
+        && !path.contains("//")
+        && path.split('/').count() <= 5
+        && path.bytes().all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b"/-_.".contains(&b))
+        && !path.split('/').any(|s| s == "." || s == "..");
+    if ok { Ok(path) } else { Err(ApiError::validation("path", "must be a site path like /blog/some-post")) }
+}
+
 pub fn share_channel(channel: &str) -> Result<&str, ApiError> {
     match channel {
         "copy" | "linkedin" | "x" | "native" => Ok(channel),
@@ -124,6 +138,15 @@ mod tests {
         assert!(comment_body(&"x".repeat(1001)).is_err());
         assert!(comment_name(&"n".repeat(61)).is_err());
         assert!(comment_name("   ").is_err());
+    }
+
+    #[test]
+    fn site_paths_are_normalized() {
+        assert_eq!(site_path("/").unwrap(), "/");
+        assert_eq!(site_path("/Blog/Post-1/?utm=x#h").unwrap(), "/blog/post-1");
+        for bad in ["", "blog", "//evil", "/a/../b", "/a b", "/<script>", "/a/b/c/d/e/f"] {
+            assert!(site_path(bad).is_err(), "{bad}");
+        }
     }
 
     #[test]

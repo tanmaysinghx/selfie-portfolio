@@ -14,7 +14,7 @@ use selfie_backend::{
 };
 use serde_json::{Value, json};
 use std::{
-    sync::{Arc, atomic::AtomicBool},
+
     time::Duration,
 };
 use tower::ServiceExt;
@@ -41,7 +41,7 @@ fn config(database_url: &str, moderation: Moderation) -> Config {
 fn offline_app() -> Router {
     // Port 1 on localhost refuses connections immediately: the API must still answer.
     let config = config("mysql://u:p@127.0.0.1:1/none", Moderation::Links);
-    let state = AppState { db: lazy_pool(&config).unwrap(), config: Arc::new(config), ready: Arc::new(AtomicBool::new(false)) };
+    let state = AppState::new(lazy_pool(&config).unwrap(), config, false);
     router(state)
 }
 
@@ -128,7 +128,7 @@ async fn unknown_routes_and_methods_use_the_error_envelope() {
 async fn oversized_bodies_are_rejected() {
     // Marked ready so the request reaches the JSON extractor (which never touches the DB).
     let config = config("mysql://u:p@127.0.0.1:1/none", Moderation::Links);
-    let state = AppState { db: lazy_pool(&config).unwrap(), config: Arc::new(config), ready: Arc::new(AtomicBool::new(true)) };
+    let state = AppState::new(lazy_pool(&config).unwrap(), config, true);
     let app = router(state);
     let big = "x".repeat(20 * 1024);
     let req = Request::post("/api/v1/posts/hello/comments")
@@ -149,7 +149,7 @@ async fn live_app(moderation: Moderation) -> Option<(Router, sqlx::MySqlPool)> {
     let config = config(&selfie_backend::config::normalize_database_url(&url).unwrap(), moderation);
     let pool = lazy_pool(&config).unwrap();
     MIGRATOR.run(&pool).await.expect("migrations");
-    let state = AppState { db: pool.clone(), config: Arc::new(config), ready: Arc::new(AtomicBool::new(true)) };
+    let state = AppState::new(pool.clone(), config, true);
     Some((router(state), pool))
 }
 
@@ -239,5 +239,50 @@ async fn comments_publish_moderate_paginate_and_rate_limit() {
     let (status, _, body) = call(&app, post(&path, json!({ "name": "", "body": "x", "visitorId": visitor }))).await;
     assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY);
     assert_eq!(body["error"]["code"], "validation_failed");
+    cleanup(&pool, &slug).await;
+}
+
+#[tokio::test]
+async fn page_views_engagement_and_insights() {
+    let Some((app, pool)) = live_app(Moderation::Links).await else { return };
+    let slug = test_slug("insights");
+    let path = format!("/blog/{slug}");
+    let (a, b) = (uuid::Uuid::new_v4().to_string(), uuid::Uuid::new_v4().to_string());
+
+    // Page views dedupe per visitor/path/day; query strings are ignored.
+    for p in [path.clone(), format!("{path}?utm=x"), path.to_uppercase()] {
+        let (status, _, body) = call(&app, post("/api/v1/site/pageviews", json!({ "visitorId": a, "path": p }))).await;
+        assert_eq!(status, StatusCode::OK, "{body}");
+    }
+    // a reads 40 s (a reader), b reads 10 s (not yet a reader).
+    for s in [25, 15] {
+        call(&app, post("/api/v1/site/engagement", json!({ "visitorId": a, "path": path, "seconds": s }))).await;
+    }
+    call(&app, post("/api/v1/site/engagement", json!({ "visitorId": b, "path": path, "seconds": 10 }))).await;
+    call(&app, post(&format!("/api/v1/posts/{slug}/likes"), json!({ "visitorId": a }))).await;
+
+    let (status, _, body) =
+        call(&app, post("/api/v1/site/engagement", json!({ "visitorId": a, "path": path, "seconds": 500 }))).await;
+    assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY);
+    assert_eq!(body["error"]["details"][0]["field"], "seconds");
+    let (status, _, _) = call(&app, post("/api/v1/site/pageviews", json!({ "visitorId": a, "path": "/../etc" }))).await;
+    assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY);
+
+    let (status, _, body) = call(&app, get("/api/v1/insights")).await;
+    assert_eq!(status, StatusCode::OK, "{body}");
+    let site = &body["data"]["site"];
+    assert!(site["pageViews"].as_i64().unwrap() >= 1);
+    assert!(site["readingSeconds"].as_i64().unwrap() >= 50);
+    let post = body["data"]["posts"].as_array().unwrap().iter().find(|p| p["slug"] == slug.as_str()).unwrap().clone();
+    assert_eq!(post["readers"], 1);
+    assert_eq!(post["readingSeconds"], 50);
+    assert_eq!(post["avgReadSeconds"], 50);
+    assert_eq!(post["likes"], 1);
+
+    let views: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM site_page_views WHERE path = ?")
+        .bind(&path).fetch_one(&pool).await.unwrap();
+    assert_eq!(views, 1);
+    sqlx::query("DELETE FROM site_page_views WHERE path = ?").bind(&path).execute(&pool).await.unwrap();
+    sqlx::query("DELETE FROM site_engagement WHERE path = ?").bind(&path).execute(&pool).await.unwrap();
     cleanup(&pool, &slug).await;
 }

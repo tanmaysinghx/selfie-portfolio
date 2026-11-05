@@ -1,5 +1,5 @@
 use selfie_backend::{AppState, config::Config, lazy_pool, router, spawn_migrations};
-use std::sync::{Arc, atomic::AtomicBool};
+
 use tracing_subscriber::{EnvFilter, fmt};
 
 fn main() -> anyhow::Result<()> {
@@ -37,7 +37,7 @@ async fn serve() -> anyhow::Result<()> {
         fmt().with_env_filter(filter).init();
     }
 
-    let state = AppState { db: lazy_pool(&config)?, config: Arc::new(config), ready: Arc::new(AtomicBool::new(false)) };
+    let state = AppState::new(lazy_pool(&config)?, config, false);
     spawn_migrations(state.clone());
 
     let listener = tokio::net::TcpListener::bind(state.config.bind).await?;

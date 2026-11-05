@@ -5,6 +5,7 @@ import { HeaderComponent } from './core/components/header/header.component';
 import { FooterComponent } from './core/components/footer/footer.component';
 import { SearchModalComponent } from './core/components/search-modal/search-modal.component';
 import { PortfolioDataService } from './core/services/portfolio-data.service';
+import { AnalyticsService } from './core/services/analytics.service';
 
 @Component({
   selector: 'app-root',
@@ -21,4 +22,8 @@ import { PortfolioDataService } from './core/services/portfolio-data.service';
 })
 export class App {
   private dataService = inject(PortfolioDataService);
+
+  constructor() {
+    inject(AnalyticsService).start();
+  }
 }

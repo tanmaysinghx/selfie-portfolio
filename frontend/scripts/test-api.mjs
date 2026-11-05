@@ -3,7 +3,7 @@ import { test, after, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { loadApi } from './load-api.mjs';
 
-const { stats, comments } = await loadApi('api-test');
+const { stats, comments, track, insights } = await loadApi('api-test');
 const originalFetch = globalThis.fetch;
 const saved = { url: process.env.BACKEND_URL, key: process.env.BACKEND_API_KEY };
 after(() => {
@@ -137,4 +137,47 @@ test('comments: rate limits and outages map to friendly errors', async () => {
   globalThis.fetch = async () => { throw new Error('down'); };
   res = await comments.POST(post('/api/comments', { slug: 'post', name: 'A', body: 'hello', website: '' }));
   assert.equal(res.status, 503);
+});
+
+test('track: forwards page views and heartbeats with the visitor, validates input', async () => {
+  const seen = [];
+  globalThis.fetch = async (url, options) => { seen.push([new URL(url).pathname, JSON.parse(options.body)]); return envelope({ accepted: true }); };
+  assert.equal((await track.POST(post('/api/track', { type: 'pageview', path: '/blog/post' }))).status, 202);
+  assert.equal((await track.POST(post('/api/track', { type: 'engagement', path: '/blog/post', seconds: 30 }))).status, 202);
+  assert.deepEqual(seen.map(s => s[0]), ['/api/v1/site/pageviews', '/api/v1/site/engagement']);
+  assert.equal(seen[1][1].seconds, 30); assert.ok(seen[1][1].visitorId);
+  for (const bad of [{ type: 'pageview', path: 'nope' }, { type: 'engagement', path: '/', seconds: 999 }, { type: 'click', path: '/' }]) {
+    assert.equal((await track.POST(post('/api/track', bad))).status, 400, JSON.stringify(bad));
+  }
+});
+
+test('track: honours Do Not Track and degrades to 503 when the backend is down', async () => {
+  assert.equal((await track.POST(post('/api/track', { type: 'pageview', path: '/' }, { dnt: '1' }))).status, 204);
+  globalThis.fetch = async () => { throw new Error('down'); };
+  assert.equal((await track.POST(post('/api/track', { type: 'pageview', path: '/' }))).status, 503);
+});
+
+const insightsData = {
+  site: { pageViews: 10, visitors: 4, postViews: 6, likes: 2, shares: 1, comments: 1, timeOnSiteSeconds: 900, readingSeconds: 600, avgVisitSeconds: 120 },
+  posts: [{ slug: 'post', views: 6, likes: 2, shares: 1, comments: 1, readers: 3, readingSeconds: 600, avgReadSeconds: 200, extra: 'dropped' }],
+  readerThresholdSeconds: 30, generatedAt: '2026-11-05T10:00:00.000Z'
+};
+
+test('insights: validated, trimmed and edge-cached', async () => {
+  globalThis.fetch = async () => envelope(insightsData);
+  const res = await insights.GET();
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get('cdn-cache-control'), /s-maxage=60/);
+  const body = await res.json();
+  assert.equal(body.configured, true); assert.equal(body.site.pageViews, 10);
+  assert.equal(body.posts[0].readers, 3); assert.equal(body.posts[0].extra, undefined);
+});
+
+test('insights: bad payloads and outages are 503 and never cached', async () => {
+  globalThis.fetch = async () => envelope({ ...insightsData, site: { ...insightsData.site, likes: -1 } });
+  let res = await insights.GET();
+  assert.equal(res.status, 503); assert.equal(res.headers.get('cache-control'), 'no-store');
+  globalThis.fetch = async () => { throw new Error('down'); };
+  res = await insights.GET();
+  assert.equal(res.status, 503); assert.equal((await res.json()).configured, false);
 });
