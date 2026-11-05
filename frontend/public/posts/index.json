@@ -114,21 +114,6 @@
     "readingMinutes": 14
   },
   {
-    "slug": "hello-blog",
-    "title": "Everything this blog can do",
-    "description": "A tour of the building blocks — diagrams, charts, videos, callouts and code — written as plain Markdown.",
-    "date": "2026-10-29",
-    "tags": [
-      "meta",
-      "writing"
-    ],
-    "cover": "/images/tanmay/mountains.webp",
-    "coverAlt": "Ink sketch of a mountain range",
-    "featured": false,
-    "draft": true,
-    "readingMinutes": 1
-  },
-  {
     "slug": "uber-system-design",
     "title": "Designing Uber, end to end",
     "description": "A detailed system design of a ride-hailing platform, from a driver's GPS ping to the payment captured after the trip, with the trade-offs at every step.",
