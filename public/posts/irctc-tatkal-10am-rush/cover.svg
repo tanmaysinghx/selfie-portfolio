@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">10:00:00 AM — India's daily DDoS</title><desc id="desc">A railway clock at ten o'clock with a crowd of dots rushing toward a narrow gate that leads to a train coach with a few berths.</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#111d3b"/><stop offset="1" stop-color="#080e20"/></linearGradient><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#9ab8e8" stroke-opacity=".06"/></pattern></defs>
+<rect width="1200" height="630" fill="url(#bg)"/><rect width="1200" height="630" fill="url(#grid)"/>
+<g font-family="Segoe UI,Arial,sans-serif"><rect x="64" y="52" width="300" height="34" rx="17" fill="#123a4a"/><circle cx="84" cy="69" r="5" fill="#69f1cf"/><text x="100" y="75" fill="#8ff3df" font-size="14" letter-spacing="2">HOW SYSTEMS DIE · PART 1</text>
+<text x="64" y="156" fill="#f4f7ff" font-size="72" font-weight="700">10:00:00 AM.</text><text x="66" y="204" fill="#adbfdb" font-size="26">India's daily DDoS: why IRCTC breaks at Tatkal time</text>
+<g transform="translate(170 400)"><circle r="110" fill="#14243f" stroke="#a6b4ff" stroke-width="4"/>
+<g stroke="#a6b4ff" stroke-width="3"><path d="M0-96V-82M0 96V82M-96 0H-82M96 0H82M68-68L58-58M-68 68L-58 58M68 68L58 58M-68-68L-58-58"/></g>
+<path d="M0 0V-72" stroke="#f4f7ff" stroke-width="6" stroke-linecap="round"/><path d="M0 0L-50-29" stroke="#ffb283" stroke-width="8" stroke-linecap="round"/><circle r="8" fill="#ffb283"/></g>
+<g fill="#a6b4ff">
+<circle cx="340" cy="330" r="6"/><circle cx="366" cy="350" r="6"/><circle cx="352" cy="378" r="6"/><circle cx="390" cy="320" r="6"/><circle cx="398" cy="372" r="6"/><circle cx="380" cy="402" r="6"/><circle cx="420" cy="346" r="6"/><circle cx="430" cy="392" r="6"/><circle cx="350" cy="430" r="6"/><circle cx="410" cy="430" r="6"/><circle cx="448" cy="420" r="6"/><circle cx="455" cy="360" r="6"/><circle cx="470" cy="330" r="6"/><circle cx="485" cy="390" r="6"/><circle cx="372" cy="460" r="6"/><circle cx="430" cy="460" r="6"/><circle cx="500" cy="440" r="6"/><circle cx="510" cy="355" r="6"/><circle cx="528" cy="400" r="6"/><circle cx="545" cy="372" r="6"/><circle cx="470" cy="470" r="6"/><circle cx="560" cy="420" r="6"/></g>
+<path d="M590 300L660 380V410L590 490" fill="none" stroke="#61dcd4" stroke-width="3"/><path d="M670 395H740" stroke="#61dcd4" stroke-width="3" stroke-dasharray="7 7"/>
+<circle cx="680" cy="395" r="6" fill="#ffb283"/>
+<g transform="translate(750 310)"><rect width="380" height="170" rx="16" fill="#14243f" stroke="#a6b4ff" stroke-width="2"/>
+<g fill="#1d3156" stroke="#5b6f9c" stroke-width="2"><rect x="24" y="26" width="56" height="44" rx="6"/><rect x="92" y="26" width="56" height="44" rx="6"/><rect x="160" y="26" width="56" height="44" rx="6"/><rect x="228" y="26" width="56" height="44" rx="6"/><rect x="296" y="26" width="56" height="44" rx="6"/><rect x="24" y="96" width="56" height="44" rx="6"/><rect x="92" y="96" width="56" height="44" rx="6"/><rect x="228" y="96" width="56" height="44" rx="6"/><rect x="296" y="96" width="56" height="44" rx="6"/></g>
+<rect x="160" y="96" width="56" height="44" rx="6" fill="#ffb283"/>
+<circle cx="80" cy="186" r="16" fill="#0c1529" stroke="#5b6f9c" stroke-width="3"/><circle cx="300" cy="186" r="16" fill="#0c1529" stroke="#5b6f9c" stroke-width="3"/></g>
+<text x="940" y="545" text-anchor="middle" fill="#ffbf97" font-size="16" letter-spacing="1">15 lakh people · a few berths · one second</text>
+<text x="64" y="594" fill="#8197b9" font-size="15" letter-spacing="2">THUNDERING HERD · SEAT CONTENTION · RETRIES · BOTS · PAYMENTS</text></g></svg>

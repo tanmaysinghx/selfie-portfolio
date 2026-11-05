@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="t d">
+<title id="t">10:00:00 AM</title><desc id="d">An ink-drawn railway clock stuck at ten o'clock on warm paper, with a crowd of dots rushing toward a single rust-coloured train berth.</desc>
+<defs><pattern id="lines" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><path d="M0 0V24" stroke="#c9bfab" stroke-width="1"/></pattern></defs>
+<rect width="1600" height="1000" fill="#efeae0"/>
+<path d="M80 640H1520" stroke="#1a1816" stroke-width="4"/>
+<g transform="translate(330 400)" stroke="#1a1816" stroke-width="5" fill="none">
+<circle r="190" fill="url(#lines)" stroke="none" transform="translate(16 16)"/>
+<circle r="190" fill="#f5f1ea"/><circle r="168" stroke-width="2"/>
+<path d="M0-160V-136M0 160V136M-160 0H-136M160 0H136M113-113L96-96M-113 113L-96 96M113 113L96 96M-113-113L-96-96" stroke-width="4"/>
+<path d="M0 0V-128" stroke-width="7" stroke-linecap="round"/><path d="M0 0L-84-48" stroke="#a44224" stroke-width="12" stroke-linecap="round"/><circle r="12" fill="#a44224" stroke="none"/>
+</g>
+<g fill="#1a1816">
+<circle cx="600" cy="420" r="9"/><circle cx="640" cy="450" r="9"/><circle cx="620" cy="500" r="9"/><circle cx="680" cy="400" r="9"/><circle cx="690" cy="480" r="9"/><circle cx="660" cy="540" r="9"/><circle cx="730" cy="440" r="9"/><circle cx="740" cy="520" r="9"/><circle cx="780" cy="470" r="9"/><circle cx="800" cy="410" r="9"/><circle cx="820" cy="530" r="9"/><circle cx="850" cy="480" r="9"/><circle cx="880" cy="440" r="9"/><circle cx="900" cy="510" r="9"/><circle cx="940" cy="470" r="9"/><circle cx="710" cy="580" r="9"/><circle cx="780" cy="590" r="9"/></g>
+<path d="M980 470H1060" stroke="#1a1816" stroke-width="4" stroke-dasharray="8 10"/>
+<g transform="translate(1080 340)" stroke="#1a1816" stroke-width="4">
+<rect width="400" height="240" rx="18" fill="#f5f1ea"/>
+<g fill="#efeae0"><rect x="30" y="40" width="70" height="60"/><rect x="120" y="40" width="70" height="60"/><rect x="210" y="40" width="70" height="60"/><rect x="300" y="40" width="70" height="60"/><rect x="30" y="140" width="70" height="60"/><rect x="120" y="140" width="70" height="60"/><rect x="300" y="140" width="70" height="60"/></g>
+<rect x="210" y="140" width="70" height="60" fill="#a44224"/>
+<circle cx="90" cy="268" r="24" fill="#efeae0"/><circle cx="310" cy="268" r="24" fill="#efeae0"/></g>
+<text x="1280" y="690" fill="#6b635a" font-family="monospace" font-size="22" letter-spacing="3" text-anchor="middle">lakhs of people · one berth</text>
+<text x="100" y="872" fill="#1a1816" font-family="Georgia,serif" font-size="72" font-style="italic">10:00:00 AM.</text><text x="103" y="930" fill="#6b635a" font-family="monospace" font-size="20" letter-spacing="4">INDIA'S DAILY DDOS · HOW SYSTEMS DIE, PART 1</text>
+</svg>

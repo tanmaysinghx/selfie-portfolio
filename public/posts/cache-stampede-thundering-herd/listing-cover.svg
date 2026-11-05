@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="t d">
+<title id="t">One cache miss, a million queries</title><desc id="d">An ink-drawn hourglass running out on warm paper, with a stampede of small arrows pouring out of it toward a single cracked database cylinder.</desc>
+<defs><pattern id="lines" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><path d="M0 0V24" stroke="#c9bfab" stroke-width="1"/></pattern><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#1a1816"/></marker></defs>
+<rect width="1600" height="1000" fill="#efeae0"/>
+<path d="M80 700H1520" stroke="#1a1816" stroke-width="4"/>
+<g transform="translate(300 150)" stroke="#1a1816" stroke-width="5" fill="none">
+<path d="M-100 0H100M-100 480H100" stroke-width="8" stroke-linecap="round"/>
+<path d="M-80 0C-80 170 -12 190 -12 240C-12 290 -80 310 -80 480H80C80 310 12 290 12 240C12 190 80 170 80 0Z" fill="#f5f1ea"/>
+<path d="M-74 472C-50 400 50 400 74 472Z" fill="#a44224" stroke="none"/>
+<path d="M0 246V396" stroke-dasharray="4 10" stroke="#a44224"/></g>
+<g stroke="#1a1816" stroke-width="4" marker-end="url(#a)"><path d="M440 300L1030 430"/><path d="M440 360L1030 450"/><path d="M440 420L1030 470"/><path d="M440 480L1030 490"/><path d="M440 540L1030 510"/><path d="M440 600L1030 530"/></g>
+<g transform="translate(1080 320)" stroke="#1a1816" stroke-width="5">
+<path d="M0 40V300C0 326 90 346 180 346C270 346 360 326 360 300V40" fill="#f5f1ea"/>
+<ellipse cx="180" cy="40" rx="180" ry="40" fill="#efeae0"/>
+<path d="M0 140C0 166 90 186 180 186C270 186 360 166 360 140M0 230C0 256 90 276 180 276C270 276 360 256 360 230" fill="none" stroke-width="3"/>
+<path d="M200 70L160 160L215 200L170 320" fill="none" stroke="#a44224" stroke-width="9"/></g>
+<text x="1260" y="750" fill="#6b635a" font-family="monospace" font-size="22" letter-spacing="3" text-anchor="middle">one key · 40,000 queries</text>
+<text x="100" y="872" fill="#1a1816" font-family="Georgia,serif" font-size="72" font-style="italic">One cache miss.</text><text x="103" y="930" fill="#6b635a" font-family="monospace" font-size="20" letter-spacing="4">A MILLION QUERIES · HOW SYSTEMS DIE, PART 2</text>
+</svg>

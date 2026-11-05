@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="t d">
+<title id="t">One line broke the internet</title><desc id="d">An ink-drawn globe on warm paper wrapped in a single rust-coloured line of code, with a crack spreading from one point across every continent.</desc>
+<defs><pattern id="lines" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><path d="M0 0V24" stroke="#c9bfab" stroke-width="1"/></pattern><clipPath id="g"><circle cx="1000" cy="370" r="250"/></clipPath></defs>
+<rect width="1600" height="1000" fill="#efeae0"/>
+<path d="M80 760H1520" stroke="#1a1816" stroke-width="4"/>
+<circle cx="1020" cy="390" r="250" fill="url(#lines)"/>
+<circle cx="1000" cy="370" r="250" fill="#f5f1ea" stroke="#1a1816" stroke-width="5"/>
+<g clip-path="url(#g)" fill="none" stroke="#1a1816" stroke-width="3"><ellipse cx="1000" cy="370" rx="100" ry="250"/><ellipse cx="1000" cy="370" rx="190" ry="250"/><path d="M750 290H1250M750 450H1250M750 370H1250"/></g>
+<g fill="none" stroke="#a44224" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M1000 370L940 320L900 350L840 290"/><path d="M1000 370L1070 290L1130 310L1190 240"/><path d="M1000 370L1060 460L1140 470L1200 550"/><path d="M1000 370L940 470L970 550"/></g>
+<circle cx="1000" cy="370" r="16" fill="#a44224"/>
+<g transform="translate(140 300)"><rect width="560" height="80" fill="#f5f1ea" stroke="#1a1816" stroke-width="4"/><rect width="14" height="80" fill="#a44224"/><text x="40" y="52" fill="#a44224" font-family="monospace" font-size="28">rollout: global  # one line</text></g>
+<path d="M700 340C760 340 800 350 860 365" fill="none" stroke="#1a1816" stroke-width="4" stroke-dasharray="8 10"/>
+<text x="100" y="872" fill="#1a1816" font-family="Georgia,serif" font-size="72" font-style="italic">One line broke the internet.</text><text x="103" y="930" fill="#6b635a" font-family="monospace" font-size="20" letter-spacing="4">CONFIG, ROLLOUTS AND BLAST RADIUS · HOW SYSTEMS DIE, PART 3</text>
+</svg>
