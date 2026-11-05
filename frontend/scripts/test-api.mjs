@@ -1,51 +1,140 @@
-import { test, after } from 'node:test';
+// Tests for the Vercel gateway functions in /api, with the Rust backend mocked via fetch.
+import { test, after, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile, mkdir, writeFile } from 'node:fs/promises';
-import { pathToFileURL } from 'node:url';
-import ts from 'typescript';
-const source = await readFile(new URL('../api/stats.ts', import.meta.url), 'utf8');
-const dir = new URL('../node_modules/.cache/stats-test/', import.meta.url);
-await mkdir(dir, { recursive: true });
-const target = new URL('stats.mjs', dir);
-await writeFile(target, ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText);
-const { GET, POST } = await import(target.href);
+import { loadApi } from './load-api.mjs';
+
+const { stats, comments } = await loadApi('api-test');
 const originalFetch = globalThis.fetch;
-const originalUrl = process.env.KEYSTONE_URL;
-const originalKey = process.env.KEYSTONE_SERVICE_KEY;
+const saved = { url: process.env.BACKEND_URL, key: process.env.BACKEND_API_KEY };
 after(() => {
   globalThis.fetch = originalFetch;
-  if (originalUrl === undefined) delete process.env.KEYSTONE_URL; else process.env.KEYSTONE_URL = originalUrl;
-  if (originalKey === undefined) delete process.env.KEYSTONE_SERVICE_KEY; else process.env.KEYSTONE_SERVICE_KEY = originalKey;
+  for (const [k, v] of [['BACKEND_URL', saved.url], ['BACKEND_API_KEY', saved.key]]) {
+    if (v === undefined) delete process.env[k]; else process.env[k] = v;
+  }
 });
-function setup() { process.env.KEYSTONE_URL = 'http://127.0.0.1:8090'; process.env.KEYSTONE_SERVICE_KEY = 'test-key'; }
-function post(body, headers = {}) { return new Request('https://portfolio.test/api/stats', { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body) }); }
-test('unconfigured and unreachable services return a safe unavailable response', async () => {
-  delete process.env.KEYSTONE_URL;
-  let response = await GET(new Request('https://portfolio.test/api/stats?slug=post'));
-  assert.equal(response.status, 503); assert.equal((await response.json()).configured, false);
-  setup(); globalThis.fetch = async () => { throw new Error('private upstream error'); };
-  response = await POST(post({ slug: 'post', action: 'like' }));
-  assert.equal(response.status, 503); assert.match(response.headers.get('set-cookie'), /HttpOnly; SameSite=Lax/);
-  assert.doesNotMatch(await response.text(), /private upstream/);
+beforeEach(() => {
+  process.env.BACKEND_URL = 'http://127.0.0.1:8080';
+  process.env.BACKEND_API_KEY = 'test-key';
+  globalThis.fetch = async () => { throw new Error('unexpected fetch'); };
 });
-test('a stable visitor is forwarded, credentials stay server-side, and valid counts pass through', async () => {
-  setup(); const id = crypto.randomUUID();
+
+const SITE = 'https://portfolio.test';
+const counts = { views: 4, likes: 2, shares: 1, comments: 3 };
+const envelope = (data, status = 200) => Response.json({ data, meta: { requestId: 'r' } }, { status });
+const failure = (status, code, headers = {}) => Response.json({ error: { code, message: 'x', requestId: 'r' } }, { status, headers });
+function post(path, body, headers = {}) {
+  return new Request(`${SITE}${path}`, { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body) });
+}
+
+test('stats: missing config or an unreachable backend degrade to 503 without leaking details', async () => {
+  delete process.env.BACKEND_URL;
+  let res = await stats.GET(new Request(`${SITE}/api/stats?slug=post`));
+  assert.equal(res.status, 503); assert.equal((await res.json()).configured, false);
+
+  process.env.BACKEND_URL = 'http://127.0.0.1:8080';
+  globalThis.fetch = async () => { throw new Error('private upstream error'); };
+  res = await stats.POST(post('/api/stats', { slug: 'post', action: 'like' }));
+  assert.equal(res.status, 503);
+  assert.match(res.headers.get('set-cookie'), /visitor_id=.*HttpOnly; SameSite=Lax; Path=\/api/);
+  assert.doesNotMatch(await res.text(), /private upstream/);
+});
+
+test('stats: refuses non-HTTPS remote backends and URLs with credentials', async () => {
+  globalThis.fetch = async () => envelope(counts);
+  for (const url of ['http://api.example.com', 'https://user:pw@api.example.com']) {
+    process.env.BACKEND_URL = url;
+    assert.equal((await stats.GET(new Request(`${SITE}/api/stats?slug=post`))).status, 503, url);
+  }
+});
+
+test('stats: forwards visitor + key server-side and unwraps the envelope', async () => {
+  const id = crypto.randomUUID();
   globalThis.fetch = async (url, options) => {
-    assert.equal(new URL(url).pathname, '/api/v1/blog/stats');
-    assert.equal(options.headers['x-keystone-key'], 'test-key');
-    assert.equal(JSON.parse(options.body).visitor, id);
+    assert.equal(new URL(url).pathname, '/api/v1/posts/post/likes');
+    assert.equal(options.headers['x-api-key'], 'test-key');
+    assert.deepEqual(JSON.parse(options.body), { visitorId: id });
     assert.ok(options.signal); assert.equal(options.redirect, 'error');
-    return Response.json({ views: 4, likes: 2, configured: true });
+    return envelope(counts);
   };
-  const response = await POST(post({ slug: 'post', action: 'like' }, { cookie: `keystone_visitor=${id}` }));
-  assert.equal(response.status, 200); assert.equal(response.headers.get('set-cookie'), null);
-  assert.deepEqual(await response.json(), { views: 4, likes: 2, configured: true });
+  const res = await stats.POST(post('/api/stats', { slug: 'post', action: 'like' }, { cookie: `visitor_id=${id}` }));
+  assert.equal(res.status, 200); assert.equal(res.headers.get('set-cookie'), null);
+  assert.deepEqual(await res.json(), { ...counts, configured: true });
 });
-test('rejects cross-origin writes, malformed input and bad upstream payloads', async () => {
-  setup(); globalThis.fetch = async () => { throw new Error('must not call'); };
-  assert.equal((await POST(post({ slug: 'post', action: 'like' }, { origin: 'https://evil.test' }))).status, 403);
-  assert.equal((await POST(post(null))).status, 400);
-  assert.equal((await GET(new Request('https://portfolio.test/api/stats?slug=bad_slug'))).status, 400);
-  globalThis.fetch = async () => Response.json({ views: 0, likes: -1, configured: true });
-  assert.equal((await GET(new Request('https://portfolio.test/api/stats?slug=post'))).status, 503);
+
+test('stats: legacy keystone cookie is reused and migrated', async () => {
+  const id = crypto.randomUUID();
+  globalThis.fetch = async (_url, options) => { assert.equal(JSON.parse(options.body).visitorId, id); return envelope(counts); };
+  const res = await stats.POST(post('/api/stats', { slug: 'post', action: 'view' }, { cookie: `keystone_visitor=${id}` }));
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get('set-cookie'), new RegExp(`visitor_id=${id}`));
+});
+
+test('stats: shares need a known channel', async () => {
+  globalThis.fetch = async (url, options) => {
+    assert.equal(new URL(url).pathname, '/api/v1/posts/post/shares');
+    assert.equal(JSON.parse(options.body).channel, 'linkedin');
+    return envelope(counts);
+  };
+  assert.equal((await stats.POST(post('/api/stats', { slug: 'post', action: 'share', channel: 'linkedin' }))).status, 200);
+  assert.equal((await stats.POST(post('/api/stats', { slug: 'post', action: 'share', channel: 'fax' }))).status, 400);
+});
+
+test('stats: rejects cross-origin writes, bad input and bad upstream payloads', async () => {
+  assert.equal((await stats.POST(post('/api/stats', { slug: 'post', action: 'like' }, { origin: 'https://evil.test' }))).status, 403);
+  assert.equal((await stats.POST(post('/api/stats', null))).status, 400);
+  assert.equal((await stats.GET(new Request(`${SITE}/api/stats?slug=bad_slug`))).status, 400);
+  globalThis.fetch = async () => envelope({ ...counts, likes: -1 });
+  assert.equal((await stats.GET(new Request(`${SITE}/api/stats?slug=post`))).status, 503);
+  globalThis.fetch = async () => new Response('<html>502</html>', { status: 502 });
+  assert.equal((await stats.GET(new Request(`${SITE}/api/stats?slug=post`))).status, 503);
+});
+
+const c1 = { id: '0192f3a0-0000-7000-8000-000000000001', name: 'Asha', body: 'Nice', createdAt: '2026-11-05T10:00:00.000Z' };
+const c2 = { ...c1, id: '0192f3a0-0000-7000-8000-000000000002' };
+
+test('comments: follows cursors and returns the frontend shape', async () => {
+  let calls = 0;
+  globalThis.fetch = async (url) => {
+    const after = new URL(url).searchParams.get('after');
+    calls++;
+    return after ? envelope({ comments: [c2], nextCursor: null }) : envelope({ comments: [c1], nextCursor: c1.id });
+  };
+  const res = await comments.GET(new Request(`${SITE}/api/comments?slug=post`));
+  assert.equal(res.status, 200); assert.equal(calls, 2);
+  assert.deepEqual(await res.json(), { comments: [c1, c2] });
+});
+
+test('comments: backend down means 503, never a partial thread', async () => {
+  let calls = 0;
+  globalThis.fetch = async () => (++calls === 1 ? envelope({ comments: [c1], nextCursor: c1.id }) : failure(503, 'storage_unavailable'));
+  assert.equal((await comments.GET(new Request(`${SITE}/api/comments?slug=post`))).status, 503);
+});
+
+test('comments: posting validates, trims and forwards with the visitor', async () => {
+  globalThis.fetch = async (url, options) => {
+    assert.equal(new URL(url).pathname, '/api/v1/posts/post/comments');
+    const body = JSON.parse(options.body);
+    assert.equal(body.name, 'Asha'); assert.equal(body.body, 'Great read'); assert.ok(body.visitorId);
+    return envelope({ comment: c1, status: 'published' }, 201);
+  };
+  const res = await comments.POST(post('/api/comments', { slug: 'post', name: ' Asha ', body: ' Great read ', website: '' }));
+  assert.equal(res.status, 201);
+  assert.deepEqual(await res.json(), { comment: c1, status: 'published' });
+
+  assert.equal((await comments.POST(post('/api/comments', { slug: 'post', name: '', body: 'hi there', website: '' }))).status, 400);
+  assert.equal((await comments.POST(post('/api/comments', { slug: 'post', name: 'A', body: 'x'.repeat(1001), website: '' }))).status, 400);
+});
+
+test('comments: honeypot submissions look accepted but never reach the backend', async () => {
+  const res = await comments.POST(post('/api/comments', { slug: 'post', name: 'Bot', body: 'buy now', website: 'http://spam' }));
+  assert.equal(res.status, 201); assert.equal((await res.json()).status, 'pending');
+});
+
+test('comments: rate limits and outages map to friendly errors', async () => {
+  globalThis.fetch = async () => failure(429, 'rate_limited', { 'retry-after': '600' });
+  let res = await comments.POST(post('/api/comments', { slug: 'post', name: 'A', body: 'hello', website: '' }));
+  assert.equal(res.status, 429); assert.equal(res.headers.get('retry-after'), '600');
+  globalThis.fetch = async () => { throw new Error('down'); };
+  res = await comments.POST(post('/api/comments', { slug: 'post', name: 'A', body: 'hello', website: '' }));
+  assert.equal(res.status, 503);
 });

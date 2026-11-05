@@ -409,6 +409,7 @@ export class BlogPostComponent {
   async retryStats(): Promise<void> {
     if (this.retryingStats()) return;
     this.retryingStats.set(true);
+    this.blog.resetBackoff();
     try { await this.loadStats(this.slug()); } finally { this.retryingStats.set(false); }
   }
 

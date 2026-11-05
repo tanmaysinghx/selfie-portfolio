@@ -1,0 +1,35 @@
+[package]
+name = "selfie-backend"
+version = "0.1.0"
+edition = "2024"
+description = "API for tanmaysinghx.com: blog reactions, shares and comments, backed by MySQL."
+publish = false
+
+[[bin]]
+name = "selfie-backend"
+path = "src/main.rs"
+
+[dependencies]
+axum = "0.8"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "signal", "time"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "tls-rustls", "mysql", "migrate", "chrono", "macros"] }
+chrono = { version = "0.4", default-features = false, features = ["clock", "serde", "std"] }
+tower = { version = "0.5", features = ["util"] }
+tower-http = { version = "0.6", features = ["trace", "request-id", "propagate-header", "timeout", "cors", "set-header"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+uuid = { version = "1", features = ["v4", "v7"] }
+sha2 = "0.10"
+subtle = "2"
+dotenvy = "0.15"
+anyhow = "1"
+
+[dev-dependencies]
+http-body-util = "0.1"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true

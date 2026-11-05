@@ -1,55 +1,38 @@
-// Same-origin gateway. Keystone credentials never reach the browser.
-const SLUG = /^[a-z0-9][a-z0-9-]{0,99}$/;
-const VISITOR = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const COOKIE = 'keystone_visitor';
-function json(body: unknown, status = 200, cookie?: string): Response {
-  const headers = new Headers({ 'content-type': 'application/json', 'cache-control': 'no-store' });
-  if (cookie) headers.set('set-cookie', cookie);
-  return new Response(JSON.stringify(body), { status, headers });
-}
+// GET  /api/stats?slug=…                      -> { views, likes, shares, comments, configured: true }
+// POST /api/stats { slug, action, channel? }   action: view | like | share
+// Any backend problem answers 503 { configured: false }, which the page shows as "—".
+import { SLUG, callBackend, isCount, json, readJsonBody, visitor } from './_lib/backend';
+
+const CHANNELS = new Set(['copy', 'linkedin', 'x', 'native']);
+
+interface PostStats { views: number; likes: number; shares: number; comments: number }
+
 function unavailable(cookie?: string): Response {
-  return json({ views: 0, likes: 0, configured: false, message: 'Reactions are temporarily unavailable. Please try again shortly.' }, 503, cookie);
+  return json({ views: 0, likes: 0, configured: false, message: 'Reactions are temporarily unavailable. Please try again shortly.' }, 503, { 'set-cookie': cookie });
 }
-function visitor(request: Request): { id: string; cookie?: string } {
-  const value = request.headers.get('cookie')?.split(';').map(v => v.trim()).find(v => v.startsWith(`${COOKIE}=`))?.slice(COOKIE.length + 1);
-  if (value && VISITOR.test(value)) return { id: value };
-  const id = crypto.randomUUID();
-  return { id, cookie: `${COOKIE}=${id}; HttpOnly; SameSite=Lax; Path=/api; Max-Age=31536000${new URL(request.url).protocol === 'https:' ? '; Secure' : ''}` };
+
+function respond(result: { ok: boolean; data?: PostStats }, cookie?: string): Response {
+  const s = result.data;
+  if (!result.ok || !s || !isCount(s.views) || !isCount(s.likes) || !isCount(s.shares) || !isCount(s.comments)) return unavailable(cookie);
+  return json({ views: s.views, likes: s.likes, shares: s.shares, comments: s.comments, configured: true }, 200, { 'set-cookie': cookie });
 }
-async function forward(slug: string, action?: 'view' | 'like', identity?: { id: string; cookie?: string }): Promise<Response> {
-  const base = process.env.KEYSTONE_URL;
-  const key = process.env.KEYSTONE_SERVICE_KEY;
-  if (!base || !key) return unavailable(identity?.cookie);
-  try {
-    const target = new URL('/api/v1/blog/stats', base);
-    if (target.protocol !== 'https:' && !(target.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(target.hostname))) return unavailable(identity?.cookie);
-    if (target.username || target.password) return unavailable(identity?.cookie);
-    if (!action) target.searchParams.set('slug', slug);
-    const response = await fetch(target, {
-      method: action ? 'POST' : 'GET', headers: { 'content-type': 'application/json', 'x-keystone-key': key },
-      body: action ? JSON.stringify({ slug, action, visitor: identity!.id }) : undefined,
-      signal: AbortSignal.timeout(2500), redirect: 'error'
-    });
-    if (!response.ok) return unavailable(identity?.cookie);
-    const data = await response.json() as { views?: unknown; likes?: unknown; configured?: unknown };
-    if (data.configured !== true || !Number.isSafeInteger(data.views) || !Number.isSafeInteger(data.likes) || Number(data.views) < 0 || Number(data.likes) < 0) return unavailable(identity?.cookie);
-    return json({ views: data.views, likes: data.likes, configured: true }, 200, identity?.cookie);
-  } catch { return unavailable(identity?.cookie); }
-}
+
 export async function GET(request: Request): Promise<Response> {
   const slug = new URL(request.url).searchParams.get('slug') ?? '';
   if (!SLUG.test(slug)) return json({ error: 'invalid slug' }, 400);
-  return forward(slug);
+  return respond(await callBackend<PostStats>('GET', `/api/v1/posts/${slug}/stats`));
 }
+
 export async function POST(request: Request): Promise<Response> {
-  const origin = request.headers.get('origin');
-  if (origin && origin !== new URL(request.url).origin) return json({ error: 'origin not allowed' }, 403);
-  if (!request.headers.get('content-type')?.toLowerCase().startsWith('application/json')) return json({ error: 'JSON required' }, 415);
-  if (Number(request.headers.get('content-length')) > 2048) return json({ error: 'request too large' }, 413);
-  const raw = await request.text();
-  if (raw.length > 2048) return json({ error: 'request too large' }, 413);
-  let body: { slug?: unknown; action?: unknown };
-  try { body = JSON.parse(raw); } catch { return json({ error: 'invalid JSON' }, 400); }
-  if (!body || typeof body.slug !== 'string' || !SLUG.test(body.slug) || (body.action !== 'view' && body.action !== 'like')) return json({ error: 'expected { slug, action: "view" | "like" }' }, 400);
-  return forward(body.slug, body.action, visitor(request));
+  const { body, error } = await readJsonBody(request);
+  if (error) return error;
+  const { slug, action, channel } = body as { slug?: unknown; action?: unknown; channel?: unknown };
+  if (typeof slug !== 'string' || !SLUG.test(slug)) return json({ error: 'invalid slug' }, 400);
+  if (action !== 'view' && action !== 'like' && action !== 'share') return json({ error: 'expected { slug, action: "view" | "like" | "share" }' }, 400);
+  if (action === 'share' && (typeof channel !== 'string' || !CHANNELS.has(channel))) return json({ error: 'invalid share channel' }, 400);
+
+  const who = visitor(request);
+  const path = `/api/v1/posts/${slug}/${action}s`;
+  const payload = action === 'share' ? { visitorId: who.id, channel } : { visitorId: who.id };
+  return respond(await callBackend<PostStats>('POST', path, payload), who.cookie);
 }

@@ -1,0 +1,199 @@
+[
+  {
+    "slug": "cache-stampede-thundering-herd",
+    "title": "One cache miss, a million queries",
+    "description": "How a single expiring cache key can take down your database. The thundering herd explained, with real outages and seven fixes from request coalescing to probabilistic early expiry.",
+    "date": "2026-11-05",
+    "tags": [
+      "system-design",
+      "caching",
+      "scalability",
+      "redis",
+      "how-systems-die"
+    ],
+    "cover": "/posts/cache-stampede-thundering-herd/listing-cover.svg",
+    "ogImage": "/posts/cache-stampede-thundering-herd/cover.png",
+    "coverAlt": "An ink-drawn hourglass running out on warm paper, with a stampede of small arrows pouring out of it toward a single cracked database cylinder",
+    "featured": false,
+    "draft": false,
+    "readingMinutes": 9
+  },
+  {
+    "slug": "irctc-tatkal-10am-rush",
+    "title": "10:00:00 AM — India's daily DDoS",
+    "description": "Why IRCTC struggles every morning at Tatkal time. A system design look at synchronized crowds, segment-based seat inventory, payment pile-ups and the bots racing you for a berth.",
+    "date": "2026-11-05",
+    "tags": [
+      "system-design",
+      "scalability",
+      "ticketing",
+      "case-study",
+      "how-systems-die"
+    ],
+    "cover": "/posts/irctc-tatkal-10am-rush/listing-cover.svg",
+    "ogImage": "/posts/irctc-tatkal-10am-rush/cover.png",
+    "coverAlt": "An ink-drawn railway clock stuck at ten o'clock on warm paper, with a crowd of dots rushing toward a single rust-coloured train berth",
+    "featured": false,
+    "draft": false,
+    "readingMinutes": 13
+  },
+  {
+    "slug": "one-line-broke-the-internet",
+    "title": "One line broke the internet",
+    "description": "Cloudflare, CrowdStrike, Facebook and AWS were each taken down by a tiny change that shipped everywhere at once. What went wrong, the pattern they share, and how to ship config safely.",
+    "date": "2026-11-05",
+    "tags": [
+      "system-design",
+      "reliability",
+      "outages",
+      "deployment",
+      "how-systems-die"
+    ],
+    "cover": "/posts/one-line-broke-the-internet/listing-cover.svg",
+    "ogImage": "/posts/one-line-broke-the-internet/cover.png",
+    "coverAlt": "An ink-drawn globe on warm paper wrapped in a single rust-coloured line of code, with a crack spreading from one point across every continent",
+    "featured": false,
+    "draft": false,
+    "readingMinutes": 12
+  },
+  {
+    "slug": "why-vercel-uses-dot-app",
+    "title": "Bad neighbours — why Vercel puts your project on .app, not .com",
+    "description": "Why your deploy lands on vercel.app and not vercel.com, and how cookies, SameSite and webhooks go wrong when apps share a parent domain like app1 and app2.",
+    "date": "2026-11-01",
+    "tags": [
+      "system-design",
+      "web-security",
+      "cookies",
+      "webhooks",
+      "vercel"
+    ],
+    "cover": "/posts/why-vercel-uses-dot-app/listing-cover.svg",
+    "ogImage": "/posts/why-vercel-uses-dot-app/cover.png",
+    "coverAlt": "A row of ink-drawn houses on warm paper; two share one roof and pass a cookie between them, while the rest sit behind their own fences",
+    "featured": false,
+    "draft": false,
+    "readingMinutes": 15
+  },
+  {
+    "slug": "design-streaming-platform-100-million",
+    "title": "Design a streaming platform for 100 million viewers — from first principles to AWS",
+    "description": "A step-by-step system design workshop: size 100 million viewers, choose Java, Spring Boot and Go services, map them to AWS, and test the failure paths.",
+    "date": "2026-10-30",
+    "tags": [
+      "system-design",
+      "architecture",
+      "aws",
+      "java",
+      "golang",
+      "streaming"
+    ],
+    "cover": "/posts/design-streaming-platform-100-million/listing-cover.svg",
+    "ogImage": "/posts/design-streaming-platform-100-million/cover.png",
+    "coverAlt": "An ink-and-rust network blueprint connecting one stream to 100 million viewers on warm paper",
+    "featured": true,
+    "draft": false,
+    "readingMinutes": 24
+  },
+  {
+    "slug": "jiohotstar-streaming-at-scale",
+    "title": "Inside the surge — how JioHotstar scales live streaming",
+    "description": "A visual case study of JioHotstar-scale streaming, from CDN delivery and adaptive video to match-day traffic spikes, autoscaling, and failure recovery.",
+    "date": "2026-10-30",
+    "tags": [
+      "system-design",
+      "streaming",
+      "scalability",
+      "case-study"
+    ],
+    "cover": "/posts/jiohotstar-streaming-at-scale/listing-cover.svg",
+    "ogImage": "/posts/jiohotstar-streaming-at-scale/cover.png",
+    "coverAlt": "A cricket stadium in ink on warm paper with rust-colored delivery routes spreading toward viewers",
+    "featured": true,
+    "draft": false,
+    "readingMinutes": 14
+  },
+  {
+    "slug": "hello-blog",
+    "title": "Everything this blog can do",
+    "description": "A tour of the building blocks — diagrams, charts, videos, callouts and code — written as plain Markdown.",
+    "date": "2026-10-29",
+    "tags": [
+      "meta",
+      "writing"
+    ],
+    "cover": "/images/tanmay/mountains.webp",
+    "coverAlt": "Ink sketch of a mountain range",
+    "featured": false,
+    "draft": true,
+    "readingMinutes": 1
+  },
+  {
+    "slug": "uber-system-design",
+    "title": "Designing Uber, end to end",
+    "description": "A detailed system design of a ride-hailing platform, from a driver's GPS ping to the payment captured after the trip, with the trade-offs at every step.",
+    "date": "2026-10-12",
+    "tags": [
+      "system-design",
+      "distributed-systems",
+      "architecture"
+    ],
+    "cover": "/posts/uber-system-design/cover.svg",
+    "coverAlt": "Hexagonal city grid with a driver and a rider joined by a dotted route",
+    "featured": false,
+    "draft": false,
+    "readingMinutes": 15
+  },
+  {
+    "slug": "bookmyshow-ticketing-at-scale",
+    "title": "Twelve noon, sold out — how BookMyShow handles concert rushes and seat booking",
+    "description": "A visual case study of BookMyShow-scale ticketing, from virtual waiting rooms and seat holds to payments, bots, and the day-to-day movie booking rush.",
+    "date": "2026-10-01",
+    "tags": [
+      "system-design",
+      "scalability",
+      "ticketing",
+      "case-study"
+    ],
+    "cover": "/posts/bookmyshow-ticketing-at-scale/listing-cover.svg",
+    "ogImage": "/posts/bookmyshow-ticketing-at-scale/cover.png",
+    "coverAlt": "An ink-drawn ticket stub on warm paper, with a dotted queue leading to a small grid of rust-colored seats",
+    "featured": false,
+    "draft": false,
+    "readingMinutes": 17
+  },
+  {
+    "slug": "hls-streaming-ffmpeg-java",
+    "title": "HLS video streaming from scratch with FFmpeg and Java",
+    "description": "Turn one MP4 into an adaptive, encrypted, CDN-friendly stream. Bitrate ladders, segment sizes, ABR, AES-128 and a Java pipeline that runs it all, with charts at every step.",
+    "date": "2026-09-26",
+    "tags": [
+      "video",
+      "ffmpeg",
+      "java",
+      "streaming"
+    ],
+    "cover": "/posts/hls-streaming-ffmpeg-java/cover.svg",
+    "coverAlt": "A film strip split into segments that fan out into four quality lanes, with a player path hopping between them",
+    "featured": false,
+    "draft": false,
+    "readingMinutes": 8
+  },
+  {
+    "slug": "how-java-code-runs-inside-the-jvm",
+    "title": "From .java to the CPU: how Java code actually runs",
+    "description": "Follow a real program from source code to bytecode, class loading, stack frames, JIT compilation and garbage collection—with diagrams and experiments you can run yourself.",
+    "date": "2026-09-12",
+    "tags": [
+      "java",
+      "jvm",
+      "bytecode",
+      "fundamentals"
+    ],
+    "cover": "/posts/how-java-code-runs-inside-the-jvm/cover.svg",
+    "coverAlt": "A diagram tracing Java source through bytecode and the JVM to native CPU instructions",
+    "featured": true,
+    "draft": false,
+    "readingMinutes": 13
+  }
+]

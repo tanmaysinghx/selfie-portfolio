@@ -1,5 +1,6 @@
 import { Component, computed, effect, inject, input, output, signal, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { BlogService } from '../../core/services/blog.service';
 import { BlogComment } from '../../core/models/portfolio.model';
 
@@ -157,6 +158,7 @@ export class BlogCommentsComponent {
 
   async retry(): Promise<void> {
     this.retrying.set(true);
+    this.blog.resetBackoff();
     try { await this.load(this.slug()); } finally { this.retrying.set(false); }
   }
 
@@ -188,8 +190,8 @@ export class BlogCommentsComponent {
         ? 'Thanks! Your comment will appear for everyone once it’s approved.'
         : 'Thanks for commenting!');
       if (status === 'published') this.countChange.emit(this.comments().length - this.pendingIds().size);
-    } catch {
-      if (this.slug() === slug) this.message.set('We couldn’t post your comment. Your text is saved on this device. Please try again shortly.');
+    } catch (err) {
+      if (this.slug() === slug) this.message.set(postErrorMessage(err));
     } finally {
       if (this.slug() === slug) this.submitting.set(false);
     }
@@ -202,6 +204,16 @@ export class BlogCommentsComponent {
   trackById(_: number, comment: BlogComment): string {
     return comment.id;
   }
+}
+
+function postErrorMessage(err: unknown): string {
+  if (err instanceof HttpErrorResponse && err.status === 429) {
+    return 'You’ve posted a few comments in a row. Your text is saved on this device. Please try again in a few minutes.';
+  }
+  if (err instanceof HttpErrorResponse && err.status === 400) {
+    return 'Please check your name and comment (2–1000 characters) and try again.';
+  }
+  return 'We couldn’t post your comment. Your text is saved on this device. Please try again shortly.';
 }
 
 // Drafts are a convenience; blocked storage just means they aren't remembered.

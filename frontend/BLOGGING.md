@@ -50,47 +50,37 @@ git commit -m "post: my new post"
 git push                       # Vercel builds and publishes
 ```
 
-## Views and likes (Keystone)
+## Views, likes, shares and comments
 
-Blog reactions now use the sibling **Keystone** Rust service. The browser still calls
-`/api/stats`; that server-only gateway forwards to Keystone with a short timeout.
+All four are served by the Rust API in [`../backend`](../backend/README.md) (MySQL). The browser
+never talks to it directly: it calls the same-origin Vercel functions in `api/`, which add the
+server-only API key, a visitor cookie and a 2.5-second timeout.
 
-1. Start Keystone from `../keystone` with `cargo run -p keystone`.
-2. Set `KEYSTONE_URL` and `KEYSTONE_SERVICE_KEY` in the portfolio server environment
-   (Vercel settings for deployment, `.env.local` for local development). The key must match
-   Keystone. Never put it in Angular configuration.
-3. For local integration, run `npm run blog` then `npm run start:keystone`.
-   Plain `npm start` does not run the gateway.
-
-`node ../keystone/scripts/configure-local.mjs` can configure the local shared key without
-printing it. Production needs a deployed HTTPS Keystone URL reachable from Vercel.
-
-If Keystone is down, the article stays readable and a small retry message appears. A like
-is remembered only after confirmation. Keystone deduplicates repeated likes and daily views
-using a persistent SQLite unique key and an opaque visitor cookie. Old Upstash counters are
-not automatically migrated or deleted. See `../keystone/README.md` for setup and limitations.
-
-## Shares and comments (APIs not built yet)
-
-Posts already show views, likes, shares and comments, plus a comments section. Until the
-endpoints below exist, counts show "—" (never a fake 0), comments show "Comments aren't open
-yet" with a draft saved on the reader's device, and share buttons still work. Every response is
-validated, so a 404, a 503, a timeout or the SPA's `index.html` all count as "unavailable".
-
-| Endpoint | Request | Response the page expects |
+| Browser calls | Vercel function | Rust API |
 | --- | --- | --- |
-| `GET /api/stats?slug=` | — | `{ views, likes, configured: true, shares?, comments? }` (non-negative integers) |
-| `POST /api/stats` | `{ slug, action: "share", channel: "copy" \| "linkedin" \| "x" \| "native" }` | Same as above |
-| `GET /api/comments?slug=` | — | `{ comments: [{ id, name, body, createdAt }] }` (oldest first, ISO dates) |
-| `POST /api/comments` | `{ slug, name, body, website }` | `{ comment: { id, name, body, createdAt }, status: "published" \| "pending" }` |
+| `GET /api/stats?slug=` | `api/stats.ts` | `GET /api/v1/posts/{slug}/stats` |
+| `POST /api/stats { slug, action, channel? }` (view, like, share) | `api/stats.ts` | `POST /api/v1/posts/{slug}/views`, `/likes`, `/shares` |
+| `GET /api/comments?slug=` | `api/comments.ts` | `GET /api/v1/posts/{slug}/comments` (cursor-paged) |
+| `POST /api/comments { slug, name, body, website }` | `api/comments.ts` | `POST /api/v1/posts/{slug}/comments` |
 
-- `api/stats.ts` currently accepts only `view` and `like`, so it answers `share` with a 400.
-  Allow `share` there when Keystone supports it, and pass `shares`/`comments` through.
-- `website` is a honeypot field hidden from people. Reject the comment if it is not empty.
-- Limits the form enforces: name ≤ 60 characters, comment 2–1000. Validate them on the server too,
-  and render comments as plain text.
-- Return `status: "pending"` to hold comments for moderation. The author sees an
-  "Awaiting approval" label and everyone else sees nothing until it is approved.
+**Local development** (from `frontend/`):
+
+1. Start the API: `cd ../backend && cargo run` (reads `backend/.env`).
+2. Put `BACKEND_URL=http://127.0.0.1:8787` and `BACKEND_API_KEY=<SERVICE_API_KEY from backend/.env>` in `.env.local`.
+3. `npm run start:api` serves the Vercel functions on :4301 and proxies `/api` from `ng serve`.
+   Plain `npm start` works too; reactions then show their offline state.
+4. `npm run test:api` tests the Vercel functions with the backend mocked.
+
+**When the API is down** the article is unaffected. Counts show "—" (never a fake 0), a small
+Retry link appears, comments show a retry state, the reader's comment draft stays on their device,
+and share buttons still work. After one failed call the page stops calling the API for 30 seconds
+(Retry overrides this), so readers never wait on repeated timeouts. Every response is validated,
+so a 404, a 503, a timeout or an HTML page all count as "unavailable".
+
+**Comments** are plain text. Name ≤ 60 characters, comment 2–1000. `website` is a honeypot: if a
+bot fills it, the function pretends to accept the comment and drops it. By default comments
+containing links are held as `pending` (see `COMMENT_MODERATION` in the backend); approve them
+with the admin API described in the backend README.
 
 ## Google and link previews
 
