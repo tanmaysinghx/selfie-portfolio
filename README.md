@@ -5,7 +5,7 @@ Source for [tanmaysinghx.com](https://www.tanmaysinghx.com): a portfolio and blo
 ```text
 frontend/   Angular 21 site + Vercel functions (api/) — deployed on Vercel
 backend/    Rust (Axum + SQLx) API for views, likes, shares and comments — MySQL, deployed as a container
-render.yaml Render blueprint for the backend
+api/        Re-exports of frontend/api for Vercel builds from the repo root
 ```
 
 ```mermaid
@@ -32,14 +32,14 @@ Writing posts: [frontend/BLOGGING.md](frontend/BLOGGING.md). API reference: [bac
 
 ## Deploy
 
-**Frontend (Vercel).** Set the project's **Root Directory** to `frontend` (Project → Settings → Build and Deployment). Everything else is detected from `frontend/vercel.json` and `package.json`. Environment variables:
+**Frontend (Vercel).** Every push to `main` deploys. The root `vercel.json` builds `frontend/`, and root `api/*.ts` re-export `frontend/api/*`. Alternatively, set the project's Root Directory to `frontend`, and Vercel uses `frontend/vercel.json` instead. Environment variables:
 
 | Name | Value |
 | --- | --- |
-| `BACKEND_URL` | HTTPS URL of the deployed backend, e.g. `https://selfie-backend.onrender.com` |
+| `BACKEND_URL` | HTTPS URL of the deployed backend, e.g. `https://selfie.tanmaysinghx.com` |
 | `BACKEND_API_KEY` | Same value as the backend's `SERVICE_API_KEY` |
 
-**Backend.** See [backend/README.md → Deploy](backend/README.md#deploy). Render picks up `render.yaml`. Any container host can run `backend/Dockerfile`.
+**Backend** runs at **https://selfie.tanmaysinghx.com**. It's deployed by the Jenkins job `applications/dev/selfie-backend`, whose pipeline lives in [ts-infra-devops-5005](https://github.com/tanmaysinghx/ts-infra-devops-5005/blob/main/application-pipelines/dev-builds/selfie-backend.groovy). See [backend/README.md → Deploy](backend/README.md#deploy).
 
 ## Test
 

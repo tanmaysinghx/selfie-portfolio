@@ -94,7 +94,7 @@ Every response is JSON and carries an `x-request-id` header (an incoming one is 
 | DELETE | `/api/v1/admin/comments/{id}` | – | Delete a comment permanently |
 
 ```sh
-API=https://selfie-backend.onrender.com
+API=https://selfie.tanmaysinghx.com
 curl -H "Authorization: Bearer $ADMIN_TOKEN" "$API/api/v1/admin/comments?status=pending"
 curl -X PATCH -H "Authorization: Bearer $ADMIN_TOKEN" -H "content-type: application/json" \
      -d '{"status":"published"}' "$API/api/v1/admin/comments/<id>"
@@ -113,16 +113,23 @@ No IP addresses or raw cookies are stored.
 
 The service is a single static binary in a distroless, non-root container (`Dockerfile`).
 
-**Render** (blueprint in `/render.yaml`): New → Blueprint → select the repo. Fill in `DATABASE_URL`, `SERVICE_API_KEY`, `ADMIN_TOKEN` and `VISITOR_HASH_SALT`. The health check is `/health/live`, and only changes under `backend/` trigger a deploy.
+**Production:** `https://selfie.tanmaysinghx.com` on the OVH VPS.
 
-Any other container host (Fly.io, Railway, Cloud Run, a VPS) works the same way:
+| Piece | Where |
+| --- | --- |
+| Pipeline | Jenkins job `applications/dev/selfie-backend`, script `application-pipelines/dev-builds/selfie-backend.groovy` in `ts-infra-devops-5005` |
+| Steps | Checkout `GIT_REF` → `docker build --target test` (cargo test) → build image → push `tanmaysinghx/selfie-backend:<sha>`, `dev-latest`, `latest` → run container → wait for healthy |
+| Container | `selfie-backend-dev` on `127.0.0.1:8099 → 8080`. It runs read-only, with all capabilities dropped, a 128 MB memory limit and `--restart unless-stopped` |
+| Config | Jenkins Secret file credential `selfie-backend-dev-env`, holding the `.env` (see `environments/dev/configs/selfie-backend/.env.example` in the infra repo) |
+| TLS / proxy | nginx `/etc/nginx/sites-available/selfie-api.conf`, with a Let's Encrypt certificate managed by certbot |
+
+To deploy, open Jenkins → `applications/dev/selfie-backend` → **Build with Parameters**. To roll back, rebuild with `GIT_REF` set to an older commit or tag.
+
+To change a secret, update the `selfie-backend-dev-env` credential in Jenkins, then rebuild. Whenever `SERVICE_API_KEY` changes, update `BACKEND_API_KEY` in Vercel to match.
+
+Running the container anywhere else:
 
 ```sh
 docker build -t selfie-backend backend
-docker run --env-file backend/.env -e HOST=0.0.0.0 -p 8080:8080 selfie-backend
+docker run --env-file backend/.env -e HOST=0.0.0.0 -e PORT=8080 -p 8080:8080 selfie-backend
 ```
-
-Then set `BACKEND_URL` (the HTTPS URL of this service) and `BACKEND_API_KEY` in the Vercel project.
-
-> [!NOTE]
-> Free hosts often sleep after inactivity, and the first request can take 30 s or more to wake the service. The frontend gives up after 2.5 s and shows its offline state, so readers are never blocked. If you want the counts to show on every visit, use an always-on plan or ping `/health/live` on a schedule.
